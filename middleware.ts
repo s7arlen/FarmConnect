@@ -16,9 +16,18 @@ const PROTECTED_ROUTES: Record<string, string[]> = {
   "/admin": ["ADMIN"],
 };
 
+const DASHBOARD_ROUTES: Record<string, string> = {
+  FARMER: "/farmer/dashboard",
+  BUYER: "/buyer/dashboard",
+  BULK_BUYER: "/bulk-buyer/dashboard",
+  ADMIN: "/admin/dashboard",
+};
+
 // Public paths that never need auth
 const PUBLIC_PATHS = [
   "/",
+  "/get-started",
+  "/get-started/roles",
   "/about",
   "/how-it-works",
   "/contact",
@@ -52,6 +61,28 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Get session
+  const session = await getSessionFromRequest(request);
+
+  // If logged-in user visits welcome, login, or register -> redirect to their role dashboard
+  if (session && (pathname === "/get-started" || pathname === "/get-started/roles" || pathname === "/login" || pathname === "/register")) {
+    return NextResponse.redirect(new URL(DASHBOARD_ROUTES[session.role] || "/buyer/dashboard", request.url));
+  }
+
+  // If logged-in user visits root "/", redirect to their role dashboard
+  if (session && pathname === "/") {
+    return NextResponse.redirect(new URL(DASHBOARD_ROUTES[session.role] || "/buyer/dashboard", request.url));
+  }
+
+  // If new visitor lands on "/" without session, check if they've visited before or opted to explore as guest
+  if (!session && pathname === "/") {
+    const hasVisited = request.cookies.get("farmconnect_visited")?.value;
+    const isGuestParam = request.nextUrl.searchParams.has("guest");
+    if (!hasVisited && !isGuestParam) {
+      return NextResponse.redirect(new URL("/get-started", request.url));
+    }
+  }
+
   // Check if public
   const isPublic = PUBLIC_PATHS.some(
     (path) => pathname === path || pathname.startsWith(path + "/")
@@ -70,9 +101,6 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Get session
-  const session = await getSessionFromRequest(request);
-
   // No session — redirect to login
   if (!session) {
     const loginUrl = new URL("/login", request.url);
@@ -85,14 +113,8 @@ export async function middleware(request: NextRequest) {
     if (pathname === prefix || pathname.startsWith(prefix + "/")) {
       if (!allowedRoles.includes(session.role)) {
         // Redirect to their appropriate dashboard
-        const dashboardRoutes: Record<string, string> = {
-          FARMER: "/farmer/dashboard",
-          BUYER: "/buyer/dashboard",
-          BULK_BUYER: "/bulk-buyer/dashboard",
-          ADMIN: "/admin/dashboard",
-        };
         return NextResponse.redirect(
-          new URL(dashboardRoutes[session.role] || "/", request.url)
+          new URL(DASHBOARD_ROUTES[session.role] || "/", request.url)
         );
       }
       break;
