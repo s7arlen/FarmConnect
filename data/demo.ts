@@ -23,7 +23,7 @@ export const DEMO_FARMERS: Farmer[] = [
     coverImage:
       "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&q=80",
     profileImage:
-      "https://images.unsplash.com/photo-1592507736547-20dedbef9b32?w=400&q=80",
+      "https://images.unsplash.com/photo-1595273670150-bd0c3c392e46?w=400&q=80",
     farmingPractices:
       "We use organic-friendly techniques, minimal pesticides, and traditional composting. Our water comes from natural springs.",
     establishedYear: 2008,
@@ -125,7 +125,7 @@ export const DEMO_PRODUCTS: Product[] = [
     quantity: 120,
     unit: "kg",
     image:
-      "https://images.unsplash.com/photo-1546470427-e26264be0b0d?w=600&q=80",
+      "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&q=80",
     harvestDate: new Date(),
     status: "AVAILABLE",
     farmerName: "Joseph D'Souza",
