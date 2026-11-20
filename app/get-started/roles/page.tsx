@@ -3,7 +3,15 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, User, Tractor, Building2, CheckCircle2, Leaf } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  ShoppingCart,
+  Tractor,
+  Building2,
+  CheckCircle2,
+  Leaf,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -11,32 +19,28 @@ const ROLES = [
   {
     id: "BUYER",
     title: "Individual Buyer",
+    shortTitle: "Buyer",
     badge: "Consumer",
-    icon: User,
-    iconBg: "bg-blue-50 text-blue-600",
-    description: "Buy fresh, farm-picked produce directly for you and your family. Enjoy vine-ripened quality with full traceability.",
-    highlights: ["Fresh daily harvests", "Direct pickup or delivery", "Transparent farm pricing"],
+    icon: ShoppingCart,
+    subtitle: "Fresh local produce directly for your home & family",
     href: "/register?role=BUYER",
   },
   {
     id: "FARMER",
-    title: "Farmer",
+    title: "Farmer / Producer",
+    shortTitle: "Farmer",
     badge: "Producer",
     icon: Tractor,
-    iconBg: "bg-brand-light text-brand-green",
-    description: "List your harvests, set your own fair prices, and sell directly to consumers and businesses without middlemen.",
-    highlights: ["Keep 100% of your earnings", "Direct buyer orders", "Live inventory management"],
+    subtitle: "List harvests, set your prices, and keep 100% of earnings",
     href: "/register?role=FARMER",
-    popular: true,
   },
   {
     id: "BULK_BUYER",
-    title: "Bulk Buyer",
+    title: "Bulk Commercial Buyer",
+    shortTitle: "Bulk Buyer",
     badge: "Commercial",
     icon: Building2,
-    iconBg: "bg-amber-50 text-amber-600",
-    description: "Procure quality produce at scale for restaurants, hotels, catering businesses, canteens, and wholesale markets.",
-    highlights: ["Post bulk procurement requirements", "5-factor farmer matching", "Contract negotiations"],
+    subtitle: "Procure produce at scale for restaurants, hotels & markets",
     href: "/register?role=BULK_BUYER",
   },
 ];
@@ -53,141 +57,170 @@ export default function RoleSelectionPage() {
   }
 
   function handleGuestExplore() {
-    document.cookie = "farmconnect_visited=1; path=/; max-age=31536000; SameSite=Lax";
+    document.cookie =
+      "farmconnect_visited=1; path=/; max-age=31536000; SameSite=Lax";
     router.push("/?guest=1");
   }
 
+  const currentRole = ROLES.find((r) => r.id === selectedRole);
+
   return (
-    <div className="min-h-screen bg-brand-cream/80 flex items-center justify-center p-0 sm:p-4 lg:p-6">
-      <div className="w-full sm:max-w-md bg-white sm:rounded-3xl shadow-xl overflow-hidden flex flex-col min-h-screen sm:min-h-[844px] relative border border-brand-border/40">
+    <div className="min-h-screen bg-[#F2F6EC] flex items-center justify-center p-0 sm:p-4 lg:p-6 overflow-hidden selection:bg-[#53832F] selection:text-white">
+      
+      {/* Mobile-App Device Frame (Full Bleed on Mobile, Centered Card on Desktop) */}
+      <div className="w-full sm:max-w-[430px] bg-white sm:rounded-[36px] shadow-xl sm:border sm:border-[#DCE5D5] flex flex-col h-screen sm:h-auto sm:min-h-[780px] sm:max-h-[860px] justify-between overflow-hidden">
         
-        {/* Top Header */}
-        <div className="px-5 pt-4 pb-3 flex items-center justify-between border-b border-brand-border/60 bg-white">
+        {/* =====================================================================
+            TOP APP HEADER
+        ===================================================================== */}
+        <header className="px-5 pt-4 sm:pt-5 pb-3 flex items-center justify-between border-b border-[#E7EFE3] bg-white">
           <Link
             href="/get-started"
-            className="w-8 h-8 rounded-full bg-brand-cream hover:bg-brand-light flex items-center justify-center text-brand-dark transition-colors"
+            className="w-9 h-9 rounded-full bg-[#F2F6EC] hover:bg-[#E3EFE0] active:scale-95 flex items-center justify-center text-[#202A20] transition-all"
             aria-label="Back to welcome page"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4 stroke-[2.2]" />
           </Link>
 
-          <div className="flex items-center gap-1.5">
-            <div className="w-6 h-6 bg-brand-green rounded-lg flex items-center justify-center">
-              <Leaf className="w-3.5 h-3.5 text-white" />
+          {/* Centered Brand Mark */}
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 bg-[#53832F] rounded-xl flex items-center justify-center shadow-xs">
+              <Leaf className="w-4 h-4 text-white stroke-[2.2]" />
             </div>
-            <span className="font-bold text-sm text-brand-dark">FarmConnect</span>
+            <span className="font-extrabold text-base tracking-tight text-[#202A20]">
+              FarmConnect
+            </span>
           </div>
 
-          <Link href="/login" className="text-xs font-semibold text-brand-green hover:underline">
+          <Link
+            href="/login"
+            className="text-xs font-bold text-[#4D8337] hover:text-[#28552B] transition-colors"
+          >
             Log in
           </Link>
-        </div>
+        </header>
 
-        {/* Content */}
-        <div className="flex-1 p-5 space-y-4 flex flex-col justify-between">
+        {/* =====================================================================
+            MAIN CONTENT AREA (Minimal & Zero-Scroll Layout)
+        ===================================================================== */}
+        <main className="flex-1 px-5 py-5 flex flex-col justify-between overflow-y-auto">
+          
+          {/* Title & One-liner Subtitle */}
           <div>
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.25 }}
             >
-              <h1 className="text-2xl font-black text-brand-dark tracking-tight mb-1">
-                Choose your role
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#4D8337] block mb-1">
+                Step 1 of 2
+              </span>
+              <h1 className="text-2xl sm:text-[26px] font-black text-[#1E2E1E] tracking-tight leading-tight">
+                How will you participate?
               </h1>
-              <p className="text-xs text-brand-muted leading-relaxed">
-                Select how you want to participate in the FarmConnect agricultural marketplace.
+              <p className="text-xs text-brand-muted mt-1 leading-relaxed">
+                Select an account type to customize your marketplace experience.
               </p>
             </motion.div>
 
-            {/* Role Options */}
-            <div className="mt-4 space-y-3">
+            {/* The 3 Minimal Role Cards */}
+            <div className="mt-5 space-y-3">
               {ROLES.map((role) => {
                 const Icon = role.icon;
                 const isSelected = selectedRole === role.id;
 
                 return (
-                  <div
+                  <motion.div
                     key={role.id}
                     onClick={() => setSelectedRole(role.id)}
+                    whileTap={{ scale: 0.985 }}
                     className={cn(
-                      "relative rounded-2xl p-4 border-2 transition-all cursor-pointer text-left select-none group",
+                      "p-3.5 sm:p-4 rounded-2xl border-2 transition-all cursor-pointer select-none flex items-center justify-between gap-3.5",
                       isSelected
-                        ? "border-brand-green bg-brand-light/30 shadow-xs"
-                        : "border-brand-border bg-white hover:border-brand-border hover:bg-brand-cream/50"
+                        ? "border-[#53832F] bg-[#F1F7EC] shadow-xs"
+                        : "border-[#E4EDE1] bg-white hover:border-[#D0E2CA] hover:bg-[#FAFDF9]"
                     )}
                   >
-                    {/* Header */}
-                    <div className="flex items-start justify-between gap-3 mb-2">
-                      <div className="flex items-center gap-3">
-                        <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 shadow-xs", role.iconBg)}>
-                          <Icon className="w-5 h-5 stroke-[2.2]" />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-extrabold text-sm text-brand-dark">{role.title}</h3>
-                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-brand-light text-brand-dark">
-                              {role.badge}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
+                    {/* Left: Icon Tile + Title + Subtitle */}
+                    <div className="flex items-center gap-3.5 flex-1 min-w-0">
                       <div
                         className={cn(
-                          "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors flex-shrink-0 mt-0.5",
+                          "w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 transition-colors shadow-2xs",
                           isSelected
-                            ? "border-brand-green bg-brand-green text-white"
-                            : "border-brand-muted/40"
+                            ? "bg-[#53832F] text-white"
+                            : "bg-[#EAF3E4] text-[#4D8337]"
                         )}
                       >
-                        {isSelected && <CheckCircle2 className="w-3.5 h-3.5 fill-current" />}
+                        <Icon className="w-5 h-5 stroke-[2.2]" />
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <h3
+                            className={cn(
+                              "text-sm font-extrabold tracking-tight truncate",
+                              isSelected ? "text-[#1C3317]" : "text-[#202A20]"
+                            )}
+                          >
+                            {role.title}
+                          </h3>
+                        </div>
+                        <p className="text-[11px] sm:text-xs text-brand-muted leading-snug line-clamp-2">
+                          {role.subtitle}
+                        </p>
                       </div>
                     </div>
 
-                    {/* Description */}
-                    <p className="text-xs text-brand-muted leading-relaxed mb-3">
-                      {role.description}
-                    </p>
-
-                    {/* Highlights */}
-                    <div className="flex flex-wrap gap-1.5">
-                      {role.highlights.map((h) => (
-                        <span
-                          key={h}
-                          className="text-[10px] font-medium bg-white border border-brand-border/80 px-2 py-0.5 rounded-md text-brand-text/80"
-                        >
-                          ✓ {h}
-                        </span>
-                      ))}
+                    {/* Right: Sleek Radio Check Indicator */}
+                    <div
+                      className={cn(
+                        "w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all",
+                        isSelected
+                          ? "border-[#53832F] bg-[#53832F] text-white"
+                          : "border-[#BAC8B5] bg-white"
+                      )}
+                    >
+                      {isSelected && (
+                        <CheckCircle2 className="w-3.5 h-3.5 fill-current stroke-white stroke-[2.5]" />
+                      )}
                     </div>
-                  </div>
+                  </motion.div>
                 );
               })}
             </div>
           </div>
 
-          {/* Bottom Actions */}
-          <div className="space-y-3 pt-3 border-t border-brand-border/60">
+          {/* =====================================================================
+              BOTTOM ACTIONS: Plush Pill CTA & Secondary Link
+          ===================================================================== */}
+          <div className="pt-4 pb-2 space-y-3">
             <button
               type="button"
               onClick={handleContinue}
-              className="w-full h-12 rounded-2xl bg-brand-green hover:bg-brand-dark text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all active:scale-[0.99]"
+              className="w-full h-14 bg-gradient-to-r from-[#53832F] to-[#406E23] hover:from-[#487428] hover:to-[#38621E] active:scale-[0.985] text-white font-bold text-base rounded-2xl shadow-md hover:shadow-lg flex items-center justify-center gap-2.5 transition-all cursor-pointer"
             >
-              <span>Continue Registration</span>
+              <span>Continue as {currentRole?.shortTitle}</span>
               <ArrowRight className="w-4 h-4 stroke-[2.5]" />
             </button>
 
-            <div className="text-center">
+            <div className="text-center pt-0.5">
               <button
                 type="button"
                 onClick={handleGuestExplore}
-                className="text-xs font-semibold text-brand-muted hover:text-brand-dark underline underline-offset-4 transition-colors"
+                className="text-xs font-semibold text-brand-muted hover:text-[#202A20] underline decoration-[#BAC8B5] underline-offset-4 transition-colors cursor-pointer"
               >
                 Skip and explore as guest
               </button>
             </div>
           </div>
+
+        </main>
+
+        {/* Mobile Home Bar Indicator */}
+        <div className="sm:hidden pb-2.5 pt-1 flex justify-center bg-white">
+          <div className="w-28 h-1 rounded-full bg-black/20" />
         </div>
+
       </div>
     </div>
   );
