@@ -241,12 +241,12 @@ export default function WelcomePage() {
           {/* =====================================================================
               2. PRIMARY & SECONDARY ACTIONS
           ===================================================================== */}
-          <div className="flex flex-col items-center space-y-3.5 pt-2 sm:pt-4">
+          <div className="flex flex-col items-center space-y-3.5 pt-2 sm:pt-4 w-full">
             
-            {/* Primary Action Button: "Get Started →" */}
+            {/* Primary Action Button: "Get Started →" (Plush, prominent height matching design) */}
             <Link
               href="/get-started/roles"
-              className="w-full h-13 sm:h-14 bg-[#53832F] hover:bg-[#467226] active:bg-[#3D6321] active:scale-[0.985] text-white font-bold text-base rounded-2xl shadow-md flex items-center justify-center gap-2 transition-all group"
+              className="w-full h-14 min-h-[56px] shrink-0 bg-[#53832F] hover:bg-[#467226] active:bg-[#3D6321] active:scale-[0.985] text-white font-bold text-lg rounded-2xl shadow-md hover:shadow-lg flex items-center justify-center gap-2.5 transition-all group"
             >
               <span>Get Started</span>
               <ArrowRight className="w-5 h-5 stroke-[2.5] group-hover:translate-x-1 transition-transform" />
