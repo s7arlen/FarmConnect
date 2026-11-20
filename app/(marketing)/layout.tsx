@@ -49,10 +49,10 @@ export default function MarketingLayout({
         <Navbar />
       </div>
 
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 pb-24 lg:pb-0">{children}</main>
 
-      {/* Footer with clearance for mobile bottom nav */}
-      <div className="pb-24 lg:pb-0">
+      {/* Desktop-Only Footer (Hidden on mobile for pure app experience) */}
+      <div className="hidden lg:block">
         <Footer />
       </div>
 
