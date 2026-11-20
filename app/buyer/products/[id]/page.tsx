@@ -45,7 +45,7 @@ export default function ProductDetailPage() {
   const isAvailable = product.status !== "UNAVAILABLE";
 
   return (
-    <div className="p-4 md:p-8 max-w-6xl">
+    <div className="p-4 md:p-8 max-w-6xl mx-auto pb-safe pb-28">
       {/* Back */}
       <Link
         href="/buyer/explore"
@@ -300,6 +300,39 @@ export default function ProductDetailPage() {
           </div>
         </div>
       )}
+
+      {/* Mobile Sticky Bottom Action Bar */}
+      <div className="lg:hidden fixed bottom-16 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-brand-border p-3 px-4 shadow-lg flex items-center justify-between gap-4">
+        <div>
+          <p className="text-[10px] uppercase font-bold text-brand-muted tracking-wider">Total</p>
+          <p className="text-base font-extrabold text-brand-dark">
+            {formatCurrency(isAvailable ? (inCart ? qty * product.price : localQty * product.price) : 0)}
+          </p>
+        </div>
+
+        {isAvailable ? (
+          inCart ? (
+            <Link href="/buyer/cart" className="flex-1 max-w-[200px]">
+              <Button className="w-full gap-2 bg-brand-green hover:bg-brand-dark text-white font-bold h-11 rounded-xl shadow-xs">
+                <ShoppingCart className="w-4 h-4" />
+                Go to Cart ({qty})
+              </Button>
+            </Link>
+          ) : (
+            <Button
+              className="flex-1 max-w-[200px] gap-2 bg-brand-green hover:bg-brand-dark text-white font-bold h-11 rounded-xl shadow-xs"
+              onClick={() => addItem(product, localQty)}
+            >
+              <ShoppingCart className="w-4 h-4" />
+              Add to Cart
+            </Button>
+          )
+        ) : (
+          <Button disabled variant="outline" className="flex-1 max-w-[200px] h-11 rounded-xl">
+            Sold Out
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

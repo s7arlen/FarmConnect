@@ -169,7 +169,15 @@ export default function Navbar() {
             <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-brand-border">
               {user ? (
                 <Link
-                  href={user.role === "FARMER" ? "/farmer/dashboard" : "/buyer/dashboard"}
+                  href={
+                    user.role === "FARMER"
+                      ? "/farmer/dashboard"
+                      : user.role === "ADMIN"
+                      ? "/admin/dashboard"
+                      : user.role === "BULK_BUYER"
+                      ? "/bulk-buyer/dashboard"
+                      : "/buyer/dashboard"
+                  }
                   onClick={() => setMenuOpen(false)}
                 >
                   <Button variant="outline" className="w-full">

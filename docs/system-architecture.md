@@ -13,13 +13,12 @@ FarmConnect utilizes a clean three-tier distributed architecture separating pres
 ```mermaid
 graph TD
     subgraph Client Layer
-        MOB["📱 Mobile Client (React Native + Expo)<br/>GoParm Agricultural UI Design"]
-        WEB["💻 Web Portal (Next.js 14)<br/>Admin & Discovery"]
+        WEB["💻 Web Application (Next.js 14 App Router)<br/>Responsive UI: Farmer, Buyer, Bulk Buyer, Admin"]
     end
 
     subgraph API & Gateway Layer
-        REST["🚀 Node.js / Express.js REST API<br/>Port 5000 (/api/v1)"]
-        AUTH_MID["🔐 JWT Auth & Role Guard Middleware"]
+        API["⚡ Next.js API Routes (/api/*)<br/>Serverless & Node.js Handlers"]
+        AUTH_MID["🔐 Session Cookie Auth & Role Guard Middleware"]
         RATE["🛡️ Centralized Error & Validation Guard (Zod)"]
     end
 
@@ -36,9 +35,8 @@ graph TD
         CDN["☁️ Cloudinary Image CDN"]
     end
 
-    MOB -->|Bearer JWT / JSON| REST
-    WEB -->|Session / JSON| REST
-    REST --> AUTH_MID
+    WEB -->|Session / JSON| API
+    API --> AUTH_MID
     AUTH_MID --> RATE
     RATE --> INV_SRV
     RATE --> ORD_SRV
@@ -51,7 +49,7 @@ graph TD
     REV_SRV --> DRIZZLE
 
     DRIZZLE --> PG
-    MOB -.->|Upload Images| CDN
+    WEB -.->|Image Uploads| CDN
 ```
 
 ---
@@ -245,15 +243,15 @@ graph TD
 sequenceDiagram
     autonumber
     actor Buyer as 🛒 Retail Buyer
-    participant Mobile as 📱 Mobile App
-    participant API as 🚀 Express API (/orders)
-    participant Auth as 🔐 Auth Guard
+    participant Browser as 💻 Web Browser
+    participant API as ⚡ Next.js API (/api/orders)
+    participant Auth as 🔐 Auth Guard (Session)
     participant DB as 🐘 PostgreSQL (ACID)
     actor Farmer as 👨‍🌾 Farmer
 
-    Buyer->>Mobile: Select produce quantity & tap "Checkout"
-    Mobile->>API: POST /api/v1/orders {items, fulfillmentMethod}
-    API->>Auth: Validate JWT Bearer token
+    Buyer->>Browser: Select produce quantity & click "Checkout"
+    Browser->>API: POST /api/orders {items, fulfillmentMethod}
+    API->>Auth: Validate session cookie
     Auth-->>API: Authorized (buyerId)
     
     rect rgb(240, 248, 240)
@@ -265,13 +263,13 @@ sequenceDiagram
             API->>DB: UPDATE products SET quantity = quantity - orderedQty
             API->>DB: INSERT INTO inventory_logs (ORDER_DEDUCTION)
             Note over API,DB: COMMIT TRANSACTION
-            API-->>Mobile: 201 Created {orderId, status: "REQUESTED"}
-            API-)Farmer: Send Mobile Push Notification
-            Mobile-->>Buyer: Show "Order Placed Successfully" Screen
+            API-->>Browser: 201 Created {orderId, status: "REQUESTED"}
+            API-)Farmer: Create In-App Notification
+            Browser-->>Buyer: Show "Order Placed Successfully" Confirmation
         else Stock is Insufficient
             Note over API,DB: ROLLBACK TRANSACTION
-            API-->>Mobile: 400 Bad Request ("Stock exhausted by another buyer")
-            Mobile-->>Buyer: Show "Item Sold Out" Alert
+            API-->>Browser: 400 Bad Request ("Stock exhausted by another buyer")
+            Browser-->>Buyer: Show "Item Sold Out" Toast / Dialog
         end
     end
 ```
@@ -281,13 +279,13 @@ sequenceDiagram
 ## 4. Security & Network Topology
 
 1. **Authentication Token Flow**:
-   - Web application uses HTTP-only encrypted session cookies for browser XSS protection.
-   - Mobile native client uses `Authorization: Bearer <JWT>` stored securely in encrypted platform storage (`AsyncStorage`).
+   - Web application uses HTTP-only encrypted session cookies (`farmconnect_session`) with `SameSite=Lax` for browser XSS and CSRF protection.
+   - Server-side Next.js middleware enforces role authentication before rendering protected routes.
 2. **Zero-Trust Input Sanitization**:
-   - Every incoming payload passes through Zod schema validation guards prior to hitting database controllers.
+   - Every incoming request payload passes through Zod schema validation guards prior to hitting database operations.
 3. **Role-Based Access Control (RBAC)**:
-   - Access to `/api/v1/admin/*` is strictly guarded by `requireRole("ADMIN")`.
-   - Access to `/api/v1/inventory/*` enforces farm ownership (`userId === product.farmerId`).
+   - Access to `/api/admin/*` and `/admin/*` is strictly guarded by `requireRole("ADMIN")`.
+   - Access to `/farmer/*` enforces farm ownership (`userId === product.farmerId`).
 
 ---
 *End of System Architecture Document*

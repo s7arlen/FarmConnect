@@ -91,7 +91,7 @@ export default function ExplorePage() {
     query || selectedCategory !== "all" || maxPrice !== null;
 
   return (
-    <div className="p-4 md:p-8">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto pb-safe">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-brand-text mb-1">

@@ -11,13 +11,13 @@ const FOOTER_LINKS = {
   ],
   Company: [
     { label: "About Us", href: "/about" },
-    { label: "Contact", href: "/contact" },
-    { label: "Careers", href: "/careers" },
+    { label: "Contact Us", href: "/contact" },
+    { label: "Nearby Farmers", href: "/farmers" },
   ],
   Support: [
-    { label: "Help Center", href: "/help" },
-    { label: "Privacy Policy", href: "/privacy" },
-    { label: "Terms of Service", href: "/terms" },
+    { label: "Contact Support", href: "/contact" },
+    { label: "Platform Guide", href: "/how-it-works" },
+    { label: "Community", href: "/about" },
   ],
 };
 

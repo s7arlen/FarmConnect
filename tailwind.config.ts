@@ -18,15 +18,16 @@ const config: Config = {
     },
     extend: {
       colors: {
-        // FarmConnect brand palette
+        // FarmConnect GoParm-inspired agricultural palette
         brand: {
-          green: "#2F6B3F",
-          dark: "#163A24",
-          light: "#EAF4EA",
-          cream: "#F8F6EF",
-          text: "#18231B",
-          muted: "#6B756E",
-          border: "#E1E6DF",
+          green: "#4D8B38",
+          dark: "#28552B",
+          light: "#E8F4D9",
+          cream: "#F7F9F2",
+          surface: "#FFFFFF",
+          text: "#202A20",
+          muted: "#788276",
+          border: "#E7EDE2",
           warning: "#D79A28",
           error: "#C94A4A",
         },

@@ -30,12 +30,23 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "FarmConnect",
+  },
+  icons: {
+    icon: "/icons/icon-192x192.png",
+    apple: "/icons/apple-touch-icon.png",
+  },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#2F6B3F",
+  themeColor: "#4D8B38",
   width: "device-width",
   initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

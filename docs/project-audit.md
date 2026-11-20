@@ -1,150 +1,317 @@
-# FarmConnect — Comprehensive Project Audit & Technical Analysis
+# FarmConnect — Comprehensive Project Audit & App-Like Web Transformation Strategy
 
 **Project Name:** FarmConnect  
-**Date:** November 2026  
-**Auditor:** Mobile Application Architect & Lead Full-Stack Engineer  
-**Live Web Deployment:** [https://farmconnect-drab.vercel.app/](https://farmconnect-drab.vercel.app/)  
-**GitHub Repository:** [https://github.com/s7arlen/FarmConnect](https://github.com/s7arlen/FarmConnect)  
+**Target Platform:** Single Unified Full-Stack Web Application (Next.js 14 App Router)  
+**Live Website Reference:** [https://farmconnect-drab.vercel.app/](https://farmconnect-drab.vercel.app/)  
+**Target Devices:** Android Chrome, iOS Safari, Tablets, Desktop Workstations & Installed PWA  
+**Visual Inspiration:** GoParm Agricultural Application Design System  
+**Auditor / Architect:** Senior Full-Stack Web Developer & UI/UX Architect  
+**Date:** Academic Year 2026  
 
 ---
 
-## 1. Executive Summary
+## 1. Executive Summary & Core Mandate
 
-FarmConnect was originally built as a web-first application using **Next.js 14 (App Router)**, **TypeScript**, **Tailwind CSS**, and **Drizzle ORM** with **PostgreSQL**. It offers comprehensive web screens for marketing, buyers, farmers, bulk buyers, and administrators. 
+The objective is to transform the **EXISTING FarmConnect** web application into a complete, professional, app-like agricultural marketplace web application. 
 
-To transform FarmConnect into a genuine, professional native mobile application suitable for college community demonstration and real-world agricultural utility, the core business logic, database schema, matching algorithms, and validation rules must be decoupled and exposed via a dedicated backend, while a native **React Native (Expo + Expo Router)** application is constructed under `/mobile`, visually styled after modern agricultural technology benchmarks (specifically referencing the **GoParm** design system).
+### Critical Architecture Boundaries
+- **No separate mobile application**: Zero React Native, zero Expo, zero separate mobile repositories.
+- **Single unified codebase**: The existing Next.js 14 App Router project under `farmconnect/` serves mobile browsers, tablets, and desktop workstations seamlessly with adaptive layouts.
+- **App-like mobile experience**: When opened on Android or iPhone browsers (or installed as a PWA), the application provides a mobile-native feel (fixed bottom navigation, safe-area padding, touch-friendly steppers, card-based layouts, compact headers, bottom sheets, and zero-reload client navigation).
+- **Professional desktop experience**: When opened on wide screens, authenticated portals seamlessly transition to professional desktop layouts featuring collapsable sidebars, responsive data grids, and clean tabular data.
 
 ---
 
-## 2. Current Architecture & Tech Stack
+## 2. Existing Technology Stack
 
-| Layer | Current Implementation | Status / Observation |
+| Layer | Existing Technology | Evaluation & Fit for App-Like Web App |
 |---|---|---|
-| **Framework** | Next.js 14.2 (App Router) | Web-only (SSR + CSR mix). Not suitable as mobile client. |
-| **Language** | TypeScript 5.5 (Strict mode) | Type-safe throughout. Fully reusable for mobile models & API. |
-| **Styling** | Tailwind CSS + Radix UI Primitives | Web-specific CSS classes; cannot run directly in React Native (requires React Native StyleSheet or NativeWind). |
-| **State Management** | Zustand (auth, cart, ui, wishlist) with `persist` | Reusable; logic translates directly to React Native using `@react-native-async-storage/async-storage`. |
-| **Data Validation** | Zod v3.23 + React Hook Form | 100% reusable across both React Native forms and Express/API validation. |
-| **Database ORM** | Drizzle ORM v0.33 | 9 relational schemas defined. Clean, modern, fully transferable to standalone backend. |
-| **Database** | PostgreSQL (Postgres.js driver) | Ready for Supabase / Neon / Local PostgreSQL. |
-| **Auth System** | Cookie-based session (`farmconnect_session`, base64 JSON payload) | Web cookie-based; mobile requires Bearer token (JWT in `Authorization` header) stored in SecureStore. |
-| **Business Logic** | 5-factor matching algorithm (`lib/matching.ts`) | 100% portable TypeScript code. |
+| **Framework** | Next.js 14.2.35 (App Router) | **Excellent**. Provides React Server Components, client interactivity, file-system routing, and built-in API routes. |
+| **Language** | TypeScript 5.5 (Strict mode) | **Excellent**. Zero compilation errors (`npx tsc --noEmit` verified). Fully type-safe. |
+| **Styling** | Tailwind CSS + Radix UI Primitives | **Ideal**. Can be styled to mirror the GoParm design language and tokens. |
+| **Icons** | Lucide React | **Excellent**. Rich set of mobile and dashboard icons. |
+| **State Management** | Zustand v4.5 with `persist` | **Ideal**. Reusable client-side state for auth, cart, wishlist, and UI states. |
+| **Data Validation** | Zod v3.23 + React Hook Form | **Excellent**. Shared client/server schemas for all forms and endpoints. |
+| **Database ORM** | Drizzle ORM v0.33 + Postgres.js | **Excellent**. Type-safe relational schema with connection pooling. |
+| **Database** | PostgreSQL (Neon / Supabase / Local) | **Solid**. ACID transactional capability for stock reservation. |
+| **Auth System** | HTTP-Only Session Cookies (`farmconnect_session`) + Next.js Middleware | **Secure**. Protects routes (`/farmer`, `/buyer`, `/bulk-buyer`, `/admin`) without mobile token overhead. |
+| **Animations** | Framer Motion v11.3 | **Great**. Can power app-like mobile screen transitions and bottom sheet animations. |
 
 ---
 
 ## 3. Feature Audit & Classification Matrix
 
-Legend:
-- **COMPLETED**: Fully implemented and functional end-to-end.
-- **PARTIALLY COMPLETED**: UI exists or partial endpoint exists, but end-to-end flow is incomplete or uses mock fallback.
-- **NOT IMPLEMENTED**: Feature is missing completely.
-- **NEEDS IMPROVEMENT**: Functional but requires correction, optimization, or mobile-native adaptation.
-- **NEEDS VALIDATION**: Requires confirmation through local agricultural stakeholder research.
+### Classification Legend
+- **COMPLETED**: Fully implemented, verified, and functioning end-to-end.
+- **PARTIALLY COMPLETED**: UI or partial endpoint exists, but end-to-end data flow is incomplete or uses mock fallback.
+- **NEEDS IMPROVEMENT**: Exists and works, but requires UI/UX correction, GoParm design adaptation, or mobile optimization.
+- **NOT IMPLEMENTED**: Feature is missing from the existing codebase.
+- **NEEDS VALIDATION**: Requires local stakeholder / agricultural domain confirmation.
 
-| Feature Area | Specific Capability | Current Status | Detailed Audit Notes |
+| Feature Area | Specific Capability | Status | Audit Findings & Technical Gaps |
 |---|---|---|---|
-| **Authentication** | Registration (Buyer, Farmer, Bulk Buyer) | PARTIALLY COMPLETED | Web forms work with Zod, writes to DB or demo fallback. Mobile screens not yet built. |
-| **Authentication** | Login & Role Redirection | PARTIALLY COMPLETED | Base64 cookie used. Needs cryptographically signed JWT for mobile API. |
-| **Authentication** | Password Reset (`/forgot-password`) | NOT IMPLEMENTED | UI exists but has mock `setTimeout(1000)`. No token generation or email delivery. |
-| **Farmer Module** | Farm Profile Setup & Edit | PARTIALLY COMPLETED | Web UI and `/api/farmers/profile` exist. Image uploads are local blob previews. |
-| **Farmer Module** | Product Listing & Creation | COMPLETED (Web) | Form validation, unit selection, category selection work. |
-| **Farmer Module** | Product Edit & Deletion | COMPLETED (Web) | `PUT` and `DELETE /api/products/[id]` implemented. Needs mobile screen. |
-| **Farmer Module** | Stock Management & Inventory | PARTIALLY COMPLETED | Products have quantities, but dedicated stock overview (like GoParm Stock screen) does not exist. |
-| **Farmer Module** | Order Acceptance / Rejection | COMPLETED (Web) | Status transitions enforced (`REQUESTED` → `ACCEPTED` → `PREPARING` → `READY` → `COMPLETED`). |
-| **Farmer Module** | Sales Analytics | NEEDS IMPROVEMENT | Recharts web charts exist with static/demo data. Needs dynamic aggregation. |
-| **Buyer Module** | Product Discovery & Search | COMPLETED (Web) | Keyword search, category filtering, price filter, availability sorting work. |
-| **Buyer Module** | Farmer Profile Discovery | COMPLETED (Web) | Shows farm location, verified badge, description, and listings. |
-| **Buyer Module** | Cart & Checkout | COMPLETED (Web) | Zustand cart persistence, multi-farmer checkout, order creation. |
-| **Buyer Module** | Order Tracking & Timeline | COMPLETED (Web) | 5-step visual timeline tracking order progression. |
-| **Buyer Module** | Wishlist / Favorites | COMPLETED (Web) | Zustand store + heart toggle + dedicated wishlist screen. |
-| **Buyer Module** | Rating & Review Submission | COMPLETED (Web) | Star picker & comment dialog on completed orders updating farm rating. |
-| **Bulk Buyer** | Post Requirement | COMPLETED (Web) | Form saves requirement and computes deterministic matches. |
-| **Bulk Buyer** | Farmer Matches Breakdown | COMPLETED (Web) | Ranks compatibility (0–100%) across product, quantity, distance, price, availability. |
-| **Bulk Buyer** | Farmer Offers & Negotiation | NOT IMPLEMENTED | Farmer offer submission and buyer offer comparison workflow not yet built. |
-| **Bulk Buyer** | Bulk Orders View | PARTIALLY COMPLETED | Web screen displays demo shipments; needs dynamic order generation from accepted offers. |
-| **Admin Module** | Dashboard Overview | PARTIALLY COMPLETED | Shows platform counters and demo charts. |
-| **Admin Module** | Farmer Verification Workflow | COMPLETED (Web) | Approves/rejects farm verification status via API. |
-| **Admin Module** | User Management (Suspend/Activate) | COMPLETED (Web) | Updates user status via API. |
-| **Admin Module** | Product Moderation & Reports | PARTIALLY COMPLETED | Reports review screen built with resolve action; moderation needs automated flags. |
-| **Infrastructure** | Native Mobile App (React Native/Expo) | NOT IMPLEMENTED | Currently web-only Next.js app. Zero native mobile code. |
-| **Infrastructure** | Express.js REST API | NOT IMPLEMENTED | API currently runs inside Next.js API route handlers. Needs standalone Express service for mobile. |
-| **Infrastructure** | Image Upload (Cloudinary) | PARTIALLY COMPLETED | Abstraction exists in `lib/cloudinary.ts` but commented out. Relies on client blob URLs. |
-| **Domain Logic** | Stakeholder Field Research | NEEDS VALIDATION | Local agricultural context (Goa/Karnataka region) needs field validation for digital literacy. |
+| **Design System** | GoParm Palette & Tokens | NEEDS IMPROVEMENT | Current palette uses `#2F6B3F`. Needs realignment with GoParm reference tokens: `#4D8B38`, `#28552B`, `#E8F4D9`, `#F7F9F2`, `#202A20`. |
+| **Layout & Nav** | Farmer Navigation | NEEDS IMPROVEMENT | Current mobile bottom bar has 4 items (`Home`, `Products`, `Add`, `Orders`, `Profile`). Missing dedicated `Stock` tab. |
+| **Layout & Nav** | Buyer Navigation | NEEDS IMPROVEMENT | Current mobile bottom bar has `Farmers` instead of `Cart`. Missing direct access to cart from bottom bar. |
+| **Layout & Nav** | Bulk Buyer Navigation | NOT IMPLEMENTED | Bulk buyer portal has desktop sidebar and drawer, but **zero mobile bottom navigation bar**. |
+| **Layout & Nav** | Admin Navigation | NEEDS IMPROVEMENT | Desktop sidebar exists, but mobile lacks an app-like header and tabbed bottom quick navigation. |
+| **Farmer Module** | GoParm Farm Hero Card | NOT IMPLEMENTED | Farmer dashboard shows generic desktop cards. Missing farm location badge, verification chip, and live harvest counters. |
+| **Farmer Module** | Stock Management Screen | NOT IMPLEMENTED | No dedicated `/farmer/stock` view. Products page only has delete and edit buttons, no reactive stock stepper. |
+| **Farmer Module** | Add / Edit Product | COMPLETED | Zod validation, category selection, price per unit, harvest date exist. Needs touch-friendly mobile layout. |
+| **Farmer Module** | Farm Profile Management | PARTIALLY COMPLETED | Form exists in `/farmer/farm`, but writes only to local state if DB is offline. Image uploads use local blob URLs. |
+| **Farmer Module** | Order Status Pipeline | COMPLETED | Status state machine exists (`REQUESTED` $\rightarrow$ `ACCEPTED` $\rightarrow$ `PREPARING` $\rightarrow$ `READY` $\rightarrow$ `COMPLETED`). |
+| **Buyer Module** | Mobile App-Like Home | NEEDS IMPROVEMENT | Has desktop greeting and cards. Needs GoParm visual hierarchy: location selector, category chips, Fresh Today, nearby farms. |
+| **Buyer Module** | Explore & Search | COMPLETED | Category filtering, search query, sorting by price and distance work. Needs bottom-sheet filter modal on mobile. |
+| **Buyer Module** | Product Detail View | NEEDS IMPROVEMENT | Works, but layout is a wide desktop page. Needs mobile card presentation with sticky bottom Add-to-Cart bar. |
+| **Buyer Module** | Cart & Checkout | COMPLETED | Zustand cart with multi-farmer grouping and pickup vs delivery selection. |
+| **Buyer Module** | 5-Step Order Tracking | COMPLETED | Visual progress bar with status verification. |
+| **Buyer Module** | Rating & Review | COMPLETED | Star rating dialog and review submission endpoint exist. |
+| **Bulk Buyer** | Post Requirement | COMPLETED | Form captures quantity, ceiling price, unit, required date, and notes. |
+| **Bulk Buyer** | 5-Factor Matching Breakdown | COMPLETED | Algorithmic scoring engine (`lib/matching.ts`) ranks compatibility (0–100%). |
+| **Bulk Buyer** | Farmer Offers & Bids | PARTIALLY COMPLETED | Schema supports offers, but live farmer bid submission workflow needs dedicated UI in the farmer portal. |
+| **Admin Module** | Platform Overview | COMPLETED | Metrics overview and platform summary counters exist. |
+| **Admin Module** | Farmer Verification Workflow | COMPLETED | `/admin/farmer-verification` allows KYC inspection and status toggle (`VERIFIED` / `REJECTED`). |
+| **Admin Module** | User Moderation | COMPLETED | Suspend / activate toggle working via `/api/admin/users`. |
+| **PWA** | Web App Manifest & Service Worker | NOT IMPLEMENTED | No `manifest.json`, no icons in `public/`, no standalone viewport configuration. |
+| **Data & Persistence** | PostgreSQL + Drizzle ORM | COMPLETED | 9 schemas defined. Falls back gracefully to demo data if DB connection is unavailable. |
 
 ---
 
-## 4. Reusable Assets & Code
+## 4. Reusable Code & Existing Strengths
 
-The following existing code can be directly leveraged for the mobile and backend build:
+The existing FarmConnect project contains exceptionally high-quality foundations:
 
-1. **Drizzle Database Schemas (`db/schema/*.ts`):**
-   - Clean, modular definitions for `users`, `farmers`, `products`, `orders`, `orderItems`, `reviews`, `bulkRequests`, `bulkMatches`, `notifications`.
-   - Complete type inference (`$inferSelect`, `$inferInsert`).
-2. **Zod Validation Schemas (`lib/validations.ts`):**
-   - Fully compatible with React Native Hook Form resolver (`@hookform/resolvers/zod`).
-   - Validates products, orders, bulk requests, farm profiles, registration, and reviews.
-3. **Deterministic Matching Algorithm (`lib/matching.ts`):**
-   - 5-factor scoring engine with weighting (Product 30%, Quantity 25%, Distance 20%, Price 15%, Availability 10%).
-   - Pure TypeScript, zero DOM dependencies, 100% portable to the new Express backend.
-4. **Seed Data & Fictional Farms (`db/seed.ts` & `data/demo.ts`):**
-   - Realistic Indian agricultural product categories, pricing, seasonal harvest data, and test user credentials.
-
----
-
-## 5. Technical & Architectural Deficiencies
-
-1. **Web vs. Mobile UI Coupling:**
-   - The current UI relies on browser DOM elements (`<div />`, `<button />`, `<input />`, HTML forms, CSS Grid/Flexbox with Tailwind).
-   - React Native requires `<View />`, `<Text />`, `<TouchableOpacity />`, `<TextInput />`, and native layout constraints (`StyleSheet`).
-2. **Session / Authentication Token Storage:**
-   - Web uses Next.js `cookies()` and Base64 encoded JSON strings.
-   - Mobile requires Bearer tokens sent in the `Authorization: Bearer <token>` HTTP header, signed cryptographically (JWT with HMAC-SHA256), and stored in native secure storage (`expo-secure-store`).
-3. **Monolithic Next.js Hosting vs. Mobile Backend:**
-   - The Next.js API routes are coupled to the Next server process. A native app is best served by a dedicated Node.js + Express.js REST API service with CORS, rate limiting, and centralized error middleware.
-4. **Image Handling:**
-   - Products currently use external Unsplash URLs or temporary `URL.createObjectURL(file)`. Mobile needs real multipart form-data image uploading to Cloudinary or AWS S3.
-5. **Inventory Race Conditions:**
-   - Multiple buyers ordering the same limited crop at the same time could oversell stock. Must enforce strict PostgreSQL row-locking transactions (`SELECT ... FOR UPDATE`) during order placement.
+1. **Clean Next.js 14 Full-Stack Architecture**:
+   - Built entirely with Next.js App Router with 54 production-tested routes.
+   - Clean separation of UI (`components/`), Business Logic (`lib/`), State (`store/`), DB (`db/`), and API Routes (`app/api/`).
+2. **Deterministic 5-Factor Matching Algorithm (`lib/matching.ts`)**:
+   - Fully implemented mathematical scoring engine evaluating:
+     $$\text{Score} = 0.30 \cdot S_{\text{product}} + 0.25 \cdot S_{\text{qty}} + 0.20 \cdot S_{\text{dist}} + 0.15 \cdot S_{\text{price}} + 0.10 \cdot S_{\text{cert}}$$
+3. **Robust State Management (`store/`)**:
+   - `cartStore.ts`: Supports multi-farmer grouping, max stock capping, and quantity updates.
+   - `authStore.ts`: Role-aware session caching with persistence.
+   - `wishlistStore.ts`: Favorites management.
+4. **Validation Schemas (`lib/validations.ts`)**:
+   - Strict Zod schemas for registration, login, products, orders, bulk requests, and reviews.
+5. **Relational Database Schema (`db/schema/`)**:
+   - Type-safe Drizzle tables for `users`, `farmers`, `products`, `orders`, `orderItems`, `bulkRequests`, `bulkOffers`, `reviews`, and `notifications`.
 
 ---
 
-## 6. Recommended Native Mobile Migration Strategy
+## 5. UI/UX & Responsive Design Deficiencies
 
-### Strategy: Two-Tier Architecture with Dedicated Mobile App
-To preserve the working web application and website (`https://farmconnect-drab.vercel.app/`) while building the true native mobile application:
-
-1. **Keep Web Platform Intact:**
-   - Preserve existing `/app` and `/components` for web users and administrative viewing.
-2. **Create Standalone Backend (`/server` or `/backend`):**
-   - Node.js + Express.js + TypeScript + Drizzle ORM + PostgreSQL.
-   - Exposes clean REST API endpoints consuming JSON and returning standard payloads `{ success: true, data: ... }`.
-   - Issues JWT access tokens for mobile authentication.
-3. **Build Native Mobile App (`/mobile`):**
-   - React Native with **Expo SDK 51+** and **Expo Router v3**.
-   - TypeScript strict mode.
-   - Native bottom tabs separated by role:
-     - **Farmer:** Home, My Products, Orders, Stock, Profile.
-     - **Buyer:** Home, Explore, Cart, Orders, Profile.
-     - **Bulk Buyer:** Home, Find Farmers, Requirements, Orders, Profile.
-   - Design system inspired directly by **GoParm** reference:
-     - Soft organic green palette (`#4D8B38`, `#28552B`, `#E8F4D9`, `#F7F9F2`).
-     - Card-based layouts with rounded corners (16–24px radius).
-     - Clean metric badges, weather/harvest indicators, and stock list item rows.
-     - Native header bars and safe-area insets.
-4. **Admin Dashboard (`/admin-web` or existing `/admin`):**
-   - Lightweight React web interface dedicated to platform management.
+1. **Desktop Squeezed into Mobile**:
+   - Many pages (`/farmer/dashboard`, `/buyer/dashboard`, `/bulk-buyer/dashboard`) currently use multi-column CSS grids (`grid-cols-1 md:grid-cols-4`) without app-like mobile spacing, padding, or card hierarchy.
+2. **Missing Bottom Navigation in Bulk Buyer and Admin**:
+   - When a bulk buyer opens the platform on a phone, there is no bottom navigation bar, forcing reliance on a desktop hamburger drawer.
+3. **Inconsistent Navigation Tabs**:
+   - Farmer mobile navigation is missing the vital **Stock** tab.
+   - Buyer mobile navigation is missing the **Cart** tab.
+4. **Lack of Mobile-Native Micro-Interactions**:
+   - No reactive stock increment/decrement steppers (`+` / `-` buttons updating inventory instantly).
+   - No bottom sheets for filters, quantity selection, or farm profile previews.
+   - Headers on mobile are traditional website headers rather than compact app bars with contextual back buttons and page titles.
+5. **Color System Inconsistency**:
+   - The primary green is currently `#2F6B3F` (forest green) instead of the warmer, modern agricultural `#4D8B38` (GoParm green) with `#F7F9F2` background.
 
 ---
 
-## 7. Final Implementation Priority Order
+## 6. Backend & Database Gaps
 
-1. **Phase 1: Architecture & Project Tracking Setup** (Audit + Checklist).
-2. **Phase 2: Mobile Workspace Foundation** (`/mobile` with Expo, Expo Router, TypeScript, GoParm Theme & Base Components).
-3. **Phase 3: Backend REST API Service** (`/server` with Express, JWT auth, Drizzle ORM PostgreSQL connection).
-4. **Phase 4: Mobile Authentication & Role Selection** (Buyer/Farmer/Bulk Buyer onboarding).
-5. **Phase 5: Farmer Mobile Experience** (Dashboard, Crop Catalog, Add/Edit Produce, GoParm-style Stock Screen).
-6. **Phase 6: Buyer Mobile Marketplace** (Home Feed, Produce Search, Farm Details, Cart, Order Request).
-7. **Phase 7: Order Management & Stock Reservation** (Real-time order statuses, transactions, stock protection).
-8. **Phase 8: Bulk Buyer Module** (Post Requirements, Match Explorer, Offer Handling).
-9. **Phase 9: Admin Management** (Verification, Suspensions, Content Moderation).
-10. **Phase 10: Academic / College Documentation** (SRS, ER Diagrams, Architecture Diagrams, Test Reports).
+1. **Missing Inventory / Stock Update Endpoint**:
+   - While `PUT /api/products/[id]` exists, a dedicated fast endpoint (`PATCH /api/products/[id]/stock` or `/api/inventory/adjust`) with atomic increment/decrement and inventory log auditing is missing.
+2. **Farmer Offers UI & Workflow**:
+   - In the database schema, `bulkOffers` exists, but farmers need a screen inside `/farmer/bulk-requests` to submit bids directly to commercial buyers.
+3. **Missing PWA Infrastructure**:
+   - Missing `manifest.webmanifest` / `manifest.json`.
+   - Missing high-resolution app icons (192x192, 512x512) and Apple Touch Icons.
+   - Missing viewport meta configuration for standalone PWA mode.
+
+---
+
+## 7. Recommended App-Like Web Architecture
+
+```mermaid
+graph TD
+    subgraph Client Device Layer
+        MOB_BRW["📱 Mobile Browser (Chrome/Safari)<br/>Full-Screen App-Like Layout + Bottom Nav"]
+        PWA["📲 Installed PWA (Standalone Mode)<br/>Offline Cache + Splash Screen"]
+        DESK["💻 Desktop Browser<br/>Sidebar Layout + Wide Responsive Grid"]
+    end
+
+    subgraph Responsive UI Core (farmconnect)
+        SHELL["🛡️ AppShell & Role Layouts<br/>Adaptive: Mobile Bottom Bar vs Desktop Sidebar"]
+        DESIGN["🎨 GoParm Design System<br/>#4D8B38 Palette, Touch Steppers, Bottom Sheets"]
+        ZUSTAND["⚡ Reactive Client Stores<br/>Auth, Cart, UI, Wishlist, Stock"]
+    end
+
+    subgraph Full-Stack Next.js 14 Engine
+        PAGES["📄 App Router Routes (54 Routes)<br/>/farmer, /buyer, /bulk-buyer, /admin"]
+        API["⚡ Next.js API Route Handlers<br/>Auth, Products, Orders, Stock, Matching"]
+        GUARD["🔐 Session Middleware & Role Guard"]
+    end
+
+    subgraph Data & Persistence
+        DRIZZLE["⚡ Drizzle ORM Type-Safe Client"]
+        PG[("🐘 PostgreSQL Database<br/>ACID Concurrency Locking")]
+    end
+
+    MOB_BRW --> SHELL
+    PWA --> SHELL
+    DESK --> SHELL
+
+    SHELL --> DESIGN
+    SHELL --> ZUSTAND
+    SHELL --> PAGES
+
+    PAGES --> API
+    API --> GUARD
+    GUARD --> DRIZZLE
+    DRIZZLE --> PG
+```
+
+---
+
+## 8. Mobile & Desktop UI Migration Plan
+
+### 8.1 GoParm Design Tokens Integration
+Update `tailwind.config.ts` and `app/globals.css` with the exact GoParm tokens:
+- **Primary Green:** `#4D8B38` (Action buttons, active tabs, harvest status)
+- **Dark Green:** `#28552B` (Brand headers, emphasis, primary text highlights)
+- **Light Green:** `#E8F4D9` (Card badges, selected states, icon backgrounds)
+- **Background Cream:** `#F7F9F2` (Mobile viewport backdrop, card contrast)
+- **Cards & Surfaces:** `#FFFFFF` (Card tiles, bottom sheets, navigation bars)
+- **Primary Text:** `#202A20` (High readability in sunlight)
+- **Secondary Text:** `#788276` (Meta information, timestamps, units)
+- **Borders:** `#E7EDE2` (Crisp separation without heavy visual weight)
+
+### 8.2 Standardized Role Navigation Structure
+
+#### 1. Farmer Portal
+- **Mobile Bottom Navigation:**
+  - `Home` (`/farmer/dashboard`)
+  - `My Products` (`/farmer/products`)
+  - `Orders` (`/farmer/orders`)
+  - `Stock` (`/farmer/stock` — **New Screen**)
+  - `Profile` (`/farmer/farm`)
+- **Desktop Layout:** Sidebar navigation with the same 5 core links + Analytics + Settings.
+
+#### 2. Individual Buyer Portal
+- **Mobile Bottom Navigation:**
+  - `Home` (`/buyer/dashboard`)
+  - `Explore` (`/buyer/explore`)
+  - `Cart` (`/buyer/cart` — with live item count badge)
+  - `Orders` (`/buyer/orders`)
+  - `Profile` (`/buyer/profile`)
+- **Desktop Layout:** Top navigation + Sidebar with quick links, search, and persistent cart icon.
+
+#### 3. Bulk Buyer Portal
+- **Mobile Bottom Navigation:**
+  - `Home` (`/bulk-buyer/dashboard`)
+  - `Find Farmers` (`/bulk-buyer/matches`)
+  - `Requirements` (`/bulk-buyer/requirements`)
+  - `Orders` (`/bulk-buyer/orders`)
+  - `Profile` (`/bulk-buyer/profile`)
+- **Desktop Layout:** Professional commercial sidebar with requirement analytics.
+
+#### 4. Administrator Console
+- **Mobile:** App-like header with role badge + horizontal scrollable navigation chips + bottom quick actions.
+- **Desktop:** Comprehensive administrative sidebar (Verification, Users, Products, Orders, Reports).
+
+---
+
+## 9. Recommended Folder Structure
+
+Maintain the clean existing structure while adding dedicated components for the app-like transformation:
+
+```
+farmconnect/
+├── app/
+│   ├── (auth)/                 Login, Register, Password Reset
+│   ├── (marketing)/            Public Landing Pages
+│   ├── farmer/
+│   │   ├── dashboard/          GoParm Hero Farm Dashboard
+│   │   ├── products/           My Products list & Add/Edit
+│   │   ├── stock/              [NEW] GoParm Reactive Stock Management
+│   │   ├── orders/             Order lifecycle management
+│   │   ├── bulk-requests/      View bulk procurement & bid
+│   │   └── farm/               Farm profile & photographs
+│   ├── buyer/
+│   │   ├── dashboard/          App-like Buyer Home
+│   │   ├── explore/            Discovery with bottom-sheet filters
+│   │   ├── cart/               Mobile shopping cart & checkout
+│   │   ├── orders/             5-Step visual timeline
+│   │   └── profile/            Buyer settings & addresses
+│   ├── bulk-buyer/             Commercial procurement & matching
+│   ├── admin/                  KYC verification & user moderation
+│   ├── api/                    Next.js API route handlers
+│   └── manifest.ts             [NEW] PWA Web App Manifest
+├── components/
+│   ├── app/                    [NEW] App-like mobile navigation & headers
+│   │   ├── MobileBottomNav.tsx
+│   │   ├── MobileHeader.tsx
+│   │   ├── MobileBottomSheet.tsx
+│   │   └── SafeView.tsx
+│   ├── farmer/
+│   │   ├── FarmHeroCard.tsx    [NEW] GoParm Farm Hero component
+│   │   ├── StockStepper.tsx    [NEW] Reactive stock adjustment buttons
+│   │   └── HarvestCard.tsx     [NEW] Harvest readiness badge
+│   ├── products/               Product cards, grids & skeletons
+│   ├── ui/                     Radix + Tailwind components
+│   └── layout/                 Desktop sidebars & headers
+├── lib/
+│   ├── auth.ts                 Session token & cookies
+│   ├── matching.ts             5-factor matching algorithm
+│   └── validations.ts          Zod schemas
+├── store/                      Zustand stores (auth, cart, ui, stock)
+├── db/                         Drizzle schemas & PostgreSQL client
+└── public/
+    └── icons/                  [NEW] PWA icons (192x192, 512x512)
+```
+
+---
+
+## 10. Development Roadmap (Sequential Phases)
+
+To ensure smooth, controlled, and verifiable execution:
+
+1. **Stage 1 — Design System & Mobile App Shell (Phase 2 & 12)**:
+   - Configure GoParm color tokens in Tailwind.
+   - Build unified `MobileBottomNav` and compact `MobileHeader` components.
+   - Update role layouts (`farmer/layout.tsx`, `buyer/layout.tsx`, `bulk-buyer/layout.tsx`, `admin/layout.tsx`).
+2. **Stage 2 — Farmer Dashboard & Stock Management (Phase 4 & 5)**:
+   - Create the GoParm Farm Hero Card (farm name, location, weather/harvest badge, quick actions).
+   - Create `/farmer/stock` page with instant reactive increment/decrement steppers (`StockStepper`).
+   - Create API route for instant stock updates (`PATCH /api/products/[id]/status` or stock adjustment).
+3. **Stage 3 — Buyer Marketplace App-Like Experience (Phase 6 & 7)**:
+   - Redesign Buyer Home with location picker, category shortcuts, and Fresh Today feed.
+   - Add mobile bottom-sheet filters to `/buyer/explore`.
+   - Add sticky mobile bottom action bar to `/buyer/products/[id]`.
+   - Update `/buyer/layout.tsx` to include `Cart` in the mobile bottom bar with live counter.
+4. **Stage 4 — Bulk Buyer Mobile Bottom Navigation & Bidding (Phase 8)**:
+   - Implement mobile bottom navigation for Bulk Buyers.
+   - Enable farmers to view and bid on bulk requests (`/farmer/bulk-requests`).
+5. **Stage 5 — Admin Console Mobile Optimization (Phase 9)**:
+   - Add mobile-friendly verification action cards.
+6. **Stage 6 — PWA Implementation (Phase 11)**:
+   - Create `app/manifest.ts` with standalone display mode.
+   - Generate app icons in `public/icons/`.
+   - Configure safe-area meta tags in `app/layout.tsx`.
+7. **Stage 7 — End-to-End Verification & Documentation (Phase 13 & 15)**:
+   - Verify TypeScript compilation (`npx tsc --noEmit`).
+   - Verify Next.js production build (`npm run build`).
+   - Update `docs/development-checklist.md` with verified statuses.
+
+---
+
+## 11. Technical Risks & Mitigation
+
+| Identified Risk | Impact | Mitigation Strategy |
+|---|---|---|
+| **Layout stretching on Desktop** | UI looks unpolished on large monitors | Enforce `max-w-7xl mx-auto` and desktop sidebar layouts. Mobile components stay responsive. |
+| **Mobile viewport clipping & notch issues** | Content hidden behind bottom bar or notch | Implement CSS `env(safe-area-inset-bottom)` and bottom padding (`pb-20 lg:pb-6`). |
+| **Offline database fallback** | Demo accounts fail if Postgres connection drops | Preserve existing mock/demo fallback mechanism in all API route handlers and Zustand stores. |
+| **Overselling / Concurrency during order checkout** | Multiple buyers order same stock | Leverage existing Drizzle atomic transactions with SQL locks (`FOR UPDATE`). |
+
+---
+*End of Complete Project Audit*

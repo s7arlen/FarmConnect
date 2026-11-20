@@ -11,6 +11,8 @@ import {
   Search,
   Boxes,
   TrendingUp,
+  Sparkles,
+  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,80 +23,123 @@ import { useAuthStore } from "@/store/authStore";
 import { DEMO_PRODUCTS, DEMO_FARMERS, DEMO_ORDERS } from "@/data/demo";
 import { formatCurrency, getOrderStatusLabel, getOrderStatusColor, formatRelativeTime } from "@/lib/utils";
 
+const CATEGORY_SHORTCUTS = [
+  { name: "Vegetables", emoji: "🥦", slug: "vegetables", count: 18 },
+  { name: "Fruits", emoji: "🥭", slug: "fruits", count: 12 },
+  { name: "Grains", emoji: "🌾", slug: "grains", count: 8 },
+  { name: "Dairy", emoji: "🥛", slug: "dairy", count: 6 },
+  { name: "Herbs", emoji: "🌿", slug: "herbs", count: 5 },
+];
+
 export default function BuyerDashboardPage() {
   const user = useAuthStore((s) => s.user);
-  const name = user?.name?.split(" ")[0] || "there";
+  const name = user?.name?.split(" ")[0] || "Friend";
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
-  const stats = [
-    { label: "Orders", value: "3", icon: ShoppingBag, color: "text-blue-600 bg-blue-50" },
-    { label: "Saved", value: "12", icon: Heart, color: "text-rose-600 bg-rose-50" },
-    { label: "Farmers", value: "4", icon: MapPin, color: "text-amber-600 bg-amber-50" },
-    { label: "Saved ₹", value: "₹480", icon: TrendingUp, color: "text-brand-green bg-brand-light" },
-  ];
+  // Check if there are active orders
+  const activeOrders = DEMO_ORDERS.filter((o) => o.status !== "COMPLETED" && o.status !== "CANCELLED");
 
   return (
-    <div className="p-4 md:p-8 max-w-7xl">
-      {/* Greeting */}
+    <div className="p-4 md:p-8 max-w-7xl mx-auto pb-safe">
+      {/* App Header Greeting & Location */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
+        className="flex items-center justify-between mb-5 flex-wrap gap-2"
       >
-        <p className="text-brand-muted text-sm">{greeting},</p>
-        <h1 className="text-3xl font-bold text-brand-text">{name} 👋</h1>
-        <p className="text-brand-muted text-sm mt-1 flex items-center gap-1">
-          <MapPin className="w-3.5 h-3.5" />
-          Mangalore, Karnataka
-        </p>
+        <div>
+          <p className="text-xs font-semibold text-brand-muted tracking-tight">{greeting},</p>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight">
+            {name} 👋
+          </h1>
+        </div>
+
+        {/* Location Selector Pill */}
+        <div className="flex items-center gap-1.5 bg-white border border-brand-border px-3 py-1.5 rounded-full shadow-2xs">
+          <MapPin className="w-3.5 h-3.5 text-brand-green flex-shrink-0" />
+          <span className="text-xs font-bold text-brand-dark">Mangalore, Karnataka</span>
+          <span className="text-[10px] text-brand-muted font-medium">(Within 15 km)</span>
+        </div>
       </motion.div>
 
-      {/* Search */}
-      <Link href="/buyer/explore" className="block mb-8">
-        <div className="flex items-center gap-3 bg-white border border-brand-border rounded-xl px-4 py-3 hover:border-brand-green transition-colors">
-          <Search className="w-4 h-4 text-brand-muted" />
-          <span className="text-brand-muted text-sm">Search vegetables, fruits, grains...</span>
+      {/* Quick App Search Bar */}
+      <Link href="/buyer/explore" className="block mb-6 group">
+        <div className="flex items-center gap-3 bg-white border border-brand-border group-hover:border-brand-green/60 rounded-2xl px-4 py-3.5 shadow-2xs transition-all">
+          <Search className="w-4 h-4 text-brand-green stroke-[2.2]" />
+          <span className="text-brand-muted text-sm font-medium">Search fresh vegetables, fruits, grains...</span>
         </div>
       </Link>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
-        {stats.map((stat, i) => {
-          const Icon = stat.icon;
-          return (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.07 }}
-            >
-              <Card>
-                <CardContent className="p-4 flex items-center gap-3">
-                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${stat.color}`}>
-                    <Icon className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <p className="text-xl font-bold text-brand-text">{stat.value}</p>
-                    <p className="text-xs text-brand-muted">{stat.label}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          );
-        })}
-      </div>
+      {/* Active Order Banner (if any) */}
+      {activeOrders.length > 0 && (
+        <div className="mb-6">
+          <Link href={`/buyer/orders/${activeOrders[0].id}`}>
+            <div className="bg-gradient-to-r from-brand-dark to-brand-green text-white rounded-2xl p-4 shadow-sm flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-brand-light">
+                    Active Order in Progress
+                  </span>
+                </div>
+                <p className="text-sm font-bold truncate">
+                  {activeOrders[0].farmName} • {activeOrders[0].items?.length || 1} items
+                </p>
+                <p className="text-xs text-white/80 mt-0.5">
+                  Status: {getOrderStatusLabel(activeOrders[0].status)}
+                </p>
+              </div>
+              <ChevronRight className="w-5 h-5 text-white/80 flex-shrink-0" />
+            </div>
+          </Link>
+        </div>
+      )}
 
-      {/* Fresh Today */}
-      <section className="mb-10">
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-xl font-bold text-brand-text">Fresh Today</h2>
+      {/* Category Shortcuts Horizontal Carousel */}
+      <section className="mb-8">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-base font-extrabold text-brand-dark">Categories</h2>
+          <Link href="/buyer/explore" className="text-xs font-bold text-brand-green hover:underline">
+            See All
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-5 gap-2.5 sm:gap-4">
+          {CATEGORY_SHORTCUTS.map((cat) => (
+            <Link
+              key={cat.slug}
+              href={`/buyer/explore?category=${cat.slug}`}
+              className="flex flex-col items-center justify-center p-3 bg-white rounded-2xl border border-brand-border/80 hover:border-brand-green/50 hover:bg-brand-light/20 transition-all text-center group shadow-2xs select-none"
+            >
+              <span className="text-2xl sm:text-3xl mb-1 group-hover:scale-110 transition-transform">
+                {cat.emoji}
+              </span>
+              <span className="text-xs font-bold text-brand-dark tracking-tight leading-tight truncate w-full">
+                {cat.name}
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Fresh Today Produce Feed */}
+      <section className="mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-lg font-extrabold text-brand-dark flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-amber-500 fill-amber-500" />
+              Fresh Today
+            </h2>
+            <p className="text-xs text-brand-muted">Harvested within the last 24 hours</p>
+          </div>
           <Link href="/buyer/explore">
-            <Button variant="ghost" size="sm" className="gap-1 text-brand-green">
-              View All <ArrowRight className="w-3.5 h-3.5" />
+            <Button variant="ghost" size="sm" className="gap-1 text-brand-green font-bold text-xs h-8">
+              Explore All <ArrowRight className="w-3.5 h-3.5" />
             </Button>
           </Link>
         </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {DEMO_PRODUCTS.slice(0, 4).map((product, i) => (
             <ProductCard key={product.id} product={product} index={i} />
@@ -102,16 +147,20 @@ export default function BuyerDashboardPage() {
         </div>
       </section>
 
-      {/* Nearby Farmers */}
-      <section className="mb-10">
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-xl font-bold text-brand-text">Nearby Farmers</h2>
+      {/* Nearby Verified Farmers Feed */}
+      <section className="mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-lg font-extrabold text-brand-dark">Nearby Local Farms</h2>
+            <p className="text-xs text-brand-muted">Verified smallholder farmers in your region</p>
+          </div>
           <Link href="/buyer/farmers">
-            <Button variant="ghost" size="sm" className="gap-1 text-brand-green">
-              View All <ArrowRight className="w-3.5 h-3.5" />
+            <Button variant="ghost" size="sm" className="gap-1 text-brand-green font-bold text-xs h-8">
+              All Farms <ArrowRight className="w-3.5 h-3.5" />
             </Button>
           </Link>
         </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {DEMO_FARMERS.slice(0, 3).map((farmer, i) => (
             <FarmerCard key={farmer.id} farmer={farmer} index={i} />
@@ -119,62 +168,30 @@ export default function BuyerDashboardPage() {
         </div>
       </section>
 
-      {/* Recent Orders */}
-      <section className="mb-10">
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-xl font-bold text-brand-text">Recent Orders</h2>
-          <Link href="/buyer/orders">
-            <Button variant="ghost" size="sm" className="gap-1 text-brand-green">
-              View All <ArrowRight className="w-3.5 h-3.5" />
-            </Button>
-          </Link>
-        </div>
-        <div className="space-y-3">
-          {DEMO_ORDERS.map((order) => (
-            <Link key={order.id} href={`/buyer/orders/${order.id}`}>
-              <Card className="hover:border-brand-green/50 transition-colors">
-                <CardContent className="p-4 flex items-center gap-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <p className="font-semibold text-brand-text text-sm truncate">
-                        {order.farmName}
-                      </p>
-                      <Badge className={getOrderStatusColor(order.status)} variant="secondary">
-                        {getOrderStatusLabel(order.status)}
-                      </Badge>
-                    </div>
-                    <p className="text-xs text-brand-muted">
-                      {order.items?.length || 0} item(s) · {formatRelativeTime(order.createdAt)}
-                    </p>
-                  </div>
-                  <div className="text-right flex-shrink-0">
-                    <p className="font-bold text-brand-text">{formatCurrency(order.totalAmount)}</p>
-                    <ChevronRightIcon />
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Bulk Buying CTA */}
+      {/* Bulk Commercial Procurement Callout */}
       <section>
-        <Card className="bg-brand-dark text-white border-0 overflow-hidden relative">
-          <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-brand-green to-transparent" />
-          <CardContent className="p-6 relative z-10">
-            <div className="flex items-start justify-between gap-4">
+        <Card className="bg-brand-dark text-white border-0 overflow-hidden relative rounded-2xl shadow-sm">
+          <div className="absolute inset-0 opacity-15 bg-gradient-to-br from-brand-green via-transparent to-black" />
+          <CardContent className="p-5 sm:p-6 relative z-10">
+            <div className="flex items-center justify-between gap-4 flex-wrap sm:flex-nowrap">
               <div>
-                <Boxes className="w-8 h-8 text-brand-light mb-3" />
-                <h3 className="text-lg font-bold mb-1">Need large quantities?</h3>
-                <p className="text-white/60 text-sm max-w-sm">
-                  Post your bulk requirement and find matching farmers automatically.
-                  Perfect for restaurants, hotels, and institutions.
+                <div className="flex items-center gap-2 mb-2">
+                  <Boxes className="w-5 h-5 text-brand-light" />
+                  <span className="text-xs uppercase font-extrabold tracking-wider text-brand-light">
+                    Commercial Bulk Procurement
+                  </span>
+                </div>
+                <h3 className="text-base sm:text-lg font-extrabold mb-1">
+                  Buying for a Restaurant, Hostel or Supermarket?
+                </h3>
+                <p className="text-white/70 text-xs max-w-md">
+                  Post requirements in bulk (100 kg+) and get matched algorithmically with verified farmers at direct-from-farm pricing.
                 </p>
               </div>
+
               <Link href="/buyer/bulk" className="flex-shrink-0">
-                <Button variant="secondary" size="sm" className="gap-1">
-                  Get Started <ArrowRight className="w-3.5 h-3.5" />
+                <Button size="sm" className="bg-brand-green hover:bg-emerald-600 text-white font-bold text-xs h-9 px-4 rounded-xl shadow-xs">
+                  Post Bulk Request
                 </Button>
               </Link>
             </div>
@@ -183,8 +200,4 @@ export default function BuyerDashboardPage() {
       </section>
     </div>
   );
-}
-
-function ChevronRightIcon() {
-  return <ArrowRight className="w-4 h-4 text-brand-muted mt-0.5" />;
 }

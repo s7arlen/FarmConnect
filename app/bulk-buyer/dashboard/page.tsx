@@ -19,7 +19,7 @@ export default function BulkBuyerDashboardPage() {
   ];
 
   return (
-    <div className="p-4 md:p-8 max-w-5xl">
+    <div className="p-4 md:p-8 max-w-5xl mx-auto pb-safe">
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
         <h1 className="text-3xl font-bold text-brand-text">Welcome, {name.split(" ")[0]} 📦</h1>
         <p className="text-brand-muted mt-1">Manage bulk procurement from local farms.</p>

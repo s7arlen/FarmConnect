@@ -2,9 +2,15 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";
 
-// Route → allowed roles
+// Specific protected routes → allowed roles
 const PROTECTED_ROUTES: Record<string, string[]> = {
-  "/buyer": ["BUYER", "BULK_BUYER"],
+  "/buyer/dashboard": ["BUYER", "BULK_BUYER"],
+  "/buyer/cart": ["BUYER", "BULK_BUYER"],
+  "/buyer/checkout": ["BUYER", "BULK_BUYER"],
+  "/buyer/orders": ["BUYER", "BULK_BUYER"],
+  "/buyer/profile": ["BUYER", "BULK_BUYER"],
+  "/buyer/settings": ["BUYER", "BULK_BUYER"],
+  "/buyer/wishlist": ["BUYER", "BULK_BUYER"],
   "/farmer": ["FARMER"],
   "/bulk-buyer": ["BULK_BUYER"],
   "/admin": ["ADMIN"],
@@ -18,6 +24,9 @@ const PUBLIC_PATHS = [
   "/contact",
   "/explore",
   "/farmers",
+  "/buyer/explore",
+  "/buyer/farmers",
+  "/buyer/products",
   "/login",
   "/register",
   "/forgot-password",
@@ -52,6 +61,15 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Check if current route requires protection
+  const isProtected = Object.keys(PROTECTED_ROUTES).some(
+    (prefix) => pathname === prefix || pathname.startsWith(prefix + "/")
+  );
+
+  if (!isProtected) {
+    return NextResponse.next();
+  }
+
   // Get session
   const session = await getSessionFromRequest(request);
 
@@ -64,7 +82,7 @@ export async function middleware(request: NextRequest) {
 
   // Role-based route checking
   for (const [prefix, allowedRoles] of Object.entries(PROTECTED_ROUTES)) {
-    if (pathname.startsWith(prefix)) {
+    if (pathname === prefix || pathname.startsWith(prefix + "/")) {
       if (!allowedRoles.includes(session.role)) {
         // Redirect to their appropriate dashboard
         const dashboardRoutes: Record<string, string> = {

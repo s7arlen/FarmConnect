@@ -90,7 +90,15 @@
 
   /* Dashboard layout */
   .dashboard-main {
-    @apply flex-1 overflow-auto bg-[#F8F6EF];
+    @apply flex-1 overflow-auto bg-[#F7F9F2];
+  }
+
+  /* Mobile App-like Safe Area padding */
+  .pb-safe {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 5rem);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
   }
 }
 

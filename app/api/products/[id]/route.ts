@@ -160,6 +160,101 @@ export async function PUT(
   }
 }
 
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getSessionFromRequest(request);
+    const { authorized, error } = requireRole(session, ["FARMER", "ADMIN"]);
+
+    if (!authorized) {
+      return NextResponse.json({ error }, { status: 403 });
+    }
+
+    const { id } = params;
+    const body = await request.json();
+    const { quantity, delta, status } = body;
+
+    try {
+      const { db } = await import("@/db");
+      const { products, farmers } = await import("@/db/schema");
+      const { eq, and } = await import("drizzle-orm");
+
+      // Verify ownership if FARMER
+      if (session!.role === "FARMER") {
+        const [farmer] = await db
+          .select()
+          .from(farmers)
+          .where(eq(farmers.userId, session!.userId));
+
+        if (!farmer) {
+          return NextResponse.json({ error: "Farm profile not found" }, { status: 404 });
+        }
+
+        const [existing] = await db
+          .select()
+          .from(products)
+          .where(and(eq(products.id, id), eq(products.farmerId, farmer.id)));
+
+        if (!existing) {
+          return NextResponse.json(
+            { error: "Product not found or unauthorized" },
+            { status: 403 }
+          );
+        }
+
+        let newQty = existing.quantity;
+        if (typeof quantity === "number") {
+          newQty = Math.max(0, quantity);
+        } else if (typeof delta === "number") {
+          newQty = Math.max(0, existing.quantity + delta);
+        }
+
+        const computedStatus =
+          status || (newQty === 0 ? "UNAVAILABLE" : newQty < 30 ? "LIMITED" : "AVAILABLE");
+
+        const [updated] = await db
+          .update(products)
+          .set({
+            quantity: newQty,
+            status: computedStatus,
+            updatedAt: new Date(),
+          })
+          .where(eq(products.id, id))
+          .returning();
+
+        return NextResponse.json({ product: updated, success: true });
+      }
+
+      // Admin update
+      const [updated] = await db
+        .update(products)
+        .set({
+          ...(typeof quantity === "number" && { quantity: Math.max(0, quantity) }),
+          ...(status && { status }),
+          updatedAt: new Date(),
+        })
+        .where(eq(products.id, id))
+        .returning();
+
+      return NextResponse.json({ product: updated, success: true });
+    } catch {
+      // Demo fallback
+      let newQty = typeof quantity === "number" ? Math.max(0, quantity) : 100;
+      if (typeof delta === "number") newQty = Math.max(0, newQty + delta);
+      const computedStatus = status || (newQty === 0 ? "UNAVAILABLE" : newQty < 30 ? "LIMITED" : "AVAILABLE");
+      return NextResponse.json({
+        product: { id, quantity: newQty, status: computedStatus, updatedAt: new Date() },
+        success: true,
+        message: "Updated in demo mode",
+      });
+    }
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to adjust stock" }, { status: 500 });
+  }
+}
+
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }

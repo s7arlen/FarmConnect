@@ -7,16 +7,18 @@ import {
   Package,
   ClipboardList,
   CheckCircle,
-  TrendingUp,
   Plus,
   ArrowRight,
-  IndianRupee,
+  Layers,
+  ChevronRight,
+  TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import FarmHeroCard from "@/components/farmer/FarmHeroCard";
 import { useAuthStore } from "@/store/authStore";
-import { DEMO_PRODUCTS, DEMO_ORDERS } from "@/data/demo";
+import { DEMO_PRODUCTS, DEMO_ORDERS, DEMO_FARMERS } from "@/data/demo";
 import {
   formatCurrency,
   getOrderStatusLabel,
@@ -26,191 +28,164 @@ import {
 
 export default function FarmerDashboardPage() {
   const user = useAuthStore((s) => s.user);
-  const name = user?.name?.split(" ")[0] || "Farmer";
+  const farmerId = user?.farmerId || "demo-farmer-1";
 
-  const farmerId = "demo-farmer-1"; // In production: from session.farmerId
+  const farmerInfo = DEMO_FARMERS.find((f) => f.id === farmerId) || {
+    id: "demo-farmer-1",
+    farmName: "Green Valley Organic Farm",
+    ownerName: user?.name || "Joseph D'Souza",
+    address: "Bantwal, Dakshina Kannada",
+    verified: true,
+    rating: 4.8,
+  };
+
   const products = DEMO_PRODUCTS.filter((p) => p.farmerId === farmerId);
   const orders = DEMO_ORDERS.filter((o) => o.farmerId === farmerId);
-  const pendingOrders = orders.filter((o) => o.status === "REQUESTED");
+  const pendingOrders = orders.filter((o) => o.status === "REQUESTED" || o.status === "PREPARING");
   const completedOrders = orders.filter((o) => o.status === "COMPLETED");
   const totalSales = completedOrders.reduce((sum, o) => sum + o.totalAmount, 0);
-
-  const stats = [
-    {
-      label: "Products",
-      value: products.length,
-      icon: Package,
-      color: "text-blue-600 bg-blue-50",
-      href: "/farmer/products",
-    },
-    {
-      label: "Pending Orders",
-      value: pendingOrders.length,
-      icon: ClipboardList,
-      color: "text-amber-600 bg-amber-50",
-      href: "/farmer/orders",
-    },
-    {
-      label: "Completed",
-      value: completedOrders.length,
-      icon: CheckCircle,
-      color: "text-brand-green bg-brand-light",
-      href: "/farmer/orders",
-    },
-    {
-      label: "Total Sales",
-      value: formatCurrency(totalSales),
-      icon: IndianRupee,
-      color: "text-purple-600 bg-purple-50",
-      href: "/farmer/analytics",
-    },
-  ];
+  const totalStockUnits = products.reduce((sum, p) => sum + p.quantity, 0);
 
   return (
-    <div className="p-4 md:p-8 max-w-7xl">
+    <div className="p-4 md:p-8 max-w-6xl mx-auto pb-safe">
+      {/* GoParm-Inspired Farm Hero Card */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex items-start justify-between mb-8 flex-wrap gap-3"
+        transition={{ duration: 0.3 }}
       >
-        <div>
-          <p className="text-brand-muted text-sm">Good day,</p>
-          <h1 className="text-3xl font-bold text-brand-text">{name} 🌾</h1>
-        </div>
-        <Link href="/farmer/products/add">
-          <Button className="gap-2">
-            <Plus className="w-4 h-4" />
-            Add Produce
-          </Button>
-        </Link>
+        <FarmHeroCard
+          farmerName={user?.name || farmerInfo.ownerName || "Joseph D'Souza"}
+          farmName={farmerInfo.farmName}
+          location={farmerInfo.address || "Bantwal, Dakshina Kannada"}
+          verified={farmerInfo.verified}
+          activeProductsCount={products.length}
+          totalStockUnits={totalStockUnits}
+          pendingOrdersCount={pendingOrders.length}
+          completedOrdersCount={completedOrders.length}
+          totalRevenue={totalSales}
+        />
       </motion.div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
-        {stats.map((stat, i) => {
-          const Icon = stat.icon;
-          return (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.07 }}
-            >
-              <Link href={stat.href}>
-                <Card className="hover:border-brand-green/50 transition-colors cursor-pointer">
-                  <CardContent className="p-4 flex items-center gap-3">
-                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${stat.color}`}>
-                      <Icon className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <p className="text-xl font-bold text-brand-text leading-tight">{stat.value}</p>
-                      <p className="text-xs text-brand-muted">{stat.label}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            </motion.div>
-          );
-        })}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Recent Orders */}
-        <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-brand-text">Recent Orders</h2>
+      {/* Main Dashboard Sections Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Recent Orders Section */}
+        <section className="bg-white rounded-2xl border border-brand-border p-4 shadow-2xs">
+          <div className="flex items-center justify-between mb-3.5">
+            <div>
+              <h2 className="text-base font-extrabold text-brand-dark">Active & Recent Orders</h2>
+              <p className="text-xs text-brand-muted">Incoming buyer purchase requests</p>
+            </div>
             <Link href="/farmer/orders">
-              <Button variant="ghost" size="sm" className="gap-1 text-brand-green">
+              <Button variant="ghost" size="sm" className="gap-1 text-brand-green font-semibold text-xs h-8">
                 View All <ArrowRight className="w-3.5 h-3.5" />
               </Button>
             </Link>
           </div>
+
           {orders.length === 0 ? (
-            <Card>
-              <CardContent className="p-8 text-center text-brand-muted text-sm">
-                No orders yet
-              </CardContent>
-            </Card>
+            <div className="py-8 text-center text-brand-muted text-xs bg-brand-cream/40 rounded-xl">
+              No orders received yet.
+            </div>
           ) : (
-            <div className="space-y-3">
-              {orders.slice(0, 5).map((order) => (
+            <div className="space-y-2.5">
+              {orders.slice(0, 4).map((order) => (
                 <Link key={order.id} href={`/farmer/orders/${order.id}`}>
-                  <Card className="hover:border-brand-green/50 transition-colors">
-                    <CardContent className="p-4 flex items-center justify-between gap-3">
+                  <div className="p-3 rounded-xl border border-brand-border/70 hover:border-brand-green/40 hover:bg-brand-cream/30 transition-all flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="font-bold text-sm text-brand-dark truncate">{order.buyerName}</p>
+                      <p className="text-xs text-brand-muted mt-0.5">
+                        {order.items?.length || 0} items • {formatRelativeTime(order.createdAt)}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 flex-shrink-0 text-right">
                       <div>
-                        <p className="font-semibold text-brand-text text-sm">{order.buyerName}</p>
-                        <p className="text-xs text-brand-muted">
-                          {order.items?.length || 0} item(s) · {formatRelativeTime(order.createdAt)}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <Badge className={getOrderStatusColor(order.status)} variant="secondary">
-                          {getOrderStatusLabel(order.status)}
-                        </Badge>
-                        <p className="font-bold text-brand-text text-sm">
+                        <p className="font-extrabold text-sm text-brand-dark">
                           {formatCurrency(order.totalAmount)}
                         </p>
+                        <Badge className={`${getOrderStatusColor(order.status)} text-[10px] py-0 px-2`} variant="secondary">
+                          {getOrderStatusLabel(order.status)}
+                        </Badge>
                       </div>
-                    </CardContent>
-                  </Card>
+                      <ChevronRight className="w-4 h-4 text-brand-muted" />
+                    </div>
+                  </div>
                 </Link>
               ))}
             </div>
           )}
         </section>
 
-        {/* Products */}
-        <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-brand-text">Your Produce</h2>
-            <Link href="/farmer/products">
-              <Button variant="ghost" size="sm" className="gap-1 text-brand-green">
-                Manage <ArrowRight className="w-3.5 h-3.5" />
+        {/* Live Produce & Quick Stock Section */}
+        <section className="bg-white rounded-2xl border border-brand-border p-4 shadow-2xs">
+          <div className="flex items-center justify-between mb-3.5">
+            <div>
+              <h2 className="text-base font-extrabold text-brand-dark">Farm Harvest Stock</h2>
+              <p className="text-xs text-brand-muted">Quick inventory overview</p>
+            </div>
+            <Link href="/farmer/stock">
+              <Button variant="ghost" size="sm" className="gap-1 text-brand-green font-semibold text-xs h-8">
+                Manage Stock <ArrowRight className="w-3.5 h-3.5" />
               </Button>
             </Link>
           </div>
+
           {products.length === 0 ? (
-            <Card>
-              <CardContent className="p-8 text-center">
-                <p className="text-brand-muted text-sm mb-3">No products listed yet.</p>
-                <Link href="/farmer/products/add">
-                  <Button size="sm" className="gap-2">
-                    <Plus className="w-3.5 h-3.5" />
-                    Add First Product
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
+            <div className="py-8 text-center text-brand-muted text-xs bg-brand-cream/40 rounded-xl">
+              No produce listed.{" "}
+              <Link href="/farmer/products/add" className="text-brand-green font-bold underline ml-1">
+                Add your first crop
+              </Link>
+            </div>
           ) : (
-            <div className="space-y-2">
-              {products.map((product) => (
-                <Card key={product.id}>
-                  <CardContent className="p-3 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-brand-light flex items-center justify-center text-lg flex-shrink-0">
-                      🌱
+            <div className="space-y-2.5">
+              {products.slice(0, 4).map((product) => {
+                const isOut = product.quantity === 0;
+                const isLow = product.quantity > 0 && product.quantity < 30;
+
+                return (
+                  <div
+                    key={product.id}
+                    className="p-3 rounded-xl border border-brand-border/70 flex items-center justify-between gap-3 bg-white"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-10 h-10 rounded-lg bg-brand-cream border border-brand-border overflow-hidden flex-shrink-0 flex items-center justify-center">
+                        {product.image ? (
+                          <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <Package className="w-5 h-5 text-brand-muted" />
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-bold text-sm text-brand-dark truncate">{product.name}</p>
+                        <p className="text-xs text-brand-muted mt-0.5">
+                          {formatCurrency(product.price)}/{product.unit} • {product.category}
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-brand-text text-sm truncate">
-                        {product.name}
-                      </p>
-                      <p className="text-xs text-brand-muted">
-                        {product.quantity} {product.unit} · {formatCurrency(product.price)}/{product.unit}
-                      </p>
+
+                    <div className="flex items-center gap-2 flex-shrink-0 text-right">
+                      <div>
+                        <span className="font-bold text-sm text-brand-dark tabular-nums">{product.quantity}</span>
+                        <span className="text-[10px] text-brand-muted ml-0.5">{product.unit}</span>
+                      </div>
+                      <Badge
+                        variant="secondary"
+                        className={
+                          isOut
+                            ? "bg-red-50 text-brand-error text-[10px]"
+                            : isLow
+                            ? "bg-amber-50 text-amber-700 text-[10px]"
+                            : "bg-brand-light text-brand-green text-[10px]"
+                        }
+                      >
+                        {isOut ? "Out" : isLow ? "Low" : "Ready"}
+                      </Badge>
                     </div>
-                    <Badge
-                      variant={
-                        product.status === "AVAILABLE"
-                          ? "default"
-                          : product.status === "LIMITED"
-                          ? "limited"
-                          : "unavailable"
-                      }
-                    >
-                      {product.status}
-                    </Badge>
-                  </CardContent>
-                </Card>
-              ))}
+                  </div>
+                );
+              })}
             </div>
           )}
         </section>
