@@ -1,21 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import {
   MapPin,
-  ShieldCheck,
+  CheckCircle2,
   Plus,
   Layers,
   ClipboardList,
-  Sparkles,
-  ArrowRight,
-  TrendingUp,
-  Package,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatCurrency, getInitials } from "@/lib/utils";
 
 interface FarmHeroCardProps {
@@ -45,105 +39,117 @@ export default function FarmHeroCard({
   completedOrdersCount,
   totalRevenue = 0,
 }: FarmHeroCardProps) {
+  const [imgError, setImgError] = useState(false);
+
   return (
-    <div className="relative rounded-2xl overflow-hidden border border-brand-border bg-white shadow-sm mb-6 transition-all">
-      {/* Visual Header Banner */}
-      <div className="relative min-h-[160px] sm:min-h-[175px] w-full bg-brand-dark overflow-hidden flex flex-col justify-between p-4">
+    <div className="relative rounded-2xl overflow-hidden border border-brand-border bg-white shadow-xs mb-6 transition-all">
+      {/* Visual Header Banner - Minimal App-Style */}
+      <div className="relative w-full bg-[#1B351B] overflow-hidden p-4 sm:p-5">
+        {/* Subtle Farmland Background Texture */}
         <img
           src={coverImageUrl}
           alt={farmName}
-          className="absolute inset-0 w-full h-full object-cover opacity-65 mix-blend-overlay scale-105 transition-transform duration-700"
+          className="absolute inset-0 w-full h-full object-cover opacity-35 mix-blend-overlay pointer-events-none"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/20 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#172E17]/95 via-[#1E3B1E]/80 to-[#172E17]/90 pointer-events-none" />
 
-        {/* Top Badges */}
-        <div className="relative z-10 flex items-center justify-between gap-2">
-          <Badge className="bg-brand-green/90 text-white backdrop-blur-sm border-0 gap-1.5 px-2.5 py-1 text-[11px] font-semibold">
-            <Sparkles className="w-3 h-3 text-amber-300" />
-            Harvest Season Active
-          </Badge>
-
-          {verified && (
-            <Badge className="bg-white/95 text-brand-dark backdrop-blur-sm border-0 gap-1 px-2.5 py-1 text-[11px] font-bold shadow-sm">
-              <ShieldCheck className="w-3.5 h-3.5 text-brand-green" />
-              Verified Farm
-            </Badge>
-          )}
-        </div>
-
-        {/* Farm & Farmer Identity over Cover */}
-        <div className="relative z-10 flex items-end justify-between pt-4">
-          <div className="flex items-center gap-3 min-w-0">
-            <Avatar className="w-13 h-13 sm:w-14 sm:h-14 ring-2 ring-white/90 shadow-md bg-white flex-shrink-0">
-              {avatarUrl && <AvatarImage src={avatarUrl} alt={farmerName} className="object-cover" />}
-              <AvatarFallback className="bg-brand-light text-brand-dark font-bold text-base">
+        {/* Farmer Identity Row */}
+        <div className="relative z-10 flex items-center gap-3.5">
+          {/* Avatar with fixed dimensions */}
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl ring-2 ring-white/20 shadow-md overflow-hidden bg-white/10 flex-shrink-0 flex items-center justify-center">
+            {avatarUrl && !imgError ? (
+              <img
+                src={avatarUrl}
+                alt={farmerName}
+                className="w-full h-full object-cover"
+                onError={() => setImgError(true)}
+              />
+            ) : (
+              <span className="text-white font-extrabold text-lg sm:text-xl">
                 {getInitials(farmerName)}
-              </AvatarFallback>
-            </Avatar>
+              </span>
+            )}
+          </div>
 
-            <div className="text-white drop-shadow-sm min-w-0">
-              <h2 className="text-base sm:text-xl font-bold leading-tight truncate">{farmName}</h2>
-              <p className="text-xs text-white/90 font-medium flex items-center gap-1.5 mt-0.5 truncate">
-                <span className="font-semibold">{farmerName}</span>
-                <span>•</span>
-                <span className="flex items-center gap-0.5 truncate">
-                  <MapPin className="w-3 h-3 text-brand-light flex-shrink-0" />
-                  <span className="truncate">{location}</span>
-                </span>
-              </p>
+          {/* Details */}
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <h2 className="text-base sm:text-lg font-bold text-white tracking-tight truncate leading-tight">
+                {farmName}
+              </h2>
+              {verified && (
+                <CheckCircle2
+                  className="w-4 h-4 text-emerald-400 flex-shrink-0"
+                  aria-label="Verified Farm"
+                />
+              )}
             </div>
+
+            <p className="text-xs text-emerald-100/80 font-medium flex items-center gap-1.5 mt-0.5 truncate">
+              <span>{farmerName}</span>
+              <span className="opacity-60">•</span>
+              <span className="flex items-center gap-0.5 truncate">
+                <MapPin className="w-3 h-3 text-emerald-300 flex-shrink-0" />
+                <span className="truncate">{location}</span>
+              </span>
+            </p>
           </div>
         </div>
       </div>
 
       {/* Metric Counters Grid */}
-      <div className="p-4 bg-brand-cream/40 border-b border-brand-border">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-          <div className="bg-white p-3 rounded-xl border border-brand-border/80 shadow-2xs">
+      <div className="p-3.5 bg-[#FAFBF7] border-b border-brand-border/70">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <div className="bg-white p-3 rounded-xl border border-brand-border/70 shadow-2xs">
             <p className="text-[11px] font-medium text-brand-muted">Active Crops</p>
-            <p className="text-xl font-extrabold text-brand-dark mt-0.5">{activeProductsCount}</p>
-          </div>
-
-          <div className="bg-white p-3 rounded-xl border border-brand-border/80 shadow-2xs">
-            <p className="text-[11px] font-medium text-brand-muted">Available Stock</p>
-            <p className="text-xl font-extrabold text-brand-green mt-0.5">
-              {totalStockUnits} <span className="text-xs font-normal text-brand-muted">units</span>
+            <p className="text-lg sm:text-xl font-extrabold text-brand-dark mt-0.5">
+              {activeProductsCount}
             </p>
           </div>
 
-          <div className="bg-white p-3 rounded-xl border border-brand-border/80 shadow-2xs">
-            <p className="text-[11px] font-medium text-brand-muted">Pending Orders</p>
-            <p className="text-xl font-extrabold text-amber-600 mt-0.5">{pendingOrdersCount}</p>
+          <div className="bg-white p-3 rounded-xl border border-brand-border/70 shadow-2xs">
+            <p className="text-[11px] font-medium text-brand-muted">Available Stock</p>
+            <p className="text-lg sm:text-xl font-extrabold text-brand-green mt-0.5">
+              {totalStockUnits}{" "}
+              <span className="text-[11px] font-normal text-brand-muted">units</span>
+            </p>
           </div>
 
-          <div className="bg-white p-3 rounded-xl border border-brand-border/80 shadow-2xs">
+          <div className="bg-white p-3 rounded-xl border border-brand-border/70 shadow-2xs">
+            <p className="text-[11px] font-medium text-brand-muted">Pending Orders</p>
+            <p className="text-lg sm:text-xl font-extrabold text-amber-600 mt-0.5">
+              {pendingOrdersCount}
+            </p>
+          </div>
+
+          <div className="bg-white p-3 rounded-xl border border-brand-border/70 shadow-2xs">
             <p className="text-[11px] font-medium text-brand-muted">Total Sales</p>
-            <p className="text-xl font-extrabold text-brand-dark mt-0.5">
+            <p className="text-lg sm:text-xl font-extrabold text-brand-dark mt-0.5">
               {formatCurrency(totalRevenue)}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Quick Action Touch Bar */}
+      {/* Quick Action Bar */}
       <div className="p-3 bg-white flex items-center gap-2 overflow-x-auto no-scrollbar">
-        <Link href="/farmer/products/add" className="flex-1 min-w-[120px]">
+        <Link href="/farmer/products/add" className="flex-1 min-w-[110px]">
           <Button
             size="sm"
             className="w-full gap-1.5 bg-brand-green hover:bg-brand-dark text-white font-semibold text-xs h-9 rounded-xl shadow-xs"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5" />
             Add Crop
           </Button>
         </Link>
 
-        <Link href="/farmer/stock" className="flex-1 min-w-[120px]">
+        <Link href="/farmer/stock" className="flex-1 min-w-[110px]">
           <Button
             size="sm"
             variant="outline"
             className="w-full gap-1.5 border-brand-border hover:bg-brand-light text-brand-dark font-semibold text-xs h-9 rounded-xl"
           >
-            <Layers className="w-4 h-4 text-brand-green" />
+            <Layers className="w-3.5 h-3.5 text-brand-green" />
             Update Stock
           </Button>
         </Link>
@@ -154,7 +160,7 @@ export default function FarmHeroCard({
             variant="outline"
             className="w-full gap-1.5 border-brand-border hover:bg-brand-light text-brand-dark font-semibold text-xs h-9 rounded-xl"
           >
-            <ClipboardList className="w-4 h-4 text-brand-green" />
+            <ClipboardList className="w-3.5 h-3.5 text-brand-green" />
             Orders ({pendingOrdersCount})
           </Button>
         </Link>
