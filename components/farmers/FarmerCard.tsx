@@ -18,6 +18,9 @@ interface FarmerCardProps {
 }
 
 export default function FarmerCard({ farmer, products, index = 0 }: FarmerCardProps) {
+  const [coverError, setCoverError] = React.useState(false);
+  const [avatarError, setAvatarError] = React.useState(false);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -27,13 +30,14 @@ export default function FarmerCard({ farmer, products, index = 0 }: FarmerCardPr
     >
       {/* Cover Image */}
       <div className="relative h-32 bg-brand-light overflow-hidden">
-        {farmer.coverImage ? (
+        {farmer.coverImage && !coverError ? (
           <Image
             src={farmer.coverImage}
             alt={`${farmer.farmName} farm`}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            onError={() => setCoverError(true)}
           />
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-brand-green/20 to-brand-light" />
@@ -45,13 +49,14 @@ export default function FarmerCard({ farmer, products, index = 0 }: FarmerCardPr
         {/* Avatar */}
         <div className="flex items-end justify-between -mt-8 mb-3">
           <div className="w-14 h-14 rounded-xl border-2 border-white shadow-sm overflow-hidden bg-brand-light flex-shrink-0">
-            {farmer.profileImage ? (
+            {farmer.profileImage && !avatarError ? (
               <Image
                 src={farmer.profileImage}
                 alt={farmer.ownerName || farmer.farmName}
                 width={56}
                 height={56}
                 className="w-full h-full object-cover"
+                onError={() => setAvatarError(true)}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-brand-green font-bold text-lg">

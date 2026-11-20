@@ -34,6 +34,7 @@ export default function ProductCard({
   const qty = getItemQuantity(product.id);
   const isHarvestedToday = product.harvestDate && isToday(new Date(product.harvestDate));
   const isAvailable = product.status !== "UNAVAILABLE";
+  const [imgError, setImgError] = React.useState(false);
 
   return (
     <motion.div
@@ -45,17 +46,19 @@ export default function ProductCard({
       {/* Image */}
       <Link href={`/buyer/products/${product.id}`} className="block relative">
         <div className="relative aspect-[4/3] overflow-hidden bg-brand-light">
-          {product.image ? (
+          {product.image && !imgError ? (
             <Image
               src={product.image}
               alt={product.name}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              onError={() => setImgError(true)}
             />
           ) : (
-            <div className="absolute inset-0 flex items-center justify-center text-4xl">
-              🌱
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-emerald-50 text-emerald-700">
+              <span className="text-3xl mb-1">🌿</span>
+              <span className="text-xs font-semibold text-emerald-800 tracking-wide uppercase">Farm Produce</span>
             </div>
           )}
 
