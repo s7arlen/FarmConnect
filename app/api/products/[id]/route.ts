@@ -140,6 +140,7 @@ export async function PUT(
           price: result.data.price.toString(),
           quantity: result.data.quantity,
           unit: result.data.unit,
+          image: result.data.image || null,
           harvestDate: result.data.harvestDate,
           status: result.data.status,
           updatedAt: new Date(),

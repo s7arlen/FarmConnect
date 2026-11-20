@@ -102,6 +102,7 @@ export async function POST(request: NextRequest) {
           price: result.data.price.toString(),
           quantity: result.data.quantity,
           unit: result.data.unit,
+          image: result.data.image || null,
           harvestDate: result.data.harvestDate,
           status: result.data.status,
         })

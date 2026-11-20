@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
+import ImageUploader from "@/components/ui/ImageUploader";
 import { productSchema, type ProductInput } from "@/lib/validations";
 import { PRODUCT_CATEGORIES } from "@/data/categories";
 import { toast } from "sonner";
@@ -81,7 +82,7 @@ export default function AddProductPage() {
   }
 
   return (
-    <div className="p-4 md:p-8 max-w-2xl">
+    <div className="p-4 md:p-8 max-w-2xl mx-auto pb-28 pb-safe">
       <Link
         href="/farmer/products"
         className="inline-flex items-center gap-1.5 text-sm text-brand-muted hover:text-brand-green mb-6"
@@ -93,42 +94,16 @@ export default function AddProductPage() {
       <h1 className="text-2xl font-bold text-brand-text mb-6">Add New Product</h1>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-        {/* Image Upload */}
-        <Card>
+        {/* Cloudinary Image Upload */}
+        <Card className="rounded-2xl border-brand-border shadow-2xs">
           <CardContent className="p-5">
-            <label className="block text-sm font-medium text-brand-text mb-3">
-              Product Image
-            </label>
-            <div
-              className="relative border-2 border-dashed border-brand-border rounded-xl p-8 text-center hover:border-brand-green transition-colors cursor-pointer"
-              onClick={() => document.getElementById("product-image")?.click()}
-            >
-              {imagePreview ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={imagePreview}
-                  alt="Preview"
-                  className="w-full h-48 object-cover rounded-lg"
-                />
-              ) : (
-                <>
-                  <Upload className="w-8 h-8 text-brand-muted mx-auto mb-2" />
-                  <p className="text-sm text-brand-muted">
-                    Click to upload product image
-                  </p>
-                  <p className="text-xs text-brand-muted/60 mt-1">
-                    PNG, JPG, WebP — max 5MB
-                  </p>
-                </>
-              )}
-              <input
-                id="product-image"
-                type="file"
-                accept="image/*"
-                className="sr-only"
-                onChange={handleImageChange}
-              />
-            </div>
+            <ImageUploader
+              label="Product Image"
+              value={watch("image")}
+              onChange={(url) => setValue("image", url)}
+              folder="farmconnect/products"
+              aspectRatio="video"
+            />
           </CardContent>
         </Card>
 

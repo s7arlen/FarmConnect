@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
+import ImageUploader from "@/components/ui/ImageUploader";
 import { productSchema, type ProductInput } from "@/lib/validations";
 import { DEMO_PRODUCTS } from "@/data/demo";
 import { PRODUCT_CATEGORIES } from "@/data/categories";
@@ -44,6 +45,7 @@ export default function EditProductPage() {
         price: initialProduct?.price || 1,
         quantity: initialProduct?.quantity || 1,
         unit: initialProduct?.unit || "kg",
+        image: initialProduct?.image || "",
         status: initialProduct?.status || "AVAILABLE",
       },
     });
@@ -67,6 +69,7 @@ export default function EditProductPage() {
               price: parseFloat(data.product.price),
               quantity: data.product.quantity,
               unit: data.product.unit,
+              image: data.product.image || "",
               status: data.product.status,
             });
           }
@@ -125,7 +128,7 @@ export default function EditProductPage() {
   }
 
   return (
-    <div className="p-4 md:p-8 max-w-2xl">
+    <div className="p-4 md:p-8 max-w-2xl mx-auto pb-28 pb-safe">
       <div className="flex items-center justify-between mb-6">
         <Link
           href="/farmer/products"
@@ -150,6 +153,18 @@ export default function EditProductPage() {
       <h1 className="text-2xl font-bold text-brand-text mb-6">Edit Product</h1>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        {/* Cloudinary Image Upload */}
+        <Card className="rounded-2xl border-brand-border shadow-2xs">
+          <CardContent className="p-5">
+            <ImageUploader
+              label="Produce Image"
+              value={watch("image")}
+              onChange={(url) => setValue("image", url)}
+              folder="farmconnect/products"
+              aspectRatio="video"
+            />
+          </CardContent>
+        </Card>
         <Card>
           <CardContent className="p-5 space-y-4">
             <Input label="Product name *" error={errors.name?.message} {...register("name")} />

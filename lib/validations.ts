@@ -42,6 +42,7 @@ export const productSchema = z.object({
     .int("Quantity must be a whole number")
     .positive("Quantity must be greater than 0"),
   unit: z.enum(["kg", "g", "piece", "dozen", "bundle", "litre", "packet"]),
+  image: z.string().optional().or(z.literal("")),
   harvestDate: z.string().optional(),
   status: z.enum(["AVAILABLE", "LIMITED", "UNAVAILABLE"]).default("AVAILABLE"),
 });
@@ -89,6 +90,8 @@ export const farmProfileSchema = z.object({
   description: z.string().max(1000).optional(),
   address: z.string().min(5, "Address is required"),
   farmingPractices: z.string().max(500).optional(),
+  coverImage: z.string().optional().or(z.literal("")),
+  profileImage: z.string().optional().or(z.literal("")),
   establishedYear: z
     .number()
     .int()

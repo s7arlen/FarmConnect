@@ -66,6 +66,8 @@ export async function PUT(request: NextRequest) {
           address: result.data.address,
           farmingPractices: result.data.farmingPractices,
           establishedYear: result.data.establishedYear,
+          coverImage: result.data.coverImage || undefined,
+          profileImage: result.data.profileImage || undefined,
           updatedAt: new Date(),
         })
         .where(eq(farmers.userId, session!.userId))

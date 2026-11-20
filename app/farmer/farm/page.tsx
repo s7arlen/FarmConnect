@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import ImageUploader from "@/components/ui/ImageUploader";
 import StarRating from "@/components/shared/StarRating";
 import { farmProfileSchema, type FarmProfileInput } from "@/lib/validations";
 import { DEMO_FARMERS } from "@/data/demo";
@@ -23,7 +24,7 @@ export default function FarmProfilePage() {
   const [coverError, setCoverError] = useState(false);
   const [avatarError, setAvatarError] = useState(false);
 
-  const { register, handleSubmit, formState: { errors } } =
+  const { register, handleSubmit, setValue, watch, formState: { errors } } =
     useForm<FarmProfileInput>({
       resolver: zodResolver(farmProfileSchema),
       defaultValues: {
@@ -31,6 +32,8 @@ export default function FarmProfilePage() {
         description: farmer.description,
         address: farmer.address,
         farmingPractices: farmer.farmingPractices,
+        coverImage: farmer.coverImage || "",
+        profileImage: farmer.profileImage || "",
         establishedYear: farmer.establishedYear,
       },
     });
@@ -155,6 +158,24 @@ export default function FarmProfilePage() {
           <Card className="rounded-2xl border-brand-border shadow-2xs">
             <CardContent className="p-5 sm:p-6 space-y-4">
               <Input label="Farm name *" error={errors.farmName?.message} {...register("farmName")} />
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <ImageUploader
+                  label="Farm Cover Banner"
+                  value={watch("coverImage")}
+                  onChange={(url) => setValue("coverImage", url)}
+                  folder="farmconnect/farms"
+                  aspectRatio="video"
+                />
+                <ImageUploader
+                  label="Farmer Profile Avatar"
+                  value={watch("profileImage")}
+                  onChange={(url) => setValue("profileImage", url)}
+                  folder="farmconnect/avatars"
+                  aspectRatio="square"
+                />
+              </div>
+
               <Textarea label="About the farm" rows={4} placeholder="Describe your farm..." {...register("description")} />
               <Input label="Address *" error={errors.address?.message} {...register("address")} />
               <Textarea label="Farming practices" rows={3} placeholder="How do you farm?" {...register("farmingPractices")} />
