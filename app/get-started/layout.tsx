@@ -12,9 +12,5 @@ export default function GetStartedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <div className="min-h-screen bg-brand-cream text-brand-text flex flex-col justify-between">
-      {children}
-    </div>
-  );
+  return <div className="min-h-screen w-full">{children}</div>;
 }
