@@ -54,6 +54,20 @@
 - [*] Error states
 - [*] Form validation with React Hook Form + Zod
 
+### 2.1 Homepage Redesign (Visual Reference: Screenshot media_1795185066070_16b6cc06.jpg)
+- [*] Mobile App Header (FarmConnect logo + notification bell with dot + avatar/sign-in)
+- [*] Location Selector Pill with current location & dropdown
+- [*] Mobile Instant Search Bar routing to `/explore`
+- [*] Compact Agricultural Hero Banner (exact copy, Explore Produce & Sell buttons)
+- [*] 3-Column Trust Stats Card (200+ Farmers, 50+ Varieties, 5,000+ Happy Buyers)
+- [*] Popular Categories shortcut cards (Vegetables, Fruits, Grains, Pulses with photographic imagery)
+- [*] Fresh Today marketplace cards with harvest badges & Add-to-Cart
+- [*] Nearby Farmers cards matching screenshot (farm image, verified badge, km distance, View Profile pill)
+- [*] Popular Products showcase
+- [*] Sell on FarmConnect promotional card
+- [*] Persistent Mobile Bottom Navigation on homepage with `pb-safe`
+- [*] Responsive desktop presentation (professional full navbar, wide hero, responsive grid, full footer)
+
 ---
 
 ## 3. Backend & API Services

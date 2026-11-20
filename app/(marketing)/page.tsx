@@ -1,24 +1,76 @@
 import type { Metadata } from "next";
-import HeroSection from "./components/HeroSection";
-import FreshProduceSection from "./components/FreshProduceSection";
-import FarmersSection from "./components/FarmersSection";
+import LocationSelector from "@/components/home/LocationSelector";
+import HomeSearchBar from "@/components/home/HomeSearchBar";
+import CompactHeroBanner from "@/components/home/CompactHeroBanner";
+import TrustStatsCard from "@/components/home/TrustStatsCard";
+import PopularCategories from "@/components/home/PopularCategories";
+import FreshTodayHomeSection from "@/components/home/FreshTodayHomeSection";
+import NearbyFarmersSection from "@/components/home/NearbyFarmersSection";
+import PopularProductsSection from "@/components/home/PopularProductsSection";
+import SellOnFarmConnectCard from "@/components/home/SellOnFarmConnectCard";
 import HowItWorksSection from "./components/HowItWorksSection";
-import FarmerCTASection from "./components/FarmerCTASection";
 
 export const metadata: Metadata = {
   title: "FarmConnect — Fresh from local farms. Directly to your community.",
   description:
-    "Discover fresh produce from verified local farmers near you. Connect directly. Buy with confidence.",
+    "Discover fresh produce from verified local farmers near you. Connect directly, and buy with confidence.",
 };
 
 export default function HomePage() {
   return (
-    <>
-      <HeroSection />
-      <FreshProduceSection />
-      <HowItWorksSection />
-      <FarmersSection />
-      <FarmerCTASection />
-    </>
+    <div className="w-full">
+      {/* Main Container: Mobile App-Width on small screens, Full Grid on Desktop */}
+      <div className="max-w-lg lg:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-6 lg:py-8 space-y-4 sm:space-y-6 lg:space-y-10">
+        {/* 1. Location Selector Pill */}
+        <div className="w-full">
+          <LocationSelector />
+        </div>
+
+        {/* 2. Instant Search Bar */}
+        <div className="w-full">
+          <HomeSearchBar />
+        </div>
+
+        {/* 3. Compact Agricultural Hero Banner */}
+        <div className="w-full">
+          <CompactHeroBanner />
+        </div>
+
+        {/* 4. Trust Statistics Card */}
+        <div className="w-full">
+          <TrustStatsCard />
+        </div>
+
+        {/* 5. Category Shortcuts (Popular Categories) */}
+        <section aria-label="Popular Categories" className="w-full pt-1">
+          <PopularCategories />
+        </section>
+
+        {/* 6. Marketplace: Fresh Today */}
+        <section aria-label="Fresh Today" className="w-full pt-1">
+          <FreshTodayHomeSection />
+        </section>
+
+        {/* 7. Nearby Farmers */}
+        <section aria-label="Nearby Farmers" className="w-full pt-1">
+          <NearbyFarmersSection />
+        </section>
+
+        {/* 8. Popular Products */}
+        <section aria-label="Popular Products" className="w-full pt-1">
+          <PopularProductsSection />
+        </section>
+
+        {/* 9. Sell on FarmConnect Promotional Card */}
+        <section aria-label="For Farmers" className="w-full pt-1">
+          <SellOnFarmConnectCard />
+        </section>
+
+        {/* 10. How It Works (Comprehensive view for desktop buyers) */}
+        <div className="hidden lg:block pt-4 border-t border-brand-border">
+          <HowItWorksSection />
+        </div>
+      </div>
+    </div>
   );
 }

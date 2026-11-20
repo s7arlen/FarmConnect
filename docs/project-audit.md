@@ -17,8 +17,56 @@ The objective is to transform the **EXISTING FarmConnect** web application into 
 ### Critical Architecture Boundaries
 - **No separate mobile application**: Zero React Native, zero Expo, zero separate mobile repositories.
 - **Single unified codebase**: The existing Next.js 14 App Router project under `farmconnect/` serves mobile browsers, tablets, and desktop workstations seamlessly with adaptive layouts.
-- **App-like mobile experience**: When opened on Android or iPhone browsers (or installed as a PWA), the application provides a mobile-native feel (fixed bottom navigation, safe-area padding, touch-friendly steppers, card-based layouts, compact headers, bottom sheets, and zero-reload client navigation).
+- **App-like mobile experience**: When opened on Android or iPhone browsers (or installed as a PWA), the application provides a mobile-native feel (fixed bottom navigation, safe-area padding, touch-friendly steppers, card-based layouts, compact headers, bottom sheets, and zero-reload client navigation). Matches the visual reference from the attached mobile screenshot (`media_1795185066070_16b6cc06.jpg`).
 - **Professional desktop experience**: When opened on wide screens, authenticated portals seamlessly transition to professional desktop layouts featuring collapsable sidebars, responsive data grids, and clean tabular data.
+
+---
+
+## 2. Visual Reference Analysis (Attached Mobile Screenshot)
+
+Study of the reference UI (`media_1795185066070_16b6cc06.jpg`):
+1. **Compact App Header (Top):**
+   - Brand icon (white leaf in green rounded square) + "FarmConnect" bold white brand title.
+   - Right actions: Notification bell with unread dot indicator + circular user avatar with online status dot.
+2. **Compact Agricultural Hero Banner:**
+   - Lush green field background with morning sunlight.
+   - Exact headline: *"Fresh from local farms. Directly to your community."*
+   - Exact subheadline: *"Discover fresh produce from farmers near you, connect directly, and buy with confidence."*
+   - Two CTAs:
+     - `Explore Produce →` (Solid white rounded pill with bold green text).
+     - `Sell Your Produce` (Semi-transparent outline pill with white text).
+3. **Platform Trust Stats Card:**
+   - Rounded mint/white card with 3 columns:
+     - Farmer icon: **200+** Local Farmers
+     - Produce basket icon: **50+** Product Varieties
+     - Handshake icon: **5,000+** Happy Buyers
+4. **Popular Categories (Category Shortcuts):**
+   - Section header: Leaf icon + **Popular Categories** with "View All →" link.
+   - 4 horizontal cards with photographic thumbnails: **Vegetables**, **Fruits**, **Grains**, **Pulses**.
+5. **Nearby Farmers Section:**
+   - Section header: Tractor icon + **Nearby Farmers** with "View All →" link.
+   - Farmer card: Farm thumbnail image, verified green badge, location pin (`Bantwal • 2 km`), and "View Profile" action button.
+6. **Fixed Mobile Bottom Navigation:**
+   - 5 tabs: **Home** (active, green), **Explore**, **Cart** (with live badge), **Orders**, **Profile**.
+   - Safe-area spacing at the bottom with home indicator clearance.
+
+---
+
+## 3. Existing Homepage vs Reference Gap Analysis
+
+| Section / Element | Current Homepage Implementation | Target App-Like Transformation | Status |
+|---|---|---|---|
+| **Header (Mobile)** | Traditional desktop `Navbar` with hamburger button and dropdown menu | Compact mobile app header: FarmConnect leaf logo, notification bell with badge, user avatar/sign-in | NEEDS IMPROVEMENT |
+| **Location Selector** | Missing from homepage | Interactive location pill (`Bantwal, Dakshina Kannada • 2 km`) with dropdown | NOT IMPLEMENTED |
+| **Search Bar** | Only available inside `/buyer/explore` | Prominent search bar below header on mobile with instant query routing | NOT IMPLEMENTED |
+| **Hero Banner** | Full-viewport desktop hero (`min-h-screen`) pushing all produce below the fold | Compact agricultural hero banner with exact copy and stacked action pills | NEEDS IMPROVEMENT |
+| **Platform Stats** | Plain text stats at bottom of hero | 3-column elevated card with green ag-tech icons matching screenshot | NEEDS IMPROVEMENT |
+| **Category Shortcuts** | Missing from homepage (only in buyer dashboard) | Horizontal photographic category cards (Vegetables, Fruits, Grains, Pulses) | NOT IMPLEMENTED |
+| **Fresh Today** | 4-card grid with desktop spacing | App-style horizontal scroll / grid with harvest badges and instant Add-to-Cart | COMPLETED (Needs styling tune) |
+| **Nearby Farmers** | Full-width cards with cover images | Compact mobile farm cards with farm thumbnail, verified badge, and "View Profile" pill | NEEDS IMPROVEMENT |
+| **Popular Products** | Missing dedicated section on homepage | High-rated local produce section | NOT IMPLEMENTED |
+| **Sell on FarmConnect** | Full-page desktop CTA section | Compact promotional card ("Your farm. Your customers. Your price.") | COMPLETED (Needs mobile card version) |
+| **Mobile Bottom Nav** | Not rendered on marketing homepage | Fixed 5-tab bottom navigation (`Home`, `Explore`, `Cart`, `Orders`, `Profile`) | NOT IMPLEMENTED ON HOMEPAGE |
 
 ---
 
