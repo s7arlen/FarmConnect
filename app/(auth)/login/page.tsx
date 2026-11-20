@@ -23,7 +23,7 @@ import { useAuthStore } from "@/store/authStore";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const from = searchParams.get("from");
@@ -452,5 +452,19 @@ export default function LoginPage() {
 
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <React.Suspense
+      fallback={
+        <div className="min-h-screen bg-[#F2F6EC] flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-[#4D8B38]" />
+        </div>
+      }
+    >
+      <LoginForm />
+    </React.Suspense>
   );
 }
