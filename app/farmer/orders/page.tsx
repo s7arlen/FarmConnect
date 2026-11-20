@@ -30,7 +30,7 @@ export default function FarmerOrdersPage() {
   });
 
   return (
-    <div className="p-4 md:p-8">
+    <div className="p-4 md:p-8 max-w-5xl mx-auto pb-28 pb-safe">
       <h1 className="text-2xl font-bold text-brand-text mb-6">Orders</h1>
 
       <div className="flex gap-2 mb-6 overflow-x-auto pb-1">

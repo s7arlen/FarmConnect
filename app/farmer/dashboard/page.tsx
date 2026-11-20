@@ -31,12 +31,8 @@ export default function FarmerDashboardPage() {
   const farmerId = user?.farmerId || "demo-farmer-1";
 
   const farmerInfo = DEMO_FARMERS.find((f) => f.id === farmerId) || {
-    id: "demo-farmer-1",
-    farmName: "Green Valley Organic Farm",
-    ownerName: user?.name || "Joseph D'Souza",
-    address: "Bantwal, Dakshina Kannada",
-    verified: true,
-    rating: 4.8,
+    ...DEMO_FARMERS[0],
+    ownerName: user?.name || DEMO_FARMERS[0].ownerName,
   };
 
   const products = DEMO_PRODUCTS.filter((p) => p.farmerId === farmerId);
@@ -47,7 +43,7 @@ export default function FarmerDashboardPage() {
   const totalStockUnits = products.reduce((sum, p) => sum + p.quantity, 0);
 
   return (
-    <div className="p-4 md:p-8 max-w-6xl mx-auto pb-safe">
+    <div className="p-4 md:p-8 max-w-6xl mx-auto pb-28 pb-safe">
       {/* GoParm-Inspired Farm Hero Card */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -59,6 +55,8 @@ export default function FarmerDashboardPage() {
           farmName={farmerInfo.farmName}
           location={farmerInfo.address || "Bantwal, Dakshina Kannada"}
           verified={farmerInfo.verified}
+          avatarUrl={farmerInfo.profileImage}
+          coverImageUrl={farmerInfo.coverImage}
           activeProductsCount={products.length}
           totalStockUnits={totalStockUnits}
           pendingOrdersCount={pendingOrders.length}

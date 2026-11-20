@@ -47,7 +47,7 @@ export default function FarmerStockPage() {
   const outCount = products.filter((p) => p.status === "UNAVAILABLE").length;
 
   return (
-    <div className="p-4 md:p-8 max-w-5xl mx-auto pb-safe">
+    <div className="p-4 md:p-8 max-w-5xl mx-auto pb-28 pb-safe">
       {/* Top Header */}
       <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
         <div>

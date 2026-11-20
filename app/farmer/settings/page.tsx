@@ -24,7 +24,7 @@ export default function FarmerSettingsPage() {
   }
 
   return (
-    <div className="p-4 md:p-8 max-w-3xl">
+    <div className="p-4 md:p-8 max-w-3xl mx-auto pb-28 pb-safe">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-brand-text mb-1">Store & Operations Settings</h1>
         <p className="text-brand-muted text-sm">

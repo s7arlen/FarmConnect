@@ -46,7 +46,7 @@ export default function MobileBottomNav({ items }: MobileBottomNavProps) {
               {/* Active Pill Indicator */}
               <div
                 className={cn(
-                  "relative flex items-center justify-center w-12 h-8 rounded-full transition-all duration-200",
+                  "relative flex items-center justify-center w-12 h-7 rounded-full transition-all duration-200",
                   isActive ? "bg-brand-light font-semibold" : "group-hover:bg-brand-cream"
                 )}
               >

@@ -48,16 +48,16 @@ export default function FarmHeroCard({
   return (
     <div className="relative rounded-2xl overflow-hidden border border-brand-border bg-white shadow-sm mb-6 transition-all">
       {/* Visual Header Banner */}
-      <div className="relative h-36 sm:h-44 w-full bg-brand-dark overflow-hidden">
+      <div className="relative min-h-[160px] sm:min-h-[175px] w-full bg-brand-dark overflow-hidden flex flex-col justify-between p-4">
         <img
           src={coverImageUrl}
           alt={farmName}
-          className="w-full h-full object-cover opacity-60 mix-blend-overlay scale-105 transition-transform duration-700 hover:scale-100"
+          className="absolute inset-0 w-full h-full object-cover opacity-65 mix-blend-overlay scale-105 transition-transform duration-700"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/20 pointer-events-none" />
 
         {/* Top Badges */}
-        <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
+        <div className="relative z-10 flex items-center justify-between gap-2">
           <Badge className="bg-brand-green/90 text-white backdrop-blur-sm border-0 gap-1.5 px-2.5 py-1 text-[11px] font-semibold">
             <Sparkles className="w-3 h-3 text-amber-300" />
             Harvest Season Active
@@ -72,23 +72,23 @@ export default function FarmHeroCard({
         </div>
 
         {/* Farm & Farmer Identity over Cover */}
-        <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
-          <div className="flex items-center gap-3">
-            <Avatar className="w-12 h-12 sm:w-14 sm:h-14 ring-2 ring-white shadow-md bg-white">
-              {avatarUrl && <AvatarImage src={avatarUrl} alt={farmerName} />}
+        <div className="relative z-10 flex items-end justify-between pt-4">
+          <div className="flex items-center gap-3 min-w-0">
+            <Avatar className="w-13 h-13 sm:w-14 sm:h-14 ring-2 ring-white/90 shadow-md bg-white flex-shrink-0">
+              {avatarUrl && <AvatarImage src={avatarUrl} alt={farmerName} className="object-cover" />}
               <AvatarFallback className="bg-brand-light text-brand-dark font-bold text-base">
                 {getInitials(farmerName)}
               </AvatarFallback>
             </Avatar>
 
-            <div className="text-white drop-shadow-sm">
-              <h2 className="text-lg sm:text-xl font-bold leading-tight truncate">{farmName}</h2>
-              <p className="text-xs text-white/90 font-medium flex items-center gap-1 mt-0.5">
-                <span>{farmerName}</span>
+            <div className="text-white drop-shadow-sm min-w-0">
+              <h2 className="text-base sm:text-xl font-bold leading-tight truncate">{farmName}</h2>
+              <p className="text-xs text-white/90 font-medium flex items-center gap-1.5 mt-0.5 truncate">
+                <span className="font-semibold">{farmerName}</span>
                 <span>•</span>
-                <span className="flex items-center gap-0.5">
-                  <MapPin className="w-3 h-3 text-brand-light" />
-                  {location}
+                <span className="flex items-center gap-0.5 truncate">
+                  <MapPin className="w-3 h-3 text-brand-light flex-shrink-0" />
+                  <span className="truncate">{location}</span>
                 </span>
               </p>
             </div>

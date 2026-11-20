@@ -31,7 +31,7 @@ export default function FarmerProductsPage() {
   }
 
   return (
-    <div className="p-4 md:p-8">
+    <div className="p-4 md:p-8 max-w-5xl mx-auto pb-28 pb-safe">
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <h1 className="text-2xl font-bold text-brand-text">My Products</h1>
         <Link href="/farmer/products/add">

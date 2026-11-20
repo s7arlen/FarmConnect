@@ -20,6 +20,8 @@ export default function FarmProfilePage() {
   const farmer = DEMO_FARMERS[0]; // In production: fetched from session
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [coverError, setCoverError] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
 
   const { register, handleSubmit, formState: { errors } } =
     useForm<FarmProfileInput>({
@@ -57,69 +59,101 @@ export default function FarmProfilePage() {
   }
 
   return (
-    <div className="p-4 md:p-8 max-w-3xl">
-      <div className="flex items-start justify-between mb-6 flex-wrap gap-3">
-        <h1 className="text-2xl font-bold text-brand-text">Farm Profile</h1>
+    <div className="p-4 md:p-8 max-w-3xl mx-auto pb-28 pb-safe">
+      <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
+        <div>
+          <h1 className="text-2xl font-extrabold text-brand-dark tracking-tight">Farm Profile</h1>
+          <p className="text-xs text-brand-muted mt-0.5">Manage your public farm storefront & practices</p>
+        </div>
         <Button
           variant={editing ? "outline" : "default"}
           size="sm"
           onClick={() => setEditing(!editing)}
-          className="gap-2"
+          className="gap-2 rounded-xl h-9 text-xs font-semibold shadow-xs"
         >
           <Edit3 className="w-3.5 h-3.5" />
           {editing ? "Cancel" : "Edit Profile"}
         </Button>
       </div>
 
-      {/* Cover + Profile */}
-      <div className="relative rounded-2xl overflow-hidden mb-6">
-        <div className="h-40 relative">
-          {farmer.coverImage ? (
-            <Image src={farmer.coverImage} alt="Cover" fill className="object-cover" />
+      {/* Cover + Profile Floating Card */}
+      <div className="relative rounded-2xl overflow-hidden mb-6 bg-white border border-brand-border shadow-2xs">
+        {/* Cover Photo */}
+        <div className="h-44 sm:h-52 relative w-full bg-brand-dark overflow-hidden">
+          {farmer.coverImage && !coverError ? (
+            <Image
+              src={farmer.coverImage}
+              alt={farmer.farmName}
+              fill
+              priority
+              className="object-cover"
+              onError={() => setCoverError(true)}
+            />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-brand-green/30 to-brand-light" />
           )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
         </div>
-        <div className="px-5 pb-4 bg-white border-x border-b border-brand-border rounded-b-2xl">
-          <div className="flex items-end gap-4 -mt-8 mb-4">
-            <div className="w-16 h-16 rounded-xl border-2 border-white shadow overflow-hidden bg-brand-light flex-shrink-0">
-              {farmer.profileImage ? (
-                <Image src={farmer.profileImage} alt={farmer.farmName} width={64} height={64} className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-brand-green font-bold text-xl">
-                  {getInitials(farmer.farmName)}
-                </div>
-              )}
-            </div>
-            <div className="pb-1">
-              <div className="flex items-center gap-2">
-                <h2 className="font-bold text-brand-text">{farmer.farmName}</h2>
-                {farmer.verified && (
-                  <Badge variant="verified"><CheckCircle className="w-3 h-3" /> Verified</Badge>
+
+        {/* Profile Details floating over the cover bottom */}
+        <div className="relative z-10 px-4 sm:px-6 pb-5 pt-0 bg-white">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 -mt-10 sm:-mt-12 mb-3.5">
+            <div className="flex items-end gap-3.5">
+              <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl ring-4 ring-white shadow-md overflow-hidden bg-white flex-shrink-0 relative z-20">
+                {farmer.profileImage && !avatarError ? (
+                  <Image
+                    src={farmer.profileImage}
+                    alt={farmer.farmName}
+                    width={88}
+                    height={88}
+                    className="w-full h-full object-cover"
+                    onError={() => setAvatarError(true)}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-brand-light text-brand-green font-bold text-2xl">
+                    {getInitials(farmer.farmName)}
+                  </div>
                 )}
               </div>
-              <StarRating rating={Number(farmer.rating)} showValue reviewCount={farmer.reviewCount} />
+
+              <div className="pb-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h2 className="text-lg sm:text-xl font-extrabold text-brand-dark leading-tight">
+                    {farmer.farmName}
+                  </h2>
+                  {farmer.verified && (
+                    <Badge variant="verified" className="gap-1 px-2 py-0.5 text-[11px] font-bold">
+                      <CheckCircle className="w-3 h-3 text-brand-green" /> Verified
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex items-center gap-1.5 mt-1">
+                  <StarRating rating={Number(farmer.rating)} showValue reviewCount={farmer.reviewCount} size="sm" />
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-sm text-brand-muted">
-            <MapPin className="w-4 h-4 text-brand-green" />
-            {farmer.address}
-          </div>
-          {farmer.establishedYear && (
-            <div className="flex items-center gap-2 text-sm text-brand-muted mt-1">
-              <Calendar className="w-4 h-4 text-brand-green" />
-              Established {farmer.establishedYear}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-3 border-t border-brand-border/60 text-xs text-brand-muted">
+            <div className="flex items-center gap-2 min-w-0">
+              <MapPin className="w-3.5 h-3.5 text-brand-green flex-shrink-0" />
+              <span className="truncate">{farmer.address}</span>
             </div>
-          )}
+            {farmer.establishedYear && (
+              <div className="flex items-center gap-2">
+                <Calendar className="w-3.5 h-3.5 text-brand-green flex-shrink-0" />
+                <span>Established in {farmer.establishedYear}</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Edit Form / View */}
+      {/* Edit Form / Details Section */}
       {editing ? (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-          <Card>
-            <CardContent className="p-5 space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <Card className="rounded-2xl border-brand-border shadow-2xs">
+            <CardContent className="p-5 sm:p-6 space-y-4">
               <Input label="Farm name *" error={errors.farmName?.message} {...register("farmName")} />
               <Textarea label="About the farm" rows={4} placeholder="Describe your farm..." {...register("description")} />
               <Input label="Address *" error={errors.address?.message} {...register("address")} />
@@ -127,21 +161,27 @@ export default function FarmProfilePage() {
               <Input label="Established year" type="number" min="1900" max={new Date().getFullYear()} {...register("establishedYear", { valueAsNumber: true })} />
             </CardContent>
           </Card>
-          <Button type="submit" loading={loading} className="w-full">Save Changes</Button>
+          <Button type="submit" loading={loading} className="w-full h-11 rounded-xl bg-brand-green hover:bg-brand-dark text-white font-semibold">
+            Save Changes
+          </Button>
         </form>
       ) : (
-        <div className="space-y-5">
+        <div className="space-y-4">
           {farmer.description && (
-            <Card><CardContent className="p-5">
-              <h3 className="font-semibold text-brand-text mb-2">About</h3>
-              <p className="text-brand-muted text-sm leading-relaxed">{farmer.description}</p>
-            </CardContent></Card>
+            <Card className="rounded-2xl border-brand-border shadow-2xs bg-white">
+              <CardContent className="p-5">
+                <h3 className="font-bold text-sm text-brand-dark mb-2">About</h3>
+                <p className="text-brand-muted text-xs sm:text-sm leading-relaxed">{farmer.description}</p>
+              </CardContent>
+            </Card>
           )}
           {farmer.farmingPractices && (
-            <Card><CardContent className="p-5">
-              <h3 className="font-semibold text-brand-text mb-2">Farming Practices</h3>
-              <p className="text-brand-muted text-sm leading-relaxed">{farmer.farmingPractices}</p>
-            </CardContent></Card>
+            <Card className="rounded-2xl border-brand-border shadow-2xs bg-white">
+              <CardContent className="p-5">
+                <h3 className="font-bold text-sm text-brand-dark mb-2">Farming Practices</h3>
+                <p className="text-brand-muted text-xs sm:text-sm leading-relaxed">{farmer.farmingPractices}</p>
+              </CardContent>
+            </Card>
           )}
         </div>
       )}

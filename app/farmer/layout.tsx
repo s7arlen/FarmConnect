@@ -67,9 +67,9 @@ export default function FarmerLayout({ children }: { children: React.ReactNode }
   const headerTitle = activeLink?.label || "Farmer Portal";
 
   return (
-    <div className="min-h-screen flex bg-brand-cream">
+    <div className="h-[100dvh] max-h-[100dvh] flex bg-brand-cream overflow-hidden">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col w-64 bg-white border-r border-brand-border flex-shrink-0">
+      <aside className="hidden lg:flex flex-col w-64 bg-white border-r border-brand-border flex-shrink-0 h-full">
         <div className="p-5 border-b border-brand-border">
           <Link href="/" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-brand-green rounded-lg flex items-center justify-center">
@@ -178,7 +178,7 @@ export default function FarmerLayout({ children }: { children: React.ReactNode }
       )}
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
+      <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden relative">
         <MobileHeader
           title={headerTitle}
           onMenuClick={() => setSidebarOpen(true)}
@@ -192,7 +192,7 @@ export default function FarmerLayout({ children }: { children: React.ReactNode }
           }
         />
 
-        <main className="flex-1 overflow-auto bg-brand-cream">{children}</main>
+        <main className="flex-1 overflow-y-auto bg-brand-cream">{children}</main>
       </div>
 
       {/* App-Like Mobile Bottom Navigation Bar */}
