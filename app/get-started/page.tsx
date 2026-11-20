@@ -4,8 +4,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Leaf, ArrowRight, Users, Sprout } from "lucide-react";
-import { motion } from "framer-motion";
+import { Leaf, ArrowRight } from "lucide-react";
 
 export default function WelcomePage() {
   const router = useRouter();
@@ -17,157 +16,161 @@ export default function WelcomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-brand-cream/80 flex items-center justify-center p-0 sm:p-4 lg:p-6">
-      {/* Centered Device-Width Container for Desktop, Full-Screen on Mobile */}
-      <div className="w-full sm:max-w-md bg-white sm:rounded-3xl shadow-xl overflow-hidden flex flex-col min-h-screen sm:min-h-[844px] relative border border-brand-border/40">
+    <div className="min-h-screen bg-[#EAEFE5] sm:py-6 flex items-center justify-center p-0">
+      {/* Mobile-Proportion Screen Container (Full screen on mobile, device card on desktop) */}
+      <div className="w-full sm:max-w-[420px] bg-[#F2F6EC] sm:rounded-[36px] shadow-2xl overflow-hidden flex flex-col min-h-screen sm:min-h-[860px] relative border border-black/5">
         
-        {/* Top Header */}
-        <div className="relative z-20 px-5 pt-4 pb-2 flex items-center justify-between bg-white/90 backdrop-blur-xs">
+        {/* Top Floating App Bar (Floating transparently over the farm photograph) */}
+        <div className="absolute top-0 left-0 right-0 z-20 px-5 pt-8 sm:pt-6 pb-2 flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-brand-green rounded-xl flex items-center justify-center shadow-xs">
-              <Leaf className="w-4 h-4 text-white stroke-[2.2]" />
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="w-9 h-9 bg-[#53832F] rounded-xl flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+              <Leaf className="w-4.5 h-4.5 text-white stroke-[2.2]" />
             </div>
-            <span className="font-bold text-lg tracking-tight text-brand-dark">FarmConnect</span>
-          </div>
+            <span className="font-extrabold text-lg tracking-tight text-[#1A261A] drop-shadow-[0_1px_3px_rgba(255,255,255,0.8)]">
+              FarmConnect
+            </span>
+          </Link>
 
           {/* Login Link */}
           <div className="text-right">
-            <span className="text-[11px] text-brand-muted block sm:inline mr-1">Already have an account?</span>
+            <span className="text-[11px] font-medium text-[#203020] block drop-shadow-[0_1px_2px_rgba(255,255,255,0.7)]">
+              Already have an account?
+            </span>
             <Link
               href="/login"
-              className="inline-flex items-center gap-0.5 text-xs font-bold text-brand-green hover:text-brand-dark transition-colors"
+              className="inline-flex items-center gap-0.5 text-xs font-bold text-[#53832F] hover:text-[#3B621E] transition-colors drop-shadow-[0_1px_2px_rgba(255,255,255,0.6)]"
             >
               <span>Log in</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
             </Link>
           </div>
         </div>
 
-        {/* Hero Agricultural Image Section with Headline */}
-        <div className="relative flex-1 min-h-[340px] sm:min-h-[380px] flex flex-col justify-end p-5 overflow-hidden">
-          {/* Background Image */}
+        {/* Hero Section: Full bleed crop photograph + Headline */}
+        <div className="relative h-[56vh] min-h-[400px] max-h-[520px] w-full flex flex-col justify-end p-6 overflow-hidden">
+          {/* Background Image: Farm crop rows under sunrise */}
           <div className="absolute inset-0 z-0">
             <Image
-              src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1400&q=80"
+              src="/images/farm-sunrise-clean.jpg"
               alt="Lush green Karnataka crop fields at sunrise"
               fill
               priority
-              className="object-cover"
+              className="object-cover object-right-top sm:object-center"
             />
-            {/* Natural Sunlight & Dark Vignette Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/10" />
+            {/* Natural Vignette Overlay: Light sky at top, readable dark gradient at base */}
+            <div className="absolute inset-0 bg-gradient-to-b from-white/25 via-transparent to-black/65" />
           </div>
 
-          {/* Hero Typography */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="relative z-10 mb-4"
-          >
-            <h1 className="text-4xl sm:text-5xl font-black text-white leading-[1.08] tracking-tight drop-shadow-sm mb-2.5">
+          {/* Headline Typography on Image */}
+          <div className="relative z-10 mb-2">
+            <h1 className="text-4xl sm:text-[44px] font-black text-white leading-[1.08] tracking-tight drop-shadow-md">
               Fresh food. <br />
-              <span className="text-brand-light">Local roots.</span>
+              <span className="text-[#D6F0C7]">Local roots.</span>
             </h1>
 
-            <p className="text-xs sm:text-sm text-white/90 leading-relaxed max-w-xs drop-shadow-xs font-medium">
+            <p className="text-[13px] sm:text-sm text-white/95 font-medium leading-relaxed max-w-[285px] mt-2.5 drop-shadow-sm">
               Connect with nearby farmers and bring fresh produce straight to your table.
             </p>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Organic Wave Divider Transition */}
+        {/* Smooth Organic Wave Divider */}
         <div className="relative w-full overflow-hidden leading-none z-10 -mt-6">
           <svg
-            viewBox="0 0 500 45"
+            viewBox="0 0 500 48"
             preserveAspectRatio="none"
-            className="w-full h-8 sm:h-10 text-white fill-current"
+            className="w-full h-8 sm:h-9 text-[#F2F6EC] fill-current"
           >
-            <path d="M0,0 C150,45 350,-20 500,25 L500,45 L0,45 Z" />
+            <path d="M0,22 C140,48 340,0 500,26 L500,48 L0,48 Z" />
           </svg>
         </div>
 
-        {/* Bottom Section: 3 Feature Highlights & Actions */}
-        <div className="relative z-10 bg-white px-5 pt-2 pb-8 flex flex-col justify-between space-y-6">
+        {/* Lower Card Section (Off-white / Pale Mint) */}
+        <div className="relative z-10 bg-[#F2F6EC] px-6 pt-1 pb-6 flex-1 flex flex-col justify-between">
           
-          {/* Three Feature Highlights */}
-          <div className="grid grid-cols-3 divide-x divide-brand-border/60 pt-2">
-            {/* Feature 1 */}
+          {/* Three Feature Highlights (No circular background, direct green glyphs) */}
+          <div className="grid grid-cols-3 divide-x divide-[#DCE5D5] py-2">
+            
+            {/* Feature 1: Discover local produce */}
             <div className="flex flex-col items-center text-center px-1">
-              <div className="w-10 h-10 rounded-full bg-brand-light flex items-center justify-center text-brand-green mb-2">
-                <Sprout className="w-5 h-5 stroke-[2]" />
-              </div>
-              <span className="text-xs font-bold text-brand-dark leading-snug">Discover</span>
-              <span className="text-[11px] text-brand-muted leading-tight mt-0.5">local produce</span>
-            </div>
-
-            {/* Feature 2 */}
-            <div className="flex flex-col items-center text-center px-1">
-              <div className="w-10 h-10 rounded-full bg-brand-light flex items-center justify-center text-brand-green mb-2">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="w-5 h-5 text-brand-green"
-                >
-                  {/* Farmer with wide hat */}
-                  <path d="M2 9a10 10 0 0 1 20 0" />
-                  <path d="M5 9c0 4 2.5 7 7 7s7-3 7-7" />
-                  <path d="M4 9h16" />
-                  <circle cx="12" cy="14" r="3" />
-                  <path d="M7 21a5 5 0 0 1 10 0" />
+              <div className="mb-2 text-[#53832F]">
+                <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                  <path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L12 22l7.03-4.39C20.26 16.07 21 14.12 21 12c0-4.97-4.03-9-9-9zm-1 14.5v-3.79c-1.83-.44-3.24-1.93-3.56-3.83 2.15.17 3.91 1.63 4.47 3.63.56-2 2.32-3.46 4.47-3.63-.32 1.9-1.73 3.39-3.56 3.83v3.79c-1.07.13-1.07.13-1.82 0z" />
                 </svg>
               </div>
-              <span className="text-xs font-bold text-brand-dark leading-snug">Buy directly</span>
-              <span className="text-[11px] text-brand-muted leading-tight mt-0.5">from farmers</span>
+              <span className="text-xs font-extrabold text-[#202A20] leading-tight">Discover</span>
+              <span className="text-[11px] font-normal text-[#202A20] leading-tight mt-0.5">local produce</span>
             </div>
 
-            {/* Feature 3 */}
+            {/* Feature 2: Buy directly from farmers */}
             <div className="flex flex-col items-center text-center px-1">
-              <div className="w-10 h-10 rounded-full bg-brand-light flex items-center justify-center text-brand-green mb-2">
-                <Users className="w-5 h-5 stroke-[2]" />
+              <div className="mb-2 text-[#53832F]">
+                <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                  {/* Farmer with wide hat & shoulders */}
+                  <path d="M12 2a4 4 0 0 0-4 4v1H6a2 2 0 0 0-2 2 8 8 0 0 0 16 0 2 2 0 0 0-2-2h-2V6a4 4 0 0 0-4-4zm-8 8c1-1 3.5-1.5 8-1.5s7 .5 8 1.5c0 0-3.5 1.5-8 1.5s-8-1.5-8-1.5zm8 4c2.21 0 4 1.79 4 4v2H8v-2c0-2.21 1.79-4 4-4z" />
+                </svg>
               </div>
-              <span className="text-xs font-bold text-brand-dark leading-snug">Support your</span>
-              <span className="text-[11px] text-brand-muted leading-tight mt-0.5">community</span>
+              <span className="text-xs font-extrabold text-[#202A20] leading-tight">Buy directly</span>
+              <span className="text-[11px] font-normal text-[#202A20] leading-tight mt-0.5">from farmers</span>
+            </div>
+
+            {/* Feature 3: Support your community */}
+            <div className="flex flex-col items-center text-center px-1">
+              <div className="mb-2 text-[#53832F]">
+                <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                  {/* Three community people */}
+                  <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+                </svg>
+              </div>
+              <span className="text-xs font-extrabold text-[#202A20] leading-tight">Support your</span>
+              <span className="text-[11px] font-normal text-[#202A20] leading-tight mt-0.5">community</span>
             </div>
           </div>
 
-          {/* Action Buttons Area */}
-          <div className="space-y-3 pt-2">
+          {/* Action Area */}
+          <div className="space-y-3.5 pt-2">
             {/* Get Started Button */}
             <Link
               href="/get-started/roles"
-              className="w-full h-13 rounded-2xl bg-brand-green hover:bg-brand-dark text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all active:scale-[0.99]"
+              className="w-full h-13 rounded-2xl bg-[#53832F] hover:bg-[#436E23] text-white font-bold text-base flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.99]"
             >
               <span>Get Started</span>
               <ArrowRight className="w-4 h-4 stroke-[2.5]" />
             </Link>
 
-            {/* Explore as a guest link */}
-            <div className="text-center pt-1">
+            {/* Explore as a guest */}
+            <div className="text-center pt-0.5">
               <button
                 type="button"
                 onClick={handleGuestExplore}
-                className="text-xs sm:text-sm font-semibold text-brand-green hover:text-brand-dark underline underline-offset-4 transition-colors"
+                className="text-xs sm:text-sm font-bold text-[#53832F] hover:text-[#3B621E] underline underline-offset-4 decoration-[#53832F]/60 transition-colors py-0.5"
               >
                 Explore as a guest
               </button>
             </div>
           </div>
 
-          {/* Bottom Organic Wave & Subtle Leaf Decoration */}
-          <div className="relative pt-4 overflow-hidden pointer-events-none">
-            <div className="absolute right-2 -bottom-2 text-brand-light/70 opacity-60">
-              <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.5 2 2 6.5 2 12c0 3 1.5 5.5 3.5 7.5L12 22l6.5-2.5C20.5 17.5 22 15 22 12c0-5.5-4.5-10-10-10zm0 18c-4.4 0-8-3.6-8-8 0-2.2.9-4.2 2.3-5.7l5.7 5.7 5.7-5.7C19.1 7.8 20 9.8 20 12c0 4.4-3.6 8-8 8z" />
+          {/* Bottom Layered Pastel Waves & Delicate Leaf Accent */}
+          <div className="relative pt-3 -mx-6 -mb-6 mt-1 pointer-events-none">
+            {/* Twin leaf illustration in bottom-right */}
+            <div className="absolute right-4 bottom-7 text-[#9DCB79] z-10">
+              <svg width="42" height="42" viewBox="0 0 36 36" fill="none">
+                <path d="M12 28C10 22 13 14 20 10C21 16 19 23 12 28Z" fill="#9DCB79" />
+                <path d="M20 28C22 23 20 17 28 15C27 21 24 26 20 28Z" fill="#88B860" opacity="0.85" />
               </svg>
             </div>
-            {/* Subtle bottom green arc decoration */}
-            <div className="h-2 w-full rounded-full bg-gradient-to-r from-brand-light/30 via-brand-light to-brand-light/30" />
+
+            {/* Undulating pastel green bottom decoration */}
+            <svg viewBox="0 0 500 70" preserveAspectRatio="none" className="w-full h-12">
+              <path d="M0,35 C160,15 320,55 500,25 L500,70 L0,70 Z" fill="#E4F0D6" />
+              <path d="M0,48 C180,32 340,60 500,42 L500,70 L0,70 Z" fill="#D5E8C0" />
+            </svg>
+
+            {/* Smartphone Home Indicator Bar */}
+            <div className="bg-[#D5E8C0] pb-2 pt-0.5 flex justify-center">
+              <div className="w-32 h-1 rounded-full bg-black/80" />
+            </div>
           </div>
 
         </div>
