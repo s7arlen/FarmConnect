@@ -74,11 +74,10 @@ export default function WelcomePage() {
             className="object-cover object-bottom"
           />
 
-          {/* Photographic lighting overlays for readability */}
-          {/* Top subtle vignette for header bar */}
-          <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/45 via-black/20 to-transparent pointer-events-none" />
-          
-          {/* Bottom vignette for bold headlines */}
+          {/* Photographic lighting overlays for readability:
+              Top: Soft luminous morning sky gradient so dark green brand & login text are crisp and clean
+              Bottom: Warm vignette so the white/mint headlines stand out against the field */}
+          <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/90 via-white/45 to-transparent pointer-events-none" />
           <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black/60 via-black/25 to-transparent pointer-events-none" />
 
           {/* =====================================================================
@@ -92,7 +91,7 @@ export default function WelcomePage() {
               className="flex items-center gap-2 group focus:outline-hidden focus:ring-2 focus:ring-[#53832F] rounded-lg"
               aria-label="FarmConnect Home"
             >
-              <div className="w-8 h-8 rounded-xl bg-[#4D8337] flex items-center justify-center shadow-md border border-white/20 group-hover:scale-105 transition-transform">
+              <div className="w-8 h-8 rounded-xl bg-[#4D8337] flex items-center justify-center shadow-xs border border-white/40 group-hover:scale-105 transition-transform">
                 <svg
                   viewBox="0 0 24 24"
                   className="w-5 h-5 text-white"
@@ -106,19 +105,19 @@ export default function WelcomePage() {
                   <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
                 </svg>
               </div>
-              <span className="text-white font-extrabold text-lg tracking-tight drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)]">
+              <span className="text-[#1C3617] font-extrabold text-lg tracking-tight">
                 FarmConnect
               </span>
             </Link>
 
             {/* Right: "Already have an account? Log in →" */}
-            <div className="text-right">
-              <span className="block text-[11px] text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)] font-medium">
+            <div className="text-right flex flex-col items-end">
+              <span className="block text-[11px] sm:text-xs text-[#3D5A36] font-medium leading-tight">
                 Already have an account?
               </span>
               <Link
                 href="/login"
-                className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-[#D6F0C7] hover:text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] transition-colors group"
+                className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-[#4D8337] hover:text-[#28552B] transition-colors group mt-0.5"
               >
                 <span>Log in</span>
                 <span className="group-hover:translate-x-0.5 transition-transform">→</span>
