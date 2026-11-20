@@ -61,13 +61,13 @@ export async function POST(request: NextRequest) {
     try {
       const { db } = await import("@/db");
       const { users } = await import("@/db/schema");
-      const { eq } = await import("drizzle-orm");
+      const { eq, or } = await import("drizzle-orm");
       const bcrypt = await import("bcryptjs");
 
       const [user] = await db
         .select()
         .from(users)
-        .where(eq(users.email, email));
+        .where(or(eq(users.email, email.toLowerCase()), eq(users.phone, email)));
 
       if (user) {
         const valid = await bcrypt.default.compare(password, user.passwordHash);
@@ -114,9 +114,14 @@ export async function POST(request: NextRequest) {
       // DB not available — fall through to demo accounts
     }
 
-    // Demo accounts fallback
+    // Demo accounts fallback (support email or demo phone)
+    const normalizedInput = email.toLowerCase().trim();
     const demoUser = DEMO_ACCOUNTS.find(
-      (u) => u.email === email && u.password === password
+      (u) =>
+        (u.email.toLowerCase() === normalizedInput ||
+          (normalizedInput === "9876543210" && u.role === "BUYER") ||
+          (normalizedInput === "9448200001" && u.role === "FARMER")) &&
+        u.password === password
     );
 
     if (!demoUser) {
