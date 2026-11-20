@@ -286,11 +286,6 @@ export default function WelcomePage() {
 
           {/* Mobile Hero Headline */}
           <div className="relative z-20 px-6 pb-8">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white text-[11px] font-semibold mb-3">
-              <span className="w-2 h-2 rounded-full bg-[#A8E68C] animate-pulse" />
-              <span>Direct from Local Farmers</span>
-            </div>
-
             <h1 className="text-[34px] sm:text-[38px] leading-[1.08] font-black text-white tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]">
               Fresh food.
               <br />
