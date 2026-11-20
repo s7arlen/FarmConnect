@@ -17,22 +17,22 @@ export default function WelcomePage() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#0D1D0F] relative overflow-x-hidden selection:bg-[#53832F] selection:text-white flex flex-col justify-between">
+    <div className="min-h-screen w-full bg-[#F4F7EE] lg:bg-[#0D1D0F] relative overflow-x-hidden selection:bg-[#53832F] selection:text-white flex flex-col justify-between">
       
       {/* =========================================================================
-          BACKGROUND PHOTOGRAPHY (The Exact High-Res Rolling Farmland Panorama)
+          DESKTOP BACKGROUND PHOTOGRAPHY (Vibrant Lush Green Crops at Sunrise)
       ========================================================================= */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
+      <div className="fixed inset-0 z-0 pointer-events-none hidden lg:block">
         <Image
-          src="/images/farm-hero-panorama.jpg"
-          alt="Lush rolling green farmland hills with glowing golden sunrise"
+          src="/images/lush-crops-sunrise.jpg"
+          alt="Lush green organic farmland crops bathed in morning golden sunrise"
           fill
           priority
           sizes="100vw"
           className="object-cover object-center lg:object-[center_35%]"
         />
-        {/* Desktop Gradient: Rich agricultural forest green on left -> glowing sunrise on right */}
-        <div className="hidden lg:block absolute inset-0 bg-gradient-to-r from-[#0B1E0D]/95 via-[#0B1E0D]/80 to-[#0B1E0D]/25" />
+        {/* Atmospheric Desktop Gradient: Rich forest green on left -> golden sunrise on right */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0B1E0D]/95 via-[#0B1E0D]/80 to-[#0B1E0D]/30" />
       </div>
 
       {/* =========================================================================
@@ -110,7 +110,7 @@ export default function WelcomePage() {
             <div className="flex items-center gap-4 mb-12">
               <Link
                 href="/get-started/roles"
-                className="h-14 px-8 rounded-2xl bg-[#53832F] hover:bg-[#467226] active:bg-[#3D6321] active:scale-[0.985] text-white font-bold text-lg shadow-xl hover:shadow-2xl flex items-center gap-3 transition-all group"
+                className="h-14 px-8 rounded-2xl bg-gradient-to-r from-[#53832F] to-[#406E23] hover:from-[#487428] hover:to-[#38621E] active:scale-[0.985] text-white font-bold text-lg shadow-xl hover:shadow-2xl flex items-center gap-3 transition-all group"
               >
                 <span>Get Started</span>
                 <ArrowRight className="w-5 h-5 stroke-[2.5] group-hover:translate-x-1.5 transition-transform" />
@@ -220,27 +220,28 @@ export default function WelcomePage() {
 
       {/* =========================================================================
           2. MOBILE APP-STYLE FULL-SCREEN EXPERIENCE (Screen width < 1024px)
+          Seamless 100vw, no letterbox sidebars, vibrant lush green crops
       ========================================================================= */}
-      <div className="lg:hidden relative z-10 w-full min-h-[100dvh] flex flex-col justify-between bg-[#F4F7EE] overflow-hidden">
+      <div className="lg:hidden relative z-10 w-full min-h-[100dvh] flex flex-col justify-between bg-[#F4F7EE] overflow-x-hidden">
         
         {/* Top Photographic Hero Container (55dvh) */}
-        <section className="relative w-full h-[55dvh] min-h-[380px] max-h-[500px] overflow-hidden flex flex-col justify-between select-none">
+        <section className="relative w-full h-[54dvh] min-h-[380px] max-h-[500px] overflow-hidden flex flex-col justify-between select-none">
           
-          {/* Mobile Image Layer */}
+          {/* Mobile Image Layer: Lush Vibrant Green Crops at Sunrise */}
           <Image
-            src="/images/farm-hero-panorama.jpg"
-            alt="Lush rolling green farmland hills with glowing golden sunrise"
+            src="/images/lush-crops-sunrise.jpg"
+            alt="Lush green organic farmland crops bathed in morning golden sunrise"
             fill
             priority
             sizes="100vw"
-            className="object-cover object-[center_35%]"
+            className="object-cover object-bottom"
           />
 
           {/* Photographic Lighting Overlays */}
           {/* Top bright morning sky gradient so dark green brand & login text are crisp */}
           <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/90 via-white/45 to-transparent pointer-events-none" />
           {/* Bottom vignette for readable white typography */}
-          <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black/65 via-black/30 to-transparent pointer-events-none" />
+          <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black/75 via-black/35 to-transparent pointer-events-none" />
 
           {/* Mobile Header Bar */}
           <header className="relative z-20 flex items-center justify-between px-5 pt-4 sm:pt-6">
@@ -285,12 +286,17 @@ export default function WelcomePage() {
 
           {/* Mobile Hero Headline */}
           <div className="relative z-20 px-6 pb-8">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white text-[11px] font-semibold mb-3">
+              <span className="w-2 h-2 rounded-full bg-[#A8E68C] animate-pulse" />
+              <span>Direct from Local Farmers</span>
+            </div>
+
             <h1 className="text-[34px] sm:text-[38px] leading-[1.08] font-black text-white tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]">
               Fresh food.
               <br />
               <span className="text-[#D6F0C7]">Local roots.</span>
             </h1>
-            <p className="mt-2.5 text-xs sm:text-[13px] text-white/95 max-w-[280px] font-medium leading-snug drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
+            <p className="mt-2.5 text-xs sm:text-[13px] text-white/95 max-w-[290px] font-medium leading-snug drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
               Connect with nearby farmers and bring fresh produce straight to your table.
             </p>
           </div>
@@ -309,49 +315,49 @@ export default function WelcomePage() {
         </section>
 
         {/* Bottom Interactive Container: Soft Cream (#F4F7EE) */}
-        <section className="relative z-20 bg-[#F4F7EE] flex-1 flex flex-col justify-between px-6 pt-1 pb-6">
+        <section className="relative z-20 bg-[#F4F7EE] flex-1 flex flex-col justify-between px-5 sm:px-6 pt-2 pb-6 max-w-lg mx-auto w-full">
           
-          {/* 3 Feature Highlights */}
-          <div className="grid grid-cols-3 divide-x divide-[#D6E2CD] py-3 sm:py-4">
+          {/* 3 Modern Feature Cards (Pill Tiles) */}
+          <div className="grid grid-cols-3 gap-2.5 sm:gap-3 py-2 sm:py-3">
             
             {/* Feature 1 */}
-            <div className="flex flex-col items-center text-center px-1">
-              <div className="mb-2 text-[#4D8337]">
-                <svg viewBox="0 0 24 24" className="w-7 h-7" fill="currentColor">
+            <div className="flex flex-col items-center text-center p-2.5 sm:p-3 rounded-2xl bg-white/80 border border-[#D5E5CD] shadow-2xs">
+              <div className="w-9 h-9 rounded-xl bg-[#EAF5E1] text-[#4D8337] flex items-center justify-center mb-1.5 shadow-2xs">
+                <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
                   <path d="M6 19h12a1 1 0 0 1 0 2H6a1 1 0 0 1 0-2z" />
                   <path d="M11 12.5V19h2v-6.5c0-.1 0-.2 0-.3 2.7-.4 5.5-2.2 6.5-6.2.2-.9-.7-1.7-1.6-1.4-3.6 1.1-5.4 3.5-5.9 5.8-.5-2.3-2.3-4.7-5.9-5.8-.9-.3-1.8.5-1.6 1.4 1 4 3.8 5.8 6.5 6.2v.3z" />
                 </svg>
               </div>
-              <span className="text-[13px] font-bold text-[#1E351A] leading-tight block">
+              <span className="text-xs font-bold text-[#1E351A] leading-tight block">
                 Discover
               </span>
-              <span className="text-[11px] text-[#4A6443] font-medium leading-tight block mt-0.5">
+              <span className="text-[10px] text-[#4A6443] font-medium leading-tight block mt-0.5">
                 local produce
               </span>
             </div>
 
             {/* Feature 2 */}
-            <div className="flex flex-col items-center text-center px-1">
-              <div className="mb-2 text-[#4D8337]">
-                <svg viewBox="0 0 24 24" className="w-7 h-7" fill="currentColor">
+            <div className="flex flex-col items-center text-center p-2.5 sm:p-3 rounded-2xl bg-white/80 border border-[#D5E5CD] shadow-2xs">
+              <div className="w-9 h-9 rounded-xl bg-[#EAF5E1] text-[#4D8337] flex items-center justify-center mb-1.5 shadow-2xs">
+                <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
                   <path d="M3 10c0-.6.4-1 1-1h16a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1z" />
                   <path d="M7 9l1-4.2C8.2 3.8 9.1 3 10.1 3h3.8c1 0 1.9.8 2.1 1.8L17 9H7z" />
                   <circle cx="12" cy="13.5" r="2.8" />
                   <path d="M6.5 21c0-2.8 2.5-4.5 5.5-4.5s5.5 1.7 5.5 4.5H6.5z" />
                 </svg>
               </div>
-              <span className="text-[13px] font-bold text-[#1E351A] leading-tight block">
+              <span className="text-xs font-bold text-[#1E351A] leading-tight block">
                 Buy directly
               </span>
-              <span className="text-[11px] text-[#4A6443] font-medium leading-tight block mt-0.5">
+              <span className="text-[10px] text-[#4A6443] font-medium leading-tight block mt-0.5">
                 from farmers
               </span>
             </div>
 
             {/* Feature 3 */}
-            <div className="flex flex-col items-center text-center px-1">
-              <div className="mb-2 text-[#4D8337]">
-                <svg viewBox="0 0 24 24" className="w-7 h-7" fill="currentColor">
+            <div className="flex flex-col items-center text-center p-2.5 sm:p-3 rounded-2xl bg-white/80 border border-[#D5E5CD] shadow-2xs">
+              <div className="w-9 h-9 rounded-xl bg-[#EAF5E1] text-[#4D8337] flex items-center justify-center mb-1.5 shadow-2xs">
+                <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
                   <circle cx="12" cy="7" r="2.5" />
                   <path d="M8.5 17c0-2.2 1.6-3.8 3.5-3.8s3.5 1.6 3.5 3.8H8.5z" />
                   <circle cx="6.5" cy="9.5" r="2" />
@@ -360,20 +366,20 @@ export default function WelcomePage() {
                   <path d="M16.5 18c0-.8-.3-1.7-.8-2.4.4-.4 1-.6 1.6-.6 1.5 0 2.7 1.2 2.7 3h-3.5z" />
                 </svg>
               </div>
-              <span className="text-[13px] font-bold text-[#1E351A] leading-tight block">
+              <span className="text-xs font-bold text-[#1E351A] leading-tight block">
                 Support your
               </span>
-              <span className="text-[11px] text-[#4A6443] font-medium leading-tight block mt-0.5">
+              <span className="text-[10px] text-[#4A6443] font-medium leading-tight block mt-0.5">
                 community
               </span>
             </div>
           </div>
 
           {/* Primary & Secondary Actions */}
-          <div className="flex flex-col items-center space-y-3.5 pt-2 sm:pt-4 w-full">
+          <div className="flex flex-col items-center space-y-3 pt-2 sm:pt-3 w-full">
             <Link
               href="/get-started/roles"
-              className="w-full h-14 min-h-[56px] shrink-0 bg-[#53832F] hover:bg-[#467226] active:bg-[#3D6321] active:scale-[0.985] text-white font-bold text-lg rounded-2xl shadow-md flex items-center justify-center gap-2.5 transition-all group"
+              className="w-full h-14 min-h-[56px] shrink-0 bg-gradient-to-r from-[#53832F] to-[#406E23] hover:from-[#487428] hover:to-[#38621E] active:scale-[0.985] text-white font-bold text-lg rounded-2xl shadow-md flex items-center justify-center gap-2.5 transition-all group"
             >
               <span>Get Started</span>
               <ArrowRight className="w-5 h-5 stroke-[2.5] group-hover:translate-x-1 transition-transform" />
@@ -389,7 +395,7 @@ export default function WelcomePage() {
           </div>
 
           {/* Bottom Decorative Waves & Leaf */}
-          <div className="relative mt-2 h-9 w-full overflow-hidden pointer-events-none">
+          <div className="relative mt-2 h-8 w-full overflow-hidden pointer-events-none">
             <svg
               viewBox="0 0 400 40"
               preserveAspectRatio="none"
@@ -405,10 +411,10 @@ export default function WelcomePage() {
               />
             </svg>
 
-            <div className="absolute right-3 bottom-1">
+            <div className="absolute right-3 bottom-0.5">
               <svg
                 viewBox="0 0 36 36"
-                className="w-8 h-8 text-[#9FC491]"
+                className="w-7 h-7 text-[#9FC491]"
                 fill="currentColor"
               >
                 <path d="M14 26c0-6 4.8-10.5 12-12-.4 7.5-4.8 12-12 12z" />
@@ -423,7 +429,7 @@ export default function WelcomePage() {
               </svg>
             </div>
 
-            <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-black/20 rounded-full" />
+            <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-28 h-1 bg-black/20 rounded-full" />
           </div>
 
         </section>
