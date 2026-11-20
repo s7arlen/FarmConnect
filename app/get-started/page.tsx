@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles, Sprout, Users, ShieldCheck } from "lucide-react";
 
 export default function WelcomePage() {
   const router = useRouter();
@@ -17,75 +17,233 @@ export default function WelcomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#112413] flex items-center justify-center p-0 lg:p-6 overflow-x-hidden selection:bg-[#53832F] selection:text-white">
+    <div className="min-h-screen w-full bg-[#0D1D0F] relative overflow-x-hidden selection:bg-[#53832F] selection:text-white flex flex-col justify-between">
+      
       {/* =========================================================================
-          DESKTOP AMBIENT DECORATIVE GREEN BACKDROP (Only visible on lg+ screens)
+          BACKGROUND PHOTOGRAPHY (The Exact High-Res Rolling Farmland Panorama)
       ========================================================================= */}
-      <div className="fixed inset-0 pointer-events-none hidden lg:block overflow-hidden">
-        {/* Ambient radial glow */}
-        <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-[#3B7026]/20 rounded-full blur-[120px]" />
-        <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] bg-[#4D8B38]/20 rounded-full blur-[140px]" />
-        
-        {/* Subtle agricultural background branding */}
-        <div className="absolute top-12 left-12 text-white/20 select-none">
-          <div className="flex items-center gap-3">
-            <svg
-              viewBox="0 0 24 24"
-              className="w-8 h-8 text-[#53832F]/50"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
-              <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
-            </svg>
-            <span className="text-xl font-bold tracking-tight text-white/40">FarmConnect</span>
-          </div>
-          <p className="mt-2 text-xs text-white/30 max-w-xs">
-            Direct farm-to-table agricultural marketplace empowering local growers.
-          </p>
-        </div>
-
-        <div className="absolute bottom-12 right-12 text-right text-white/30 text-xs hidden xl:block select-none">
-          <p className="font-semibold text-white/50">200+ Local Organic Farms</p>
-          <p className="text-white/30">Connecting Communities with Fresh Produce</p>
-        </div>
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <Image
+          src="/images/farm-hero-panorama.jpg"
+          alt="Lush rolling green farmland hills with glowing golden sunrise"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center lg:object-[center_35%]"
+        />
+        {/* Desktop Gradient: Rich agricultural forest green on left -> glowing sunrise on right */}
+        <div className="hidden lg:block absolute inset-0 bg-gradient-to-r from-[#0B1E0D]/95 via-[#0B1E0D]/80 to-[#0B1E0D]/25" />
       </div>
 
       {/* =========================================================================
-          MAIN CONTAINER:
-          Mobile: Full screen (100vw, 100dvh)
-          Desktop: Elegant centered mobile frame with rounded corners and shadow
+          1. DESKTOP FULL-PAGE EXPERIENCE (Screen width >= 1024px)
       ========================================================================= */}
-      <main className="relative w-full max-w-[440px] min-h-screen sm:min-h-[100dvh] lg:min-h-[820px] lg:max-h-[90vh] bg-[#F4F7EE] sm:rounded-none lg:rounded-[38px] shadow-[0_25px_60px_rgba(0,0,0,0.45)] lg:border lg:border-[#2C4D2E]/40 overflow-hidden flex flex-col justify-between">
+      <div className="hidden lg:flex relative z-10 w-full min-h-screen flex-col justify-between">
         
-        {/* =======================================================================
-            TOP HERO SECTION: Real High-Res Agricultural Photography
-        ======================================================================= */}
-        <section className="relative w-full h-[56dvh] min-h-[380px] max-h-[500px] lg:h-[450px] overflow-hidden flex flex-col justify-between select-none">
+        {/* Full-Width Desktop Header */}
+        <header className="w-full max-w-7xl mx-auto px-8 pt-8 flex items-center justify-between">
+          <Link
+            href="/"
+            className="flex items-center gap-3 group focus:outline-hidden focus:ring-2 focus:ring-[#53832F] rounded-xl"
+            aria-label="FarmConnect Home"
+          >
+            <div className="w-11 h-11 rounded-2xl bg-[#53832F] flex items-center justify-center shadow-lg border border-white/20 group-hover:scale-105 transition-transform">
+              <svg
+                viewBox="0 0 24 24"
+                className="w-6 h-6 text-white"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+              </svg>
+            </div>
+            <div>
+              <span className="text-2xl font-black tracking-tight text-white drop-shadow-md block leading-tight">
+                FarmConnect
+              </span>
+              <span className="text-xs text-[#C6E5B3] font-medium tracking-wide block">
+                Direct Farm-to-Table Marketplace
+              </span>
+            </div>
+          </Link>
+
+          {/* Right Header: Login CTA */}
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-white/80 font-medium">
+              Already have an account?
+            </span>
+            <Link
+              href="/login"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-sm backdrop-blur-md transition-all shadow-xs group"
+            >
+              <span>Log in</span>
+              <ArrowRight className="w-4 h-4 text-[#D6F0C7] group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+        </header>
+
+        {/* Desktop Main Stage: Split Widescreen Showcase */}
+        <main className="w-full max-w-7xl mx-auto px-8 py-12 flex-1 flex items-center justify-between gap-16">
           
-          {/* Real Next.js Responsive Image */}
+          {/* Left Column: Bold Headline & Actions */}
+          <div className="max-w-2xl text-white">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#53832F]/30 border border-[#7CB85C]/40 text-[#D6F0C7] text-xs font-semibold uppercase tracking-wider mb-6 backdrop-blur-xs">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Direct Local Agriculture</span>
+            </div>
+
+            <h1 className="text-5xl xl:text-6xl font-black leading-[1.08] tracking-tight drop-shadow-lg mb-6">
+              Fresh from <br />
+              local farms. <br />
+              <span className="text-[#D6F0C7]">Directly to your community.</span>
+            </h1>
+
+            <p className="text-lg xl:text-xl text-white/90 leading-relaxed font-normal max-w-xl mb-10 drop-shadow-md">
+              Discover vine-ripened produce from certified farmers near you, connect directly without middlemen, and buy with confidence.
+            </p>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-4 mb-12">
+              <Link
+                href="/get-started/roles"
+                className="h-14 px-8 rounded-2xl bg-[#53832F] hover:bg-[#467226] active:bg-[#3D6321] active:scale-[0.985] text-white font-bold text-lg shadow-xl hover:shadow-2xl flex items-center gap-3 transition-all group"
+              >
+                <span>Get Started</span>
+                <ArrowRight className="w-5 h-5 stroke-[2.5] group-hover:translate-x-1.5 transition-transform" />
+              </Link>
+
+              <button
+                type="button"
+                onClick={handleGuestExplore}
+                className="h-14 px-7 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/25 text-white font-semibold text-base backdrop-blur-md transition-all shadow-md cursor-pointer"
+              >
+                Explore as a guest
+              </button>
+            </div>
+
+            {/* Platform Stats Row */}
+            <div className="grid grid-cols-3 gap-6 pt-6 border-t border-white/15 max-w-lg">
+              <div>
+                <p className="text-2xl font-extrabold text-[#D6F0C7]">200+</p>
+                <p className="text-xs text-white/70 font-medium mt-0.5">Local Farmers</p>
+              </div>
+              <div>
+                <p className="text-2xl font-extrabold text-[#D6F0C7]">50+</p>
+                <p className="text-xs text-white/70 font-medium mt-0.5">Product Varieties</p>
+              </div>
+              <div>
+                <p className="text-2xl font-extrabold text-[#D6F0C7]">5,000+</p>
+                <p className="text-xs text-white/70 font-medium mt-0.5">Happy Buyers</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: 3 Frosted Feature Pillar Cards */}
+          <div className="w-full max-w-md bg-[#0F2612]/75 backdrop-blur-xl rounded-3xl border border-white/15 p-8 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+            <h3 className="text-lg font-bold text-white tracking-tight mb-1">
+              Why Choose FarmConnect?
+            </h3>
+            <p className="text-xs text-white/70 mb-6">
+              A transparent, fair food ecosystem for growers and families.
+            </p>
+
+            <div className="space-y-4">
+              {/* Pillar 1 */}
+              <div className="flex items-start gap-4 p-3.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
+                <div className="w-10 h-10 rounded-xl bg-[#53832F] flex items-center justify-center shrink-0 shadow-sm text-white">
+                  <Sprout className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-[#E2F4D5]">Discover local produce</h4>
+                  <p className="text-xs text-white/80 leading-relaxed mt-0.5">
+                    Search farm-fresh seasonal harvests harvested today by growers near you.
+                  </p>
+                </div>
+              </div>
+
+              {/* Pillar 2 */}
+              <div className="flex items-start gap-4 p-3.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
+                <div className="w-10 h-10 rounded-xl bg-[#53832F] flex items-center justify-center shrink-0 shadow-sm text-white">
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-[#E2F4D5]">Buy directly from farmers</h4>
+                  <p className="text-xs text-white/80 leading-relaxed mt-0.5">
+                    100% transparent pricing. Farmers earn fair compensation without broker cuts.
+                  </p>
+                </div>
+              </div>
+
+              {/* Pillar 3 */}
+              <div className="flex items-start gap-4 p-3.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
+                <div className="w-10 h-10 rounded-xl bg-[#53832F] flex items-center justify-center shrink-0 shadow-sm text-white">
+                  <Users className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-[#E2F4D5]">Support your community</h4>
+                  <p className="text-xs text-white/80 leading-relaxed mt-0.5">
+                    Keep resources local and build sustainable, resilient regional food supplies.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick role selection link */}
+            <div className="mt-6 pt-5 border-t border-white/10 text-center">
+              <Link
+                href="/get-started/roles"
+                className="text-xs font-semibold text-[#D6F0C7] hover:underline underline-offset-4"
+              >
+                Join as Buyer, Farmer, or Bulk Buyer &rarr;
+              </Link>
+            </div>
+          </div>
+
+        </main>
+
+        {/* Desktop Footer Bar */}
+        <footer className="w-full max-w-7xl mx-auto px-8 pb-6 flex items-center justify-between text-xs text-white/50">
+          <span>&copy; {new Date().getFullYear()} FarmConnect. All rights reserved.</span>
+          <div className="flex items-center gap-6">
+            <Link href="/" className="hover:text-white transition-colors">Home</Link>
+            <Link href="/about" className="hover:text-white transition-colors">About Us</Link>
+            <Link href="/how-it-works" className="hover:text-white transition-colors">How It Works</Link>
+            <Link href="/login" className="hover:text-white transition-colors">Log In</Link>
+          </div>
+        </footer>
+
+      </div>
+
+      {/* =========================================================================
+          2. MOBILE APP-STYLE FULL-SCREEN EXPERIENCE (Screen width < 1024px)
+      ========================================================================= */}
+      <div className="lg:hidden relative z-10 w-full min-h-[100dvh] flex flex-col justify-between bg-[#F4F7EE] overflow-hidden">
+        
+        {/* Top Photographic Hero Container (55dvh) */}
+        <section className="relative w-full h-[55dvh] min-h-[380px] max-h-[500px] overflow-hidden flex flex-col justify-between select-none">
+          
+          {/* Mobile Image Layer */}
           <Image
-            src="/images/lush-crops-sunrise.jpg"
-            alt="Lush green crop rows with golden sunrise in farm field"
+            src="/images/farm-hero-panorama.jpg"
+            alt="Lush rolling green farmland hills with glowing golden sunrise"
             fill
             priority
-            sizes="(max-width: 640px) 100vw, 440px"
-            className="object-cover object-bottom"
+            sizes="100vw"
+            className="object-cover object-[center_35%]"
           />
 
-          {/* Photographic lighting overlays for readability:
-              Top: Soft luminous morning sky gradient so dark green brand & login text are crisp and clean
-              Bottom: Warm vignette so the white/mint headlines stand out against the field */}
+          {/* Photographic Lighting Overlays */}
+          {/* Top bright morning sky gradient so dark green brand & login text are crisp */}
           <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/90 via-white/45 to-transparent pointer-events-none" />
-          <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black/60 via-black/25 to-transparent pointer-events-none" />
+          {/* Bottom vignette for readable white typography */}
+          <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black/65 via-black/30 to-transparent pointer-events-none" />
 
-          {/* =====================================================================
-              TOP HEADER BAR: Logo & Login Action
-          ===================================================================== */}
+          {/* Mobile Header Bar */}
           <header className="relative z-20 flex items-center justify-between px-5 pt-4 sm:pt-6">
-            
-            {/* Brand Logo: Green leaf badge + FarmConnect */}
             <Link
               href="/"
               className="flex items-center gap-2 group focus:outline-hidden focus:ring-2 focus:ring-[#53832F] rounded-lg"
@@ -112,12 +270,12 @@ export default function WelcomePage() {
 
             {/* Right: "Already have an account? Log in →" */}
             <div className="text-right flex flex-col items-end">
-              <span className="block text-[11px] sm:text-xs text-[#3D5A36] font-medium leading-tight">
+              <span className="block text-[11px] text-[#3D5A36] font-medium leading-tight">
                 Already have an account?
               </span>
               <Link
                 href="/login"
-                className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-[#4D8337] hover:text-[#28552B] transition-colors group mt-0.5"
+                className="inline-flex items-center gap-1 text-xs font-bold text-[#4D8337] hover:text-[#28552B] transition-colors group mt-0.5"
               >
                 <span>Log in</span>
                 <span className="group-hover:translate-x-0.5 transition-transform">→</span>
@@ -125,9 +283,7 @@ export default function WelcomePage() {
             </div>
           </header>
 
-          {/* =====================================================================
-              HERO TYPOGRAPHY: Headline & Subtitle
-          ===================================================================== */}
+          {/* Mobile Hero Headline */}
           <div className="relative z-20 px-6 pb-8">
             <h1 className="text-[34px] sm:text-[38px] leading-[1.08] font-black text-white tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]">
               Fresh food.
@@ -139,9 +295,7 @@ export default function WelcomePage() {
             </p>
           </div>
 
-          {/* =====================================================================
-              ORGANIC WAVE DIVIDER: Seamless transition to bottom cream container
-          ===================================================================== */}
+          {/* Organic Wave Divider Transition */}
           <div className="absolute -bottom-1 left-0 right-0 w-full overflow-hidden leading-none z-10 pointer-events-none">
             <svg
               viewBox="0 0 500 70"
@@ -154,26 +308,16 @@ export default function WelcomePage() {
           </div>
         </section>
 
-        {/* =======================================================================
-            BOTTOM INTERACTIVE CONTAINER: Soft Cream (#F4F7EE)
-        ======================================================================= */}
+        {/* Bottom Interactive Container: Soft Cream (#F4F7EE) */}
         <section className="relative z-20 bg-[#F4F7EE] flex-1 flex flex-col justify-between px-6 pt-1 pb-6">
           
-          {/* =====================================================================
-              1. THREE FEATURE HIGHLIGHTS (With Dividers)
-          ===================================================================== */}
+          {/* 3 Feature Highlights */}
           <div className="grid grid-cols-3 divide-x divide-[#D6E2CD] py-3 sm:py-4">
             
-            {/* Feature 1: Discover local produce */}
+            {/* Feature 1 */}
             <div className="flex flex-col items-center text-center px-1">
-              {/* Sprout Icon */}
               <div className="mb-2 text-[#4D8337]">
-                <svg
-                  viewBox="0 0 24 24"
-                  className="w-7 h-7"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
+                <svg viewBox="0 0 24 24" className="w-7 h-7" fill="currentColor">
                   <path d="M6 19h12a1 1 0 0 1 0 2H6a1 1 0 0 1 0-2z" />
                   <path d="M11 12.5V19h2v-6.5c0-.1 0-.2 0-.3 2.7-.4 5.5-2.2 6.5-6.2.2-.9-.7-1.7-1.6-1.4-3.6 1.1-5.4 3.5-5.9 5.8-.5-2.3-2.3-4.7-5.9-5.8-.9-.3-1.8.5-1.6 1.4 1 4 3.8 5.8 6.5 6.2v.3z" />
                 </svg>
@@ -186,16 +330,10 @@ export default function WelcomePage() {
               </span>
             </div>
 
-            {/* Feature 2: Buy directly from farmers */}
+            {/* Feature 2 */}
             <div className="flex flex-col items-center text-center px-1">
-              {/* Farmer with brim hat Icon */}
               <div className="mb-2 text-[#4D8337]">
-                <svg
-                  viewBox="0 0 24 24"
-                  className="w-7 h-7"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
+                <svg viewBox="0 0 24 24" className="w-7 h-7" fill="currentColor">
                   <path d="M3 10c0-.6.4-1 1-1h16a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1z" />
                   <path d="M7 9l1-4.2C8.2 3.8 9.1 3 10.1 3h3.8c1 0 1.9.8 2.1 1.8L17 9H7z" />
                   <circle cx="12" cy="13.5" r="2.8" />
@@ -210,16 +348,10 @@ export default function WelcomePage() {
               </span>
             </div>
 
-            {/* Feature 3: Support your community */}
+            {/* Feature 3 */}
             <div className="flex flex-col items-center text-center px-1">
-              {/* 3 People Community Icon */}
               <div className="mb-2 text-[#4D8337]">
-                <svg
-                  viewBox="0 0 24 24"
-                  className="w-7 h-7"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
+                <svg viewBox="0 0 24 24" className="w-7 h-7" fill="currentColor">
                   <circle cx="12" cy="7" r="2.5" />
                   <path d="M8.5 17c0-2.2 1.6-3.8 3.5-3.8s3.5 1.6 3.5 3.8H8.5z" />
                   <circle cx="6.5" cy="9.5" r="2" />
@@ -237,21 +369,16 @@ export default function WelcomePage() {
             </div>
           </div>
 
-          {/* =====================================================================
-              2. PRIMARY & SECONDARY ACTIONS
-          ===================================================================== */}
+          {/* Primary & Secondary Actions */}
           <div className="flex flex-col items-center space-y-3.5 pt-2 sm:pt-4 w-full">
-            
-            {/* Primary Action Button: "Get Started →" (Plush, prominent height matching design) */}
             <Link
               href="/get-started/roles"
-              className="w-full h-14 min-h-[56px] shrink-0 bg-[#53832F] hover:bg-[#467226] active:bg-[#3D6321] active:scale-[0.985] text-white font-bold text-lg rounded-2xl shadow-md hover:shadow-lg flex items-center justify-center gap-2.5 transition-all group"
+              className="w-full h-14 min-h-[56px] shrink-0 bg-[#53832F] hover:bg-[#467226] active:bg-[#3D6321] active:scale-[0.985] text-white font-bold text-lg rounded-2xl shadow-md flex items-center justify-center gap-2.5 transition-all group"
             >
               <span>Get Started</span>
               <ArrowRight className="w-5 h-5 stroke-[2.5] group-hover:translate-x-1 transition-transform" />
             </Link>
 
-            {/* Secondary Action Link: "Explore as a guest" */}
             <button
               type="button"
               onClick={handleGuestExplore}
@@ -261,11 +388,8 @@ export default function WelcomePage() {
             </button>
           </div>
 
-          {/* =====================================================================
-              3. DECORATIVE SOFT BOTTOM WAVES & TWIN LEAF
-          ===================================================================== */}
+          {/* Bottom Decorative Waves & Leaf */}
           <div className="relative mt-2 h-9 w-full overflow-hidden pointer-events-none">
-            {/* Bottom pastel curves */}
             <svg
               viewBox="0 0 400 40"
               preserveAspectRatio="none"
@@ -281,7 +405,6 @@ export default function WelcomePage() {
               />
             </svg>
 
-            {/* Twin leaves accent in bottom right */}
             <div className="absolute right-3 bottom-1">
               <svg
                 viewBox="0 0 36 36"
@@ -300,13 +423,13 @@ export default function WelcomePage() {
               </svg>
             </div>
 
-            {/* Bottom Home Indicator Bar (App feel) */}
             <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-black/20 rounded-full" />
           </div>
 
         </section>
 
-      </main>
+      </div>
+
     </div>
   );
 }
