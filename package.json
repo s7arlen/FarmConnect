@@ -15,7 +15,11 @@
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.4.2",
+    "@aws-sdk/client-s3": "^3.1175.0",
+    "@aws-sdk/s3-request-presigner": "^3.1175.0",
     "@hookform/resolvers": "^3.9.0",
+    "@neon/config": "^1.14.6",
+    "@neon/env": "^2.1.8",
     "@neondatabase/serverless": "^0.9.4",
     "@paralleldrive/cuid2": "^2.2.2",
     "@radix-ui/react-avatar": "^1.1.0",
