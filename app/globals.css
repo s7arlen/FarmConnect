@@ -119,4 +119,19 @@
   .text-gradient {
     @apply bg-gradient-to-r from-brand-green to-brand-dark bg-clip-text text-transparent;
   }
+
+  /* Leaflet Map Customization */
+  .leaflet-popup-content-wrapper {
+    border-radius: 1rem !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+    border: 1px solid rgba(77, 139, 56, 0.2) !important;
+    padding: 2px !important;
+  }
+  .leaflet-popup-content {
+    margin: 8px 10px !important;
+    line-height: 1.4 !important;
+  }
+  .leaflet-container {
+    font-family: inherit !important;
+  }
 }

@@ -25,6 +25,7 @@ import { getInitials } from "@/lib/utils";
 import { toast } from "sonner";
 import MobileBottomNav, { type MobileNavItem } from "@/components/app/MobileBottomNav";
 import MobileHeader from "@/components/app/MobileHeader";
+import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 
 const SIDEBAR_LINKS = [
   { href: "/farmer/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -56,36 +57,37 @@ export default function FarmerLayout({ children }: { children: React.ReactNode }
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
     logout();
-    toast.success("Signed out");
+    toast.success("Signed out successfully");
     router.push("/");
   }
 
-  // Derive contextual header title
-  const activeLink = SIDEBAR_LINKS.find((l) =>
-    pathname === l.href || (l.href !== "/farmer/products/add" && pathname.startsWith(l.href + "/"))
-  );
-  const headerTitle = activeLink?.label || "Farmer Portal";
+  // Derive human-readable header title for current route
+  const currentLink = SIDEBAR_LINKS.find((l) => pathname === l.href || pathname.startsWith(l.href + "/"));
+  const headerTitle = currentLink ? currentLink.label : "Farmer Portal";
 
   return (
-    <div className="h-[100dvh] max-h-[100dvh] flex bg-brand-cream overflow-hidden">
-      {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col w-64 bg-white border-r border-brand-border flex-shrink-0 h-full">
-        <div className="p-5 border-b border-brand-border">
-          <Link href="/" className="flex items-center gap-2">
+    <div className="flex h-screen bg-brand-cream overflow-hidden">
+      {/* Desktop Sidebar (>= 1024px) */}
+      <aside className="w-64 bg-white border-r border-brand-border flex-col flex-shrink-0 hidden lg:flex">
+        {/* Brand Header */}
+        <div className="p-5 border-b border-brand-border flex items-center justify-between">
+          <Link href="/farmer/dashboard" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-brand-green rounded-lg flex items-center justify-center">
               <Leaf className="w-4 h-4 text-white" />
             </div>
-            <span className="font-bold text-base text-brand-text">FarmConnect</span>
+            <div>
+              <span className="font-bold text-base text-brand-text block leading-none">FarmConnect</span>
+              <span className="text-[10px] text-brand-green font-semibold tracking-wide uppercase">Farmer Portal</span>
+            </div>
           </Link>
-          <p className="text-xs text-brand-muted mt-1 font-medium">Farmer Portal</p>
+          <LanguageSwitcher variant="pill" />
         </div>
 
+        {/* Navigation Links */}
         <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
           {SIDEBAR_LINKS.map((link) => {
             const Icon = link.icon;
-            const active =
-              pathname === link.href ||
-              (link.href !== "/farmer/products/add" && pathname.startsWith(link.href + "/"));
+            const active = pathname === link.href || (link.href !== "/farmer/dashboard" && pathname.startsWith(link.href + "/"));
             return (
               <Link
                 key={link.href}
@@ -104,6 +106,7 @@ export default function FarmerLayout({ children }: { children: React.ReactNode }
           })}
         </nav>
 
+        {/* User Card & Logout */}
         <div className="p-3 border-t border-brand-border">
           {user && (
             <div className="flex items-center gap-3 px-3 py-2 mb-1">
@@ -183,19 +186,22 @@ export default function FarmerLayout({ children }: { children: React.ReactNode }
           title={headerTitle}
           onMenuClick={() => setSidebarOpen(true)}
           rightAction={
-            <Link
-              href="/farmer/farm"
-              className="w-8 h-8 rounded-full bg-brand-light border border-brand-border flex items-center justify-center text-xs font-bold text-brand-green"
-            >
-              {user ? getInitials(user.name) : "F"}
-            </Link>
+            <div className="flex items-center gap-2">
+              <LanguageSwitcher variant="pill" />
+              <Link
+                href="/farmer/farm"
+                className="w-8 h-8 rounded-full bg-brand-light border border-brand-border flex items-center justify-center text-xs font-bold text-brand-green"
+              >
+                {user ? getInitials(user.name) : "F"}
+              </Link>
+            </div>
           }
         />
 
         <main className="flex-1 overflow-y-auto bg-brand-cream">{children}</main>
       </div>
 
-      {/* App-Like Mobile Bottom Navigation Bar */}
+      {/* Persistent App Bottom Nav for Mobile Screens */}
       <MobileBottomNav items={MOBILE_NAV} />
     </div>
   );

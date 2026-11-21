@@ -2,23 +2,46 @@
 
 import React from "react";
 import { Users, ShoppingBag, Handshake } from "lucide-react";
+import { useLanguageStore } from "@/store/languageStore";
 
 export default function TrustStatsCard() {
+  const { language, t } = useLanguageStore();
+
+  const statLabels = {
+    en: {
+      farmers: "Local Farmers",
+      varieties: "Produce Varieties",
+      buyers: "Happy Buyers",
+    },
+    kn: {
+      farmers: "ಸ್ಥಳೀಯ ರೈತರು",
+      varieties: "ಬೆಳೆ ತಳಿಗಳು",
+      buyers: "ತೃಪ್ತ ಗ್ರಾಹಕರು",
+    },
+    hi: {
+      farmers: "स्थानीय किसान",
+      varieties: "फसल किस्में",
+      buyers: "संतुष्ट खरीदार",
+    },
+  };
+
+  const currentLabels = statLabels[language] || statLabels.en;
+
   const stats = [
     {
       icon: Users,
       value: "200+",
-      label: "Local Farmers",
+      label: currentLabels.farmers,
     },
     {
       icon: ShoppingBag,
       value: "50+",
-      label: "Product Varieties",
+      label: currentLabels.varieties,
     },
     {
       icon: Handshake,
       value: "5,000+",
-      label: "Happy Buyers",
+      label: currentLabels.buyers,
     },
   ];
 

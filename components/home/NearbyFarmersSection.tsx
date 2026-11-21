@@ -3,11 +3,13 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Tractor, ArrowRight, CheckCircle, MapPin, Star } from "lucide-react";
+import { Tractor, ArrowRight, CheckCircle, MapPin, Star, Map } from "lucide-react";
 import { DEMO_FARMERS } from "@/data/demo";
+import { useLanguageStore } from "@/store/languageStore";
 
 export default function NearbyFarmersSection() {
   const nearbyFarmers = DEMO_FARMERS.slice(0, 3);
+  const { t } = useLanguageStore();
 
   return (
     <div className="space-y-3">
@@ -17,15 +19,26 @@ export default function NearbyFarmersSection() {
           <div className="w-6 h-6 rounded-md bg-brand-light flex items-center justify-center text-brand-green">
             <Tractor className="w-3.5 h-3.5 stroke-[2.2]" />
           </div>
-          <h2 className="text-base sm:text-lg font-bold text-brand-text">Nearby Farmers</h2>
+          <h2 className="text-base sm:text-lg font-bold text-brand-text">
+            {t("nearbyFarmers")}
+          </h2>
         </div>
-        <Link
-          href="/buyer/farmers"
-          className="text-xs font-semibold text-brand-green hover:text-brand-dark flex items-center gap-1 group"
-        >
-          <span>View All</span>
-          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/buyer/farmers?view=map"
+            className="text-xs font-semibold text-brand-green hover:text-brand-dark flex items-center gap-1 group bg-brand-light/70 px-2.5 py-1 rounded-full border border-brand-green/20"
+          >
+            <Map className="w-3.5 h-3.5" />
+            <span>{t("mapView")}</span>
+          </Link>
+          <Link
+            href="/buyer/farmers"
+            className="text-xs font-semibold text-brand-muted hover:text-brand-dark flex items-center gap-0.5 group"
+          >
+            <span>{t("viewAll")}</span>
+            <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+          </Link>
+        </div>
       </div>
 
       {/* Farmer Cards List */}
@@ -76,7 +89,7 @@ export default function NearbyFarmersSection() {
                 href={`/buyer/farmers/${farmer.id}`}
                 className="px-3.5 py-2 rounded-xl bg-brand-light text-brand-green text-xs font-bold hover:bg-brand-green hover:text-white transition-all flex-shrink-0 text-center shadow-2xs"
               >
-                View Profile
+                {t("viewProfile")}
               </Link>
             </div>
           );

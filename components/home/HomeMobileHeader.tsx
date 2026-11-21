@@ -6,6 +6,7 @@ import { Leaf, Bell, User, Check, X } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/utils";
+import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 
 export default function HomeMobileHeader() {
   const user = useAuthStore((s) => s.user);
@@ -27,8 +28,11 @@ export default function HomeMobileHeader() {
           <span className="font-bold text-lg tracking-tight text-white">FarmConnect</span>
         </Link>
 
-        {/* Right Actions: Notification Bell + Avatar */}
-        <div className="flex items-center gap-3">
+        {/* Right Actions: Language Switcher + Notification Bell + Avatar */}
+        <div className="flex items-center gap-2">
+          {/* Language Switcher */}
+          <LanguageSwitcher variant="navbar" isHeroPage={false} />
+
           {/* Notification Bell */}
           <button
             onClick={() => setShowNotifications(!showNotifications)}
@@ -71,41 +75,44 @@ export default function HomeMobileHeader() {
         </div>
       </header>
 
-      {/* Notifications Drawer / Dropdown */}
+      {/* Slide-out Mobile Notification Sheet */}
       {showNotifications && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex justify-end">
-          <div className="w-full max-w-sm bg-white h-full shadow-2xl p-5 flex flex-col animate-in slide-in-from-right duration-200">
-            <div className="flex items-center justify-between pb-4 border-b border-brand-border">
+        <div className="lg:hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex flex-col justify-start pt-14">
+          <div className="bg-white rounded-b-3xl shadow-xl border-b border-brand-border p-4 max-h-[75vh] overflow-y-auto animate-in slide-in-from-top-4 duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-brand-border">
               <div className="flex items-center gap-2">
-                <Bell className="w-5 h-5 text-brand-green" />
-                <h3 className="font-bold text-base text-brand-text">Notifications</h3>
+                <Bell className="w-4 h-4 text-brand-green" />
+                <h3 className="text-sm font-bold text-brand-dark">Notifications</h3>
               </div>
               <button
                 onClick={() => setShowNotifications(false)}
-                className="p-1 rounded-lg hover:bg-brand-light text-brand-muted"
+                className="p-1 rounded-full text-brand-muted hover:text-brand-dark hover:bg-brand-light"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="flex-1 py-4 space-y-3 overflow-y-auto">
+            <div className="divide-y divide-brand-border/60 py-1">
               {notifications.map((n) => (
-                <div key={n.id} className="p-3 rounded-xl bg-brand-cream border border-brand-border hover:bg-brand-light/40 transition-colors">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-semibold text-xs text-brand-dark">{n.title}</span>
-                    <span className="text-[10px] text-brand-muted">{n.time}</span>
+                <div key={n.id} className="py-3 flex gap-3">
+                  <div className="w-2 h-2 rounded-full bg-brand-green mt-1.5 flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-bold text-brand-dark">{n.title}</p>
+                      <span className="text-[10px] text-brand-muted">{n.time}</span>
+                    </div>
+                    <p className="text-xs text-brand-muted mt-0.5">{n.desc}</p>
                   </div>
-                  <p className="text-xs text-brand-muted leading-relaxed">{n.desc}</p>
                 </div>
               ))}
             </div>
 
-            <div className="pt-3 border-t border-brand-border">
+            <div className="pt-2">
               <button
                 onClick={() => setShowNotifications(false)}
-                className="w-full py-2 text-center text-xs font-semibold text-brand-green hover:underline"
+                className="w-full py-2 bg-brand-light text-brand-green text-xs font-bold rounded-xl hover:bg-brand-green hover:text-white transition-colors"
               >
-                Close
+                Mark all as read
               </button>
             </div>
           </div>

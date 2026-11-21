@@ -68,6 +68,22 @@
 - [*] Persistent Mobile Bottom Navigation on homepage with `pb-safe`
 - [*] Responsive desktop presentation (professional full navbar, wide hero, responsive grid, full footer)
 
+### 2.2 Interactive Geospatial Map (Option B — Leaflet + OpenStreetMap)
+- [*] Client-side Leaflet integration with dynamic SSR safety (`SafeFarmerMap`)
+- [*] Custom SVG farm pin markers with agricultural styling and bounce/hover focus
+- [*] Rich farm preview popups (cover photo, verified badge, rating, harvest summary, direct profile link)
+- [*] User location GPS integration (`navigator.geolocation`) with pulsing blue radar marker
+- [*] Interactive radius distance circles (5 km, 15 km, 30 km, All) with bounds auto-fitting
+- [*] Dual View Switcher (`[ List View ]` / `[ Map View ]`) on `/buyer/farmers` and `/farmers`
+- [*] Direct Map View button on homepage Nearby Farmers section (`/buyer/farmers?view=map`)
+
+### 2.3 Vernacular & Multilingual Support (Option C — Kannada, Hindi, English)
+- [*] Core translation dictionaries for English (`en`), Kannada (`kn` / ಕನ್ನಡ), and Hindi (`hi` / हिंदी)
+- [*] Persistent Zustand language store (`useLanguageStore`) with `localStorage` sync
+- [*] Sleek `LanguageSwitcher` pill and dropdown component with native script labels
+- [*] Seamless integration in Desktop Navbar, Mobile App Headers, Sidebar, Hero Banner, and Category shortcuts
+- [*] Zero-reload reactive UI translation across public and authenticated portals
+
 ---
 
 ## 3. Backend & API Services
@@ -129,7 +145,7 @@
 - [*] Server-side authorization testing
 - [*] Mobile browser responsiveness testing (Safe-area padding, mobile bottom nav)
 - [*] Desktop browser responsiveness testing (Sidebar layouts, max-width constraints)
-- [*] Production build verification (`npm run build` — 56 routes compiled successfully)
+- [*] Production build verification (`npm run build` — 61 routes compiled successfully)
 
 ---
 

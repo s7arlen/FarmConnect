@@ -26,6 +26,7 @@ import { getInitials } from "@/lib/utils";
 import { toast } from "sonner";
 import MobileBottomNav, { type MobileNavItem } from "@/components/app/MobileBottomNav";
 import MobileHeader from "@/components/app/MobileHeader";
+import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 
 const SIDEBAR_LINKS = [
   { href: "/buyer/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -58,27 +59,42 @@ export default function BuyerLayout({ children }: { children: React.ReactNode })
     { href: "/buyer/explore", label: "Explore", icon: Search },
     { href: "/buyer/cart", label: "Cart", icon: ShoppingCart, badge: cartCount },
     { href: user ? "/buyer/orders" : "/login", label: "Orders", icon: ClipboardList },
-    { href: user ? "/buyer/profile" : "/login", label: user ? "Profile" : "Sign In", icon: User },
+    {
+      href: user
+        ? user.role === "FARMER"
+          ? "/farmer/dashboard"
+          : user.role === "ADMIN"
+          ? "/admin/dashboard"
+          : user.role === "BULK_BUYER"
+          ? "/bulk-buyer/dashboard"
+          : "/buyer/profile"
+        : "/login",
+      label: "Profile",
+      icon: User,
+    },
   ];
 
-  // Derive header title
-  const activeLink = SIDEBAR_LINKS.find((l) =>
-    pathname === l.href || (l.href !== "/buyer" && pathname.startsWith(l.href + "/"))
+  // Derive title from pathname
+  const currentLink = SIDEBAR_LINKS.find(
+    (l) => pathname === l.href || (l.href !== "/buyer/dashboard" && pathname.startsWith(l.href + "/"))
   );
-  const headerTitle = activeLink?.label || "Buyer Portal";
+  const headerTitle = currentLink ? currentLink.label : "FarmConnect";
 
   return (
-    <div className="min-h-screen flex bg-brand-cream">
-      {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col w-64 bg-white border-r border-brand-border flex-shrink-0">
-        <div className="p-5 border-b border-brand-border">
+    <div className="flex h-screen bg-brand-cream overflow-hidden">
+      {/* Desktop Sidebar (>= 1024px) */}
+      <aside className="w-64 bg-white border-r border-brand-border flex-col flex-shrink-0 hidden lg:flex">
+        <div className="p-5 border-b border-brand-border flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-brand-green rounded-lg flex items-center justify-center shadow-sm">
+            <div className="w-8 h-8 bg-brand-green rounded-lg flex items-center justify-center">
               <Leaf className="w-4 h-4 text-white" />
             </div>
-            <span className="font-bold text-base text-brand-text">FarmConnect</span>
+            <div>
+              <span className="font-bold text-base text-brand-text block leading-none">FarmConnect</span>
+              <span className="text-[10px] text-brand-green font-semibold tracking-wide uppercase">Direct Marketplace</span>
+            </div>
           </Link>
-          <p className="text-xs text-brand-muted mt-1 font-medium">Buyer Marketplace</p>
+          <LanguageSwitcher variant="pill" />
         </div>
 
         <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
@@ -155,7 +171,7 @@ export default function BuyerLayout({ children }: { children: React.ReactNode })
         </div>
       </aside>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Drawer Overlay (< 1024px) */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
@@ -163,7 +179,7 @@ export default function BuyerLayout({ children }: { children: React.ReactNode })
             <div className="flex items-center justify-between p-5 border-b border-brand-border">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 bg-brand-green rounded-lg flex items-center justify-center">
-                  <Leaf className="w-3.5 h-3.5 text-white" />
+                  <Leaf className="w-4 h-4 text-white" />
                 </div>
                 <span className="font-bold text-brand-text">Buyer Menu</span>
               </div>
@@ -221,18 +237,21 @@ export default function BuyerLayout({ children }: { children: React.ReactNode })
           title={headerTitle}
           onMenuClick={() => setSidebarOpen(true)}
           rightAction={
-            <Link
-              href="/buyer/cart"
-              className="relative p-2 rounded-full hover:bg-brand-light text-brand-dark transition-colors"
-              aria-label="View shopping cart"
-            >
-              <ShoppingCart className="w-5 h-5" />
-              {cartCount > 0 && (
-                <span className="absolute 0 top-0.5 right-0.5 min-w-[17px] h-[17px] bg-brand-green text-white text-[10px] font-bold rounded-full flex items-center justify-center px-0.5 ring-2 ring-white">
-                  {cartCount}
-                </span>
-              )}
-            </Link>
+            <div className="flex items-center gap-2">
+              <LanguageSwitcher variant="pill" />
+              <Link
+                href="/buyer/cart"
+                className="relative p-2 rounded-full hover:bg-brand-light text-brand-dark transition-colors"
+                aria-label="View shopping cart"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {cartCount > 0 && (
+                  <span className="absolute 0 top-0.5 right-0.5 min-w-[17px] h-[17px] bg-brand-green text-white text-[10px] font-bold rounded-full flex items-center justify-center px-0.5 ring-2 ring-white">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
+            </div>
           }
         />
 

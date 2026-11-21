@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, Suspense } from "react";
 import { motion } from "framer-motion";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { Search, SlidersHorizontal, X, Map } from "lucide-react";
+import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -15,24 +15,27 @@ import {
 } from "@/components/ui/select";
 import ProductCard from "@/components/products/ProductCard";
 import EmptyState from "@/components/shared/EmptyState";
+import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 import { DEMO_PRODUCTS } from "@/data/demo";
 import { PRODUCT_CATEGORIES } from "@/data/categories";
-
-const SORT_OPTIONS = [
-  { value: "nearest", label: "Nearest" },
-  { value: "price_asc", label: "Lowest Price" },
-  { value: "price_desc", label: "Highest Price" },
-  { value: "newest", label: "Recently Added" },
-];
+import { useLanguageStore } from "@/store/languageStore";
 
 type SortValue = "nearest" | "price_asc" | "price_desc" | "newest";
 
-export default function ExplorePage() {
+function ExploreContent() {
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedSort, setSelectedSort] = useState<SortValue>("newest");
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const { t } = useLanguageStore();
+
+  const sortOptions = [
+    { value: "nearest", label: t("sortNearest") },
+    { value: "price_asc", label: t("sortPriceAsc") },
+    { value: "price_desc", label: t("sortPriceDesc") },
+    { value: "newest", label: t("sortNewest") },
+  ];
 
   const filtered = useMemo(() => {
     let results = [...DEMO_PRODUCTS];
@@ -93,27 +96,41 @@ export default function ExplorePage() {
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto pb-safe">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-brand-text mb-1">
-          Explore Produce
-        </h1>
-        <p className="text-brand-muted text-sm">
-          Fresh produce from verified local farmers
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-brand-text mb-1">
+            {t("explore")}
+          </h1>
+          <p className="text-brand-muted text-sm">
+            {t("verifiedFarmersSubtitle")}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <LanguageSwitcher variant="pill" />
+          <Link
+            href="/buyer/farmers?view=map"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-light text-brand-green border border-brand-green/20 hover:bg-brand-green hover:text-white transition-all text-xs font-bold shadow-2xs"
+          >
+            <Map className="w-3.5 h-3.5" />
+            <span>{t("mapView")}</span>
+          </Link>
+        </div>
       </div>
 
       {/* Search + Sort Bar */}
       <div className="flex gap-3 mb-4">
         <div className="flex-1">
           <Input
-            placeholder="Search vegetables, fruits, grains..."
-            leftIcon={<Search className="w-4 h-4" />}
+            placeholder={t("searchPlaceholder")}
+            leftIcon={<Search className="w-4 h-4 text-brand-muted" />}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            className="bg-white"
             rightIcon={
               query ? (
                 <button onClick={() => setQuery("")} aria-label="Clear search">
-                  <X className="w-4 h-4" />
+                  <X className="w-4 h-4 text-brand-muted hover:text-brand-text" />
                 </button>
               ) : undefined
             }
@@ -122,9 +139,9 @@ export default function ExplorePage() {
         <Button
           variant="outline"
           onClick={() => setShowFilters(!showFilters)}
-          className="gap-2 flex-shrink-0"
+          className="gap-2 flex-shrink-0 bg-white"
         >
-          <SlidersHorizontal className="w-4 h-4" />
+          <SlidersHorizontal className="w-4 h-4 text-brand-green" />
           <span className="hidden sm:inline">Filters</span>
           {hasActiveFilters && (
             <span className="w-2 h-2 rounded-full bg-brand-green" />
@@ -134,11 +151,11 @@ export default function ExplorePage() {
           value={selectedSort}
           onValueChange={(v) => setSelectedSort(v as SortValue)}
         >
-          <SelectTrigger className="w-[160px] hidden md:flex">
+          <SelectTrigger className="w-[170px] hidden md:flex bg-white">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {SORT_OPTIONS.map((opt) => (
+            {sortOptions.map((opt) => (
               <SelectItem key={opt.value} value={opt.value}>
                 {opt.label}
               </SelectItem>
@@ -152,16 +169,16 @@ export default function ExplorePage() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white border border-brand-border rounded-xl p-5 mb-5 space-y-4"
+          className="bg-white border border-brand-border rounded-xl p-5 mb-5 space-y-4 shadow-xs"
         >
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-brand-text">Filters</h3>
+            <h3 className="font-semibold text-brand-text">Price Range Filter</h3>
             {hasActiveFilters && (
               <button
                 onClick={clearFilters}
-                className="text-xs text-brand-green hover:underline"
+                className="text-xs text-brand-green hover:underline font-bold"
               >
-                Clear all
+                {t("clearFilters")}
               </button>
             )}
           </div>
@@ -169,19 +186,19 @@ export default function ExplorePage() {
           {/* Max Price */}
           <div>
             <label className="text-sm font-medium text-brand-text block mb-2">
-              Max Price per unit
+              Max Price per unit (₹)
             </label>
             <div className="flex flex-wrap gap-2">
-              {[50, 100, 150, 200].map((price) => (
+              {[40, 80, 120, 200].map((price) => (
                 <button
                   key={price}
                   onClick={() =>
                     setMaxPrice(maxPrice === price ? null : price)
                   }
-                  className={`px-3 py-1.5 rounded-lg text-sm border transition-colors ${
+                  className={`px-3 py-1.5 rounded-lg text-sm border font-medium transition-colors ${
                     maxPrice === price
-                      ? "bg-brand-green text-white border-brand-green"
-                      : "border-brand-border text-brand-muted hover:border-brand-green"
+                      ? "bg-brand-green text-white border-brand-green shadow-xs"
+                      : "border-brand-border text-brand-muted hover:border-brand-green bg-zinc-50"
                   }`}
                 >
                   ₹{price}
@@ -198,11 +215,11 @@ export default function ExplorePage() {
           onClick={() => setSelectedCategory("all")}
           className={`flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
             selectedCategory === "all"
-              ? "bg-brand-green text-white border-brand-green"
+              ? "bg-brand-green text-white border-brand-green shadow-xs"
               : "bg-white border-brand-border text-brand-muted hover:border-brand-green"
           }`}
         >
-          All
+          {t("allCategories")}
         </button>
         {PRODUCT_CATEGORIES.map((cat) => (
           <button
@@ -210,54 +227,46 @@ export default function ExplorePage() {
             onClick={() => setSelectedCategory(cat.id)}
             className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
               selectedCategory === cat.id
-                ? "bg-brand-green text-white border-brand-green"
+                ? "bg-brand-green text-white border-brand-green shadow-xs"
                 : "bg-white border-brand-border text-brand-muted hover:border-brand-green"
             }`}
           >
             <span>{cat.icon}</span>
-            {cat.label}
+            <span>{cat.label}</span>
           </button>
         ))}
       </div>
 
-      {/* Results count */}
+      {/* Results Count */}
       <div className="flex items-center justify-between mb-4">
-        <p className="text-sm text-brand-muted">
-          {filtered.length} produce{filtered.length !== 1 ? "s" : ""} available
+        <p className="text-sm text-brand-muted font-medium">
+          Showing <span className="font-bold text-brand-text">{filtered.length}</span> fresh products
         </p>
-        {/* Mobile sort */}
-        <Select
-          value={selectedSort}
-          onValueChange={(v) => setSelectedSort(v as SortValue)}
-        >
-          <SelectTrigger className="w-[140px] md:hidden h-8">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {SORT_OPTIONS.map((opt) => (
-              <SelectItem key={opt.value} value={opt.value}>
-                {opt.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
       </div>
 
-      {/* Products Grid */}
+      {/* Product Grid */}
       {filtered.length === 0 ? (
         <EmptyState
           icon={<Search className="w-8 h-8" />}
           title="No produce found"
-          description="Try a different search term or adjust your filters."
-          action={{ label: "Clear Filters", onClick: clearFilters }}
+          description="Try clearing your filters or searching for something else."
+          action={{ label: t("clearFilters"), onClick: clearFilters }}
         />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {filtered.map((product, i) => (
-            <ProductCard key={product.id} product={product} index={i} />
+          {filtered.map((product) => (
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       )}
     </div>
+  );
+}
+
+export default function ExplorePage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-brand-muted text-sm">Loading produce...</div>}>
+      <ExploreContent />
+    </Suspense>
   );
 }

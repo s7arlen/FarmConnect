@@ -8,14 +8,9 @@ import { Menu, X, ShoppingCart, User, Leaf } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/store/cartStore";
 import { useAuthStore } from "@/store/authStore";
+import { useLanguageStore } from "@/store/languageStore";
+import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 import { cn } from "@/lib/utils";
-
-const NAV_LINKS = [
-  { href: "/explore", label: "Explore" },
-  { href: "/how-it-works", label: "How It Works" },
-  { href: "/farmers", label: "Farmers" },
-  { href: "/about", label: "About" },
-];
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -23,6 +18,14 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const cartCount = useCartStore((s) => s.getTotalItems());
   const user = useAuthStore((s) => s.user);
+  const { t } = useLanguageStore();
+
+  const navLinks = [
+    { href: "/buyer/explore", label: t("explore") },
+    { href: "/farmers", label: t("farmers") },
+    { href: "/how-it-works", label: t("howItWorks") },
+    { href: "/about", label: t("about") },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -62,7 +65,7 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-1">
-            {NAV_LINKS.map((link) => (
+            {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -79,7 +82,14 @@ export default function Navbar() {
           </nav>
 
           {/* Right Actions */}
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-3">
+            {/* Language Switcher */}
+            <LanguageSwitcher
+              variant="navbar"
+              scrolled={scrolled}
+              isHeroPage={isHeroPage}
+            />
+
             {user ? (
               <>
                 <Link href="/buyer/cart" className="relative p-2 rounded-lg hover:bg-brand-light transition-colors">
@@ -103,7 +113,7 @@ export default function Navbar() {
                 >
                   <Button variant="outline" size="sm" className="gap-2">
                     <User className="w-4 h-4" />
-                    Dashboard
+                    {t("dashboard")}
                   </Button>
                 </Link>
               </>
@@ -119,54 +129,60 @@ export default function Navbar() {
                         : "text-white hover:bg-white/10 hover:text-white"
                     )}
                   >
-                    Login
+                    {t("login")}
                   </Button>
                 </Link>
                 <Link href="/register">
-                  <Button size="sm">Join FarmConnect</Button>
+                  <Button size="sm">{t("register")}</Button>
                 </Link>
               </>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2 rounded-lg"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-          >
-            {menuOpen ? (
-              <X className={cn("w-5 h-5", scrolled || !isHeroPage ? "text-brand-text" : "text-white")} />
-            ) : (
-              <Menu className={cn("w-5 h-5", scrolled || !isHeroPage ? "text-brand-text" : "text-white")} />
-            )}
-          </button>
+          {/* Mobile Menu & Language Switcher Button */}
+          <div className="flex md:hidden items-center gap-2">
+            <LanguageSwitcher
+              variant="navbar"
+              scrolled={scrolled}
+              isHeroPage={isHeroPage}
+            />
+
+            <button
+              className="p-2 rounded-lg"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+            >
+              {menuOpen ? (
+                <X className={cn("w-5 h-5", scrolled || !isHeroPage ? "text-brand-text" : "text-white")} />
+              ) : (
+                <Menu className={cn("w-5 h-5", scrolled || !isHeroPage ? "text-brand-text" : "text-white")} />
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Drawer Menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="md:hidden bg-white border-b border-brand-border px-4 pb-4"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-white border-b border-brand-border px-4 py-4 space-y-3"
           >
-            <nav className="flex flex-col gap-1 pt-2">
-              {NAV_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="px-4 py-2.5 rounded-lg text-sm font-medium text-brand-text hover:bg-brand-light hover:text-brand-green"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-            <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-brand-border">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="block px-3 py-2 text-base font-medium text-brand-text hover:text-brand-green hover:bg-brand-light rounded-lg transition-colors"
+                onClick={() => setMenuOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+
+            <div className="pt-2 border-t border-brand-border space-y-2">
               {user ? (
                 <Link
                   href={
@@ -178,21 +194,20 @@ export default function Navbar() {
                       ? "/bulk-buyer/dashboard"
                       : "/buyer/dashboard"
                   }
+                  className="block"
                   onClick={() => setMenuOpen(false)}
                 >
-                  <Button variant="outline" className="w-full">
-                    Dashboard
-                  </Button>
+                  <Button className="w-full justify-center">{t("dashboard")}</Button>
                 </Link>
               ) : (
                 <>
-                  <Link href="/login" onClick={() => setMenuOpen(false)}>
-                    <Button variant="outline" className="w-full">
-                      Login
+                  <Link href="/login" className="block" onClick={() => setMenuOpen(false)}>
+                    <Button variant="outline" className="w-full justify-center">
+                      {t("login")}
                     </Button>
                   </Link>
-                  <Link href="/register" onClick={() => setMenuOpen(false)}>
-                    <Button className="w-full">Join FarmConnect</Button>
+                  <Link href="/register" className="block" onClick={() => setMenuOpen(false)}>
+                    <Button className="w-full justify-center">{t("register")}</Button>
                   </Link>
                 </>
               )}
