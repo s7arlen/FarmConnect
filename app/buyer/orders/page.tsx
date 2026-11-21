@@ -70,6 +70,9 @@ export default function OrdersPage() {
                         <Badge className={getOrderStatusColor(order.status)} variant="secondary">
                           {getOrderStatusLabel(order.status)}
                         </Badge>
+                        <Badge variant="outline" className="text-xs text-brand-muted">
+                          {order.paymentMethod === "UPI" ? "UPI (0% fee)" : "Cash on Delivery"}
+                        </Badge>
                       </div>
                       <p className="text-sm text-brand-muted">
                         {order.items?.length || 0} item(s) ·{" "}

@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { farmerId, fulfillmentMethod, preferredDate, notes, items } = result.data;
+    const { farmerId, fulfillmentMethod, paymentMethod, paymentReference, preferredDate, notes, items } = result.data;
 
     try {
       const { db } = await import("@/db");
@@ -77,6 +77,9 @@ export async function POST(request: NextRequest) {
             farmerId,
             totalAmount: totalAmount.toString(),
             fulfillmentMethod: fulfillmentMethod as "PICKUP" | "LOCAL_DELIVERY",
+            paymentMethod: (paymentMethod || "COD") as "COD" | "UPI",
+            paymentStatus: "PENDING",
+            paymentReference: paymentReference || null,
             preferredDate: preferredDate,
             notes,
             status: "REQUESTED",
@@ -116,6 +119,9 @@ export async function POST(request: NextRequest) {
         order: {
           id: demoOrderId,
           status: "REQUESTED",
+          paymentMethod: paymentMethod || "COD",
+          paymentStatus: "PENDING",
+          paymentReference: paymentReference || null,
           totalAmount: items.reduce((sum, i) => sum + 100 * i.quantity, 0),
         },
       }, { status: 201 });
@@ -148,6 +154,9 @@ export async function GET(request: NextRequest) {
           id: orders.id,
           totalAmount: orders.totalAmount,
           status: orders.status,
+          paymentMethod: orders.paymentMethod,
+          paymentStatus: orders.paymentStatus,
+          paymentReference: orders.paymentReference,
           createdAt: orders.createdAt,
           farmName: farmers.farmName,
         })

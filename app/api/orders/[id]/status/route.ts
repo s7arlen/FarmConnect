@@ -13,7 +13,11 @@ export async function PATCH(
       return NextResponse.json({ error: "Authentication required" }, { status: 401 });
     }
 
-    const { status } = await request.json() as { status: OrderStatus };
+    const body = await request.json();
+    const { status, paymentStatus } = body as {
+      status?: OrderStatus;
+      paymentStatus?: "PENDING" | "PAID" | "FAILED";
+    };
 
     try {
       const { db } = await import("@/db");
@@ -29,13 +33,17 @@ export async function PATCH(
         return NextResponse.json({ error: "Order not found" }, { status: 404 });
       }
 
-      // Validate status transition
-      const allowedNext = getNextOrderStatuses(order.status);
-      if (!allowedNext.includes(status)) {
-        return NextResponse.json(
-          { error: `Cannot transition from ${order.status} to ${status}` },
-          { status: 400 }
-        );
+      // Validate status transition if status is being updated
+      let targetStatus = order.status;
+      if (status) {
+        const allowedNext = getNextOrderStatuses(order.status);
+        if (!allowedNext.includes(status)) {
+          return NextResponse.json(
+            { error: `Cannot transition from ${order.status} to ${status}` },
+            { status: 400 }
+          );
+        }
+        targetStatus = status;
       }
 
       // Role-based permission
@@ -53,16 +61,27 @@ export async function PATCH(
         }
       }
 
+      // Determine payment status
+      const nextPaymentStatus =
+        paymentStatus || (targetStatus === "COMPLETED" ? "PAID" : order.paymentStatus);
+      const paidAt =
+        nextPaymentStatus === "PAID" ? (order.paidAt || new Date()) : null;
+
       const [updated] = await db
         .update(orders)
-        .set({ status: status as import("@/db/schema").OrderSelect["status"], updatedAt: new Date() })
+        .set({
+          status: targetStatus as import("@/db/schema").OrderSelect["status"],
+          paymentStatus: nextPaymentStatus as "PENDING" | "PAID" | "FAILED",
+          paidAt,
+          updatedAt: new Date(),
+        })
         .where(eq(orders.id, params.id))
         .returning();
 
       return NextResponse.json({ order: updated });
     } catch {
       // Demo mode
-      return NextResponse.json({ order: { id: params.id, status } });
+      return NextResponse.json({ order: { id: params.id, status, paymentStatus } });
     }
   } catch (error) {
     return NextResponse.json({ error: "Failed to update order status" }, { status: 500 });

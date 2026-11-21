@@ -50,6 +50,8 @@ export const productSchema = z.object({
 export const orderSchema = z.object({
   farmerId: z.string().min(1),
   fulfillmentMethod: z.enum(["PICKUP", "LOCAL_DELIVERY"]).default("PICKUP"),
+  paymentMethod: z.enum(["COD", "UPI"]).default("COD"),
+  paymentReference: z.string().max(100).optional(),
   preferredDate: z.string().optional(),
   notes: z.string().max(500).optional(),
   items: z

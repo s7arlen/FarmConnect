@@ -9,6 +9,9 @@ export type OrderStatus =
 
 export type FulfillmentMethod = "PICKUP" | "LOCAL_DELIVERY";
 
+export type PaymentMethod = "COD" | "UPI";
+export type PaymentStatus = "PENDING" | "PAID" | "FAILED";
+
 export interface OrderItem {
   id: string;
   orderId: string;
@@ -29,6 +32,10 @@ export interface Order {
   fulfillmentMethod: FulfillmentMethod;
   preferredDate?: Date;
   status: OrderStatus;
+  paymentMethod?: PaymentMethod;
+  paymentStatus?: PaymentStatus;
+  paymentReference?: string;
+  paidAt?: Date;
   notes?: string;
   createdAt: Date;
   updatedAt: Date;

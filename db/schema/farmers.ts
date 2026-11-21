@@ -42,6 +42,7 @@ export const farmers = pgTable(
       .default("PENDING"),
     coverImage: text("cover_image"),
     profileImage: text("profile_image"),
+    upiId: text("upi_id"),
     farmingPractices: text("farming_practices"),
     establishedYear: integer("established_year"),
     createdAt: timestamp("created_at").notNull().defaultNow(),

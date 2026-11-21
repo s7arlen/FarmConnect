@@ -72,6 +72,9 @@ export default function FarmerOrdersPage() {
                       <Badge className={getOrderStatusColor(order.status)} variant="secondary">
                         {getOrderStatusLabel(order.status)}
                       </Badge>
+                      <Badge variant="outline" className="text-xs text-brand-muted">
+                        {order.paymentMethod === "UPI" ? "UPI" : "COD"}
+                      </Badge>
                     </div>
                     <p className="text-xs text-brand-muted">
                       {order.items?.length || 0} item(s) · {formatRelativeTime(order.createdAt)}

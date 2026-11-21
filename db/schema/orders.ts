@@ -26,6 +26,17 @@ export const fulfillmentMethodEnum = pgEnum("fulfillment_method", [
   "LOCAL_DELIVERY",
 ]);
 
+export const paymentMethodEnum = pgEnum("payment_method", [
+  "COD",
+  "UPI",
+]);
+
+export const paymentStatusEnum = pgEnum("payment_status", [
+  "PENDING",
+  "PAID",
+  "FAILED",
+]);
+
 export const orders = pgTable(
   "orders",
   {
@@ -44,6 +55,10 @@ export const orders = pgTable(
       .default("PICKUP"),
     preferredDate: date("preferred_date"),
     status: orderStatusEnum("status").notNull().default("REQUESTED"),
+    paymentMethod: paymentMethodEnum("payment_method").notNull().default("COD"),
+    paymentStatus: paymentStatusEnum("payment_status").notNull().default("PENDING"),
+    paymentReference: text("payment_reference"),
+    paidAt: timestamp("paid_at"),
     notes: text("notes"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),

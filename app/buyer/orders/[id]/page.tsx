@@ -224,6 +224,29 @@ export default function OrderDetailPage() {
             <span className="text-brand-muted">Placed</span>
             <span className="text-brand-text">{formatDateTime(order.createdAt)}</span>
           </div>
+          <Separator />
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-brand-muted">Payment Method</span>
+            <span className="font-medium text-brand-text">
+              {order.paymentMethod === "UPI" ? "Direct UPI Transfer" : "Cash on Delivery / Pickup"}
+            </span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-brand-muted">Payment Status</span>
+            <Badge variant="outline" className={order.paymentStatus === "PAID" ? "text-emerald-600 border-emerald-300 bg-emerald-50" : "text-amber-600 border-amber-300 bg-amber-50"}>
+              {order.paymentStatus === "PAID" ? "Paid" : "Payment Pending"}
+            </Badge>
+          </div>
+          {order.paymentReference && (
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-brand-muted">UPI Ref / UTR</span>
+              <span className="font-mono text-xs text-brand-text">{order.paymentReference}</span>
+            </div>
+          )}
+          <div className="flex items-center justify-between text-xs text-brand-muted">
+            <span>Processing Fee</span>
+            <span className="font-semibold text-brand-green">₹0 (Zero commission)</span>
+          </div>
         </CardContent>
       </Card>
 

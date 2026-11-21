@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: farmconnect
+    runtime: node
+    plan: free
+    region: singapore
+    rootDir: farmconnect
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: NEXTAUTH_SECRET
+        generateValue: true
+      - key: NEXTAUTH_URL
+        sync: false
+      - key: NEXT_PUBLIC_APP_URL
+        sync: false
+      - key: NEXT_PUBLIC_APP_NAME
+        value: FarmConnect
+      - key: NEXT_PUBLIC_DEFAULT_UPI_ID
+        value: farmconnect@okaxis
+      - key: PORT
+        value: 3000
