@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { loginSchema } from "@/lib/validations";
 import { createSessionToken, setSessionCookie } from "@/lib/auth";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import type { UserRole } from "@/types/user";
 
-// Demo accounts for development
-const DEMO_ACCOUNTS: Array<{
+// Restricted demo accounts for development/preview ONLY (Admin removed)
+const PREVIEW_DEMO_ACCOUNTS: Array<{
   id: string;
   name: string;
   email: string;
@@ -28,13 +29,6 @@ const DEMO_ACCOUNTS: Array<{
     farmerId: "demo-farmer-1",
   },
   {
-    id: "demo-admin-1",
-    name: "Admin User",
-    email: "admin@demo.com",
-    password: "Demo@1234",
-    role: "ADMIN",
-  },
-  {
     id: "demo-bulk-1",
     name: "Grand Hotel",
     email: "bulk@demo.com",
@@ -45,6 +39,7 @@ const DEMO_ACCOUNTS: Array<{
 
 export async function POST(request: NextRequest) {
   try {
+    const clientIp = getClientIp(request.headers);
     const body = await request.json();
     const result = loginSchema.safeParse(body);
 
@@ -56,6 +51,23 @@ export async function POST(request: NextRequest) {
     }
 
     const { email, password } = result.data;
+    const rateLimitKey = `login_${clientIp}_${email.toLowerCase().trim()}`;
+    const rateLimit = checkRateLimit(rateLimitKey, 5, 15 * 60 * 1000); // 5 attempts per 15 min
+
+    if (!rateLimit.allowed) {
+      const waitMinutes = Math.ceil((rateLimit.resetTime - Date.now()) / (60 * 1000));
+      return NextResponse.json(
+        {
+          error: `Too many login attempts. Please wait ${waitMinutes} minute(s) before trying again.`,
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(Math.ceil((rateLimit.resetTime - Date.now()) / 1000)),
+          },
+        }
+      );
+    }
 
     // Try database authentication first
     try {
@@ -111,44 +123,50 @@ export async function POST(request: NextRequest) {
         return setSessionCookie(response, token);
       }
     } catch {
-      // DB not available — fall through to demo accounts
+      // DB not available or table missing — continue to preview check
     }
 
-    // Demo accounts fallback (support email or demo phone)
-    const normalizedInput = email.toLowerCase().trim();
-    const demoUser = DEMO_ACCOUNTS.find(
-      (u) =>
-        (u.email.toLowerCase() === normalizedInput ||
-          (normalizedInput === "9876543210" && u.role === "BUYER") ||
-          (normalizedInput === "9448200001" && u.role === "FARMER")) &&
-        u.password === password
-    );
+    // Demo accounts are strictly disallowed in production unless explicitly permitted
+    const allowDemo =
+      process.env.NODE_ENV !== "production" ||
+      process.env.ALLOW_DEMO_ACCOUNTS === "true";
 
-    if (!demoUser) {
-      return NextResponse.json(
-        { error: "Incorrect email or password." },
-        { status: 401 }
+    if (allowDemo) {
+      const normalizedInput = email.toLowerCase().trim();
+      const demoUser = PREVIEW_DEMO_ACCOUNTS.find(
+        (u) =>
+          (u.email.toLowerCase() === normalizedInput ||
+            (normalizedInput === "9876543210" && u.role === "BUYER") ||
+            (normalizedInput === "9448200001" && u.role === "FARMER")) &&
+          u.password === password
       );
+
+      if (demoUser) {
+        const token = await createSessionToken({
+          userId: demoUser.id,
+          email: demoUser.email,
+          role: demoUser.role,
+          name: demoUser.name,
+          farmerId: demoUser.farmerId,
+        });
+
+        const response = NextResponse.json({
+          user: {
+            id: demoUser.id,
+            name: demoUser.name,
+            email: demoUser.email,
+            role: demoUser.role,
+          },
+        });
+
+        return setSessionCookie(response, token);
+      }
     }
 
-    const token = await createSessionToken({
-      userId: demoUser.id,
-      email: demoUser.email,
-      role: demoUser.role,
-      name: demoUser.name,
-      farmerId: demoUser.farmerId,
-    });
-
-    const response = NextResponse.json({
-      user: {
-        id: demoUser.id,
-        name: demoUser.name,
-        email: demoUser.email,
-        role: demoUser.role,
-      },
-    });
-
-    return setSessionCookie(response, token);
+    return NextResponse.json(
+      { error: "Incorrect email or password." },
+      { status: 401 }
+    );
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json(

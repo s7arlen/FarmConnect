@@ -1,12 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { registerSchema } from "@/lib/validations";
 import { createSessionToken, setSessionCookie } from "@/lib/auth";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import bcrypt from "bcryptjs";
 
-// Demo users for development (replace with DB in production)
-const DEMO_USERS: Record<string, { id: string; name: string; email: string; role: string; passwordHash: string }> = {};
+// In-memory demo users cache for preview environment
+const DEMO_USERS: Record<
+  string,
+  { id: string; name: string; email: string; role: string; passwordHash: string }
+> = {};
 
 export async function POST(request: NextRequest) {
   try {
+    const clientIp = getClientIp(request.headers);
+    const rateLimit = checkRateLimit(`register_${clientIp}`, 5, 15 * 60 * 1000);
+
+    if (!rateLimit.allowed) {
+      const waitMinutes = Math.ceil((rateLimit.resetTime - Date.now()) / (60 * 1000));
+      return NextResponse.json(
+        {
+          error: `Too many registration attempts. Please wait ${waitMinutes} minute(s).`,
+        },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const result = registerSchema.safeParse(body);
 
@@ -18,9 +36,12 @@ export async function POST(request: NextRequest) {
     }
 
     const { name, email, password, phone, role } = result.data;
+    const normalizedEmail = email.toLowerCase().trim();
 
-    // Check if email already exists
-    const existingUser = Object.values(DEMO_USERS).find((u) => u.email === email);
+    // Check if email already exists in preview cache
+    const existingUser = Object.values(DEMO_USERS).find(
+      (u) => u.email === normalizedEmail
+    );
     if (existingUser) {
       return NextResponse.json(
         { error: "An account with this email already exists." },
@@ -28,42 +49,40 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // In production: use db and bcrypt
-    // const passwordHash = await bcrypt.hash(password, 12);
-    const passwordHash = `hashed_${password}`;
-
+    const passwordHash = await bcrypt.hash(password, 12);
     const userId = `user_${Date.now()}`;
-    const newUser = {
-      id: userId,
-      name,
-      email,
-      role,
-      passwordHash,
-    };
-
-    DEMO_USERS[userId] = newUser;
 
     // Try to use the database if available
     try {
       const { db } = await import("@/db");
       const { users } = await import("@/db/schema");
-      const bcrypt = await import("bcryptjs");
+      const { eq } = await import("drizzle-orm");
 
-      const hash = await bcrypt.default.hash(password, 12);
+      // Check DB uniqueness
+      const [existingDbUser] = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, normalizedEmail));
+
+      if (existingDbUser) {
+        return NextResponse.json(
+          { error: "An account with this email already exists." },
+          { status: 409 }
+        );
+      }
+
       await db.insert(users).values({
         name,
-        email,
+        email: normalizedEmail,
         phone: phone || null,
-        passwordHash: hash,
-        role: role as "BUYER" | "FARMER" | "BULK_BUYER" | "ADMIN",
+        passwordHash,
+        role: role as "BUYER" | "FARMER" | "BULK_BUYER",
       });
 
-      // Get the created user
-      const { eq } = await import("drizzle-orm");
       const [createdUser] = await db
         .select()
         .from(users)
-        .where(eq(users.email, email));
+        .where(eq(users.email, normalizedEmail));
 
       const token = await createSessionToken({
         userId: createdUser.id,
@@ -83,19 +102,26 @@ export async function POST(request: NextRequest) {
 
       return setSessionCookie(response, token);
     } catch {
-      // DB not available — demo mode
+      // DB not available — fallback to preview mode
     }
 
-    // Demo mode response
+    DEMO_USERS[userId] = {
+      id: userId,
+      name,
+      email: normalizedEmail,
+      role,
+      passwordHash,
+    };
+
     const token = await createSessionToken({
       userId,
-      email,
+      email: normalizedEmail,
       role: role as import("@/types/user").UserRole,
       name,
     });
 
     const response = NextResponse.json({
-      user: { id: userId, name, email, role },
+      user: { id: userId, name, email: normalizedEmail, role },
     });
 
     return setSessionCookie(response, token);

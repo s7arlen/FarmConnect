@@ -5,6 +5,11 @@ import type { UserRole } from "@/types/user";
 // Session cookie name
 export const SESSION_COOKIE = "farmconnect_session";
 
+const AUTH_SECRET =
+  process.env.NEXTAUTH_SECRET ||
+  process.env.AUTH_SECRET ||
+  "farmconnect_prod_hmac_sha256_secret_key_2026_secured";
+
 export interface SessionPayload {
   userId: string;
   email: string;
@@ -15,8 +20,55 @@ export interface SessionPayload {
 }
 
 /**
- * Creates a simple session token.
- * In production, replace with JWT (jose) or NextAuth.
+ * Signs data using Web Crypto HMAC-SHA256 (compatible with Node.js and Edge Runtime)
+ */
+async function signPayload(dataString: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(AUTH_SECRET),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  const signature = await crypto.subtle.sign(
+    "HMAC",
+    key,
+    encoder.encode(dataString)
+  );
+  return Buffer.from(signature).toString("base64url");
+}
+
+/**
+ * Constant-time verification using Web Crypto API
+ */
+async function verifySignature(
+  dataString: string,
+  signatureB64: string
+): Promise<boolean> {
+  try {
+    const encoder = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      "raw",
+      encoder.encode(AUTH_SECRET),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["verify"]
+    );
+    const signatureBytes = Buffer.from(signatureB64, "base64url");
+    return await crypto.subtle.verify(
+      "HMAC",
+      key,
+      signatureBytes,
+      encoder.encode(dataString)
+    );
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Creates a cryptographically signed HMAC-SHA256 session token.
  */
 export async function createSessionToken(
   payload: Omit<SessionPayload, "exp">
@@ -26,18 +78,41 @@ export async function createSessionToken(
     exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // 7 days
   };
 
-  // Base64 encode (not cryptographically signed here — replace with JWT in production)
-  return Buffer.from(JSON.stringify(sessionData)).toString("base64");
+  const dataString = Buffer.from(JSON.stringify(sessionData)).toString("base64url");
+  const signature = await signPayload(dataString);
+  return `${dataString}.${signature}`;
 }
 
+/**
+ * Verifies the HMAC-SHA256 signature and expiration of a session token.
+ * Rejects unsigned, malformed, or tampered tokens.
+ */
 export async function decodeSessionToken(
   token: string
 ): Promise<SessionPayload | null> {
   try {
-    const decoded = JSON.parse(Buffer.from(token, "base64").toString("utf-8"));
-    if (decoded.exp < Math.floor(Date.now() / 1000)) {
-      return null; // Expired
+    if (!token || typeof token !== "string") return null;
+
+    const parts = token.split(".");
+    if (parts.length !== 2) {
+      return null; // Reject unsigned legacy or malformed tokens
     }
+
+    const [dataString, signature] = parts;
+    const isValid = await verifySignature(dataString, signature);
+
+    if (!isValid) {
+      return null; // Cryptographic signature mismatch (tampering detected)
+    }
+
+    const decoded = JSON.parse(
+      Buffer.from(dataString, "base64url").toString("utf-8")
+    );
+
+    if (decoded.exp < Math.floor(Date.now() / 1000)) {
+      return null; // Expired session
+    }
+
     return decoded as SessionPayload;
   } catch {
     return null;

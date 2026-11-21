@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";
 import { uploadBufferToCloudinary } from "@/lib/cloudinary.server";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_MIME_TYPES = [
@@ -11,21 +12,39 @@ const ALLOWED_MIME_TYPES = [
   "image/gif",
 ];
 
+const ALLOWED_FOLDERS = [
+  "farmconnect/products",
+  "farmconnect/farms",
+  "farmconnect/avatars",
+];
+
 export async function POST(request: NextRequest) {
   try {
     const session = await getSessionFromRequest(request);
 
-    // Optional auth check (allow upload if logged in, or in dev/demo environment)
-    if (!session && process.env.NODE_ENV === "production") {
+    // Strictly enforce authentication for all file uploads across all environments
+    if (!session) {
       return NextResponse.json(
         { error: "Unauthorized. Please sign in to upload images." },
         { status: 401 }
       );
     }
 
+    const clientIp = getClientIp(request.headers);
+    const rateLimit = checkRateLimit(`upload_${clientIp}_${session.userId}`, 15, 60 * 1000);
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: "Upload rate limit exceeded. Please wait a moment." },
+        { status: 429 }
+      );
+    }
+
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
-    const folder = (formData.get("folder") as string) || "farmconnect/products";
+    const requestedFolder = formData.get("folder") as string;
+    const folder = ALLOWED_FOLDERS.includes(requestedFolder)
+      ? requestedFolder
+      : "farmconnect/products";
 
     if (!file) {
       return NextResponse.json(
@@ -54,7 +73,10 @@ export async function POST(request: NextRequest) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    const result = await uploadBufferToCloudinary(buffer, folder, file.name);
+    // Sanitize filename to prevent directory traversal
+    const safeFilename = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+
+    const result = await uploadBufferToCloudinary(buffer, folder, safeFilename);
 
     return NextResponse.json({
       success: true,

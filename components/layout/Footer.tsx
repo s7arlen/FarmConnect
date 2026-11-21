@@ -19,6 +19,10 @@ const FOOTER_LINKS = {
     { label: "Platform Guide", href: "/how-it-works" },
     { label: "Community", href: "/about" },
   ],
+  Legal: [
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Terms of Service", href: "/terms" },
+  ],
 };
 
 const SOCIAL_LINKS = [
@@ -90,6 +94,11 @@ export default function Footer() {
           <p className="text-sm text-white/40">
             © {new Date().getFullYear()} FarmConnect. All rights reserved.
           </p>
+          <div className="flex items-center gap-4 text-xs text-white/50">
+            <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <span>•</span>
+            <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
+          </div>
           <p className="text-sm text-white/40">
             Supporting local farmers across Karnataka
           </p>

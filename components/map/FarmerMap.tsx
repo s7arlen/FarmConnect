@@ -21,6 +21,27 @@ interface FarmerMapProps {
 const DEFAULT_CENTER: [number, number] = [12.92, 75.02];
 const DEFAULT_ZOOM = 11;
 
+function escapeHtml(str: string): string {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function sanitizeImageUrl(url: string | undefined): string {
+  if (!url || typeof url !== "string") {
+    return "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&q=80";
+  }
+  const trimmed = url.trim();
+  if (trimmed.startsWith("https://") || trimmed.startsWith("http://") || trimmed.startsWith("/")) {
+    return escapeHtml(trimmed);
+  }
+  return "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&q=80";
+}
+
 export default function FarmerMap({
   farmers,
   selectedFarmerId,
@@ -162,8 +183,13 @@ export default function FarmerMap({
       // Find available products for this farm
       const farmProducts = DEMO_PRODUCTS.filter((p) => p.farmerId === farmer.id)
         .slice(0, 3)
-        .map((p) => p.name)
+        .map((p) => escapeHtml(p.name))
         .join(", ");
+
+      const safeFarmName = escapeHtml(farmer.farmName);
+      const safeAddress = escapeHtml(farmer.address);
+      const safeFarmerId = encodeURIComponent(farmer.id);
+      const safeImage = sanitizeImageUrl(farmer.coverImage || farmer.profileImage);
 
       const popupContent = document.createElement("div");
       popupContent.style.minWidth = "230px";
@@ -172,19 +198,19 @@ export default function FarmerMap({
       popupContent.innerHTML = `
         <div style="border-radius: 12px; overflow: hidden; padding: 2px;">
           <div style="position: relative; height: 90px; border-radius: 8px; overflow: hidden; margin-bottom: 8px; background: #E8F4D9;">
-            <img src="${farmer.coverImage || farmer.profileImage || "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&q=80"}" 
+            <img src="${safeImage}" 
                  style="width: 100%; height: 100%; object-fit: cover;" 
-                 alt="${farmer.farmName}"/>
+                 alt="${safeFarmName}"/>
             <span style="position: absolute; top: 6px; right: 6px; background: rgba(255,255,255,0.92); backdrop-filter: blur(4px); font-size: 10px; font-weight: 700; color: #4D8B38; padding: 2px 7px; border-radius: 999px; display: inline-flex; align-items: center; gap: 3px; box-shadow: 0 1px 4px rgba(0,0,0,0.1);">
               ✓ Verified Farm
             </span>
           </div>
           
           <h4 style="margin: 0 0 2px 0; font-size: 14px; font-weight: 700; color: #1c261c; line-height: 1.2;">
-            ${farmer.farmName}
+            ${safeFarmName}
           </h4>
           <p style="margin: 0 0 6px 0; font-size: 11px; color: #64748b; display: flex; align-items: center; gap: 4px;">
-            📍 ${farmer.address}
+            📍 ${safeAddress}
           </p>
 
           <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
@@ -202,7 +228,7 @@ export default function FarmerMap({
               : ""
           }
 
-          <a href="/buyer/farmers/${farmer.id}" 
+          <a href="/buyer/farmers/${safeFarmerId}" 
              style="display: block; width: 100%; text-align: center; background: #4D8B38; color: white; padding: 7px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; text-decoration: none; box-shadow: 0 2px 6px rgba(77,139,56,0.3); transition: background 0.2s;">
             View Farm & Harvest →
           </a>

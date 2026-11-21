@@ -37,3 +37,7 @@ next-env.d.ts
 # drizzle
 /drizzle/meta
 .neon
+
+# security audit
+AUDIT.md
+
