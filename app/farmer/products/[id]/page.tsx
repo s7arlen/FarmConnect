@@ -174,7 +174,7 @@ export default function EditProductPage() {
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {PRODUCT_CATEGORIES.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.id}>{cat.icon} {cat.label}</SelectItem>
+                    <SelectItem key={cat.id} value={cat.id}>{cat.label}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

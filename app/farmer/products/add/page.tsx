@@ -130,7 +130,7 @@ export default function AddProductPage() {
                 <SelectContent>
                   {PRODUCT_CATEGORIES.map((cat) => (
                     <SelectItem key={cat.id} value={cat.id}>
-                      {cat.icon} {cat.label}
+                      {cat.label}
                     </SelectItem>
                   ))}
                 </SelectContent>

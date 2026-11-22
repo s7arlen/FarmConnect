@@ -2,7 +2,21 @@
 
 import React, { useState, useMemo, Suspense } from "react";
 import { motion } from "framer-motion";
-import { Search, SlidersHorizontal, X, Map } from "lucide-react";
+import {
+  Search,
+  SlidersHorizontal,
+  X,
+  Map,
+  LayoutGrid,
+  Salad,
+  Apple,
+  Wheat,
+  Leaf,
+  Carrot,
+  Milk,
+  Sparkles,
+  Sprout,
+} from "lucide-react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -22,6 +36,17 @@ import { useLanguageStore } from "@/store/languageStore";
 
 type SortValue = "nearest" | "price_asc" | "price_desc" | "newest";
 
+const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  vegetables: Salad,
+  fruits: Apple,
+  grains: Wheat,
+  leafy: Leaf,
+  roots: Carrot,
+  dairy: Milk,
+  herbs: Sparkles,
+  other: Sprout,
+};
+
 function ExploreContent() {
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -29,6 +54,14 @@ function ExploreContent() {
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const { t } = useLanguageStore();
+
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: DEMO_PRODUCTS.length };
+    PRODUCT_CATEGORIES.forEach((c) => {
+      counts[c.id] = DEMO_PRODUCTS.filter((p) => p.category === c.id).length;
+    });
+    return counts;
+  }, []);
 
   const sortOptions = [
     { value: "nearest", label: t("sortNearest") },
@@ -209,32 +242,62 @@ function ExploreContent() {
         </motion.div>
       )}
 
-      {/* Categories */}
-      <div className="flex gap-2 mb-6 overflow-x-auto pb-1 scrollbar-hide">
+      {/* Categories Filter Bar (Clean Vector Icons + Item Counts, No Emojis) */}
+      <div className="flex gap-2 mb-6 overflow-x-auto pb-1 scrollbar-hide py-1">
         <button
+          type="button"
           onClick={() => setSelectedCategory("all")}
-          className={`flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+          className={`flex-shrink-0 flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold border transition-all ${
             selectedCategory === "all"
               ? "bg-brand-green text-white border-brand-green shadow-xs"
-              : "bg-white border-brand-border text-brand-muted hover:border-brand-green"
+              : "bg-white border-slate-200 text-slate-700 hover:border-brand-green hover:text-brand-green shadow-2xs"
           }`}
         >
-          {t("allCategories")}
-        </button>
-        {PRODUCT_CATEGORIES.map((cat) => (
-          <button
-            key={cat.id}
-            onClick={() => setSelectedCategory(cat.id)}
-            className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-              selectedCategory === cat.id
-                ? "bg-brand-green text-white border-brand-green shadow-xs"
-                : "bg-white border-brand-border text-brand-muted hover:border-brand-green"
+          <LayoutGrid className="w-3.5 h-3.5" />
+          <span>{t("allCategories") || "All"}</span>
+          <span
+            className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+              selectedCategory === "all"
+                ? "bg-white/20 text-white"
+                : "bg-slate-100 text-slate-600"
             }`}
           >
-            <span>{cat.icon}</span>
-            <span>{cat.label}</span>
-          </button>
-        ))}
+            {DEMO_PRODUCTS.length}
+          </span>
+        </button>
+
+        {PRODUCT_CATEGORIES.map((cat) => {
+          const Icon = CATEGORY_ICONS[cat.id] || Sprout;
+          const count = categoryCounts[cat.id] || 0;
+          const isSelected = selectedCategory === cat.id;
+
+          return (
+            <button
+              key={cat.id}
+              type="button"
+              onClick={() => setSelectedCategory(cat.id)}
+              className={`flex-shrink-0 flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold border transition-all ${
+                isSelected
+                  ? "bg-brand-green text-white border-brand-green shadow-xs"
+                  : "bg-white border-slate-200 text-slate-700 hover:border-brand-green hover:text-brand-green shadow-2xs"
+              }`}
+            >
+              <Icon className="w-3.5 h-3.5" />
+              <span>{cat.label}</span>
+              {count > 0 && (
+                <span
+                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                    isSelected
+                      ? "bg-white/20 text-white"
+                      : "bg-slate-100 text-slate-600"
+                  }`}
+                >
+                  {count}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {/* Results Count */}
