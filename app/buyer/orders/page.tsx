@@ -18,8 +18,37 @@ const STATUS_TABS = ["All", "Active", "Completed", "Cancelled"];
 
 export default function OrdersPage() {
   const [activeTab, setActiveTab] = useState("All");
+  const [orders, setOrders] = useState<any[]>(DEMO_ORDERS);
 
-  const filtered = DEMO_ORDERS.filter((order) => {
+  React.useEffect(() => {
+    let localOrders: any[] = [];
+    try {
+      const recent = localStorage.getItem("recent_orders");
+      if (recent) localOrders = JSON.parse(recent);
+    } catch {}
+
+    fetch("/api/orders")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        const remote = data?.orders || [];
+        const map = new Map<string, any>();
+        [...localOrders, ...remote, ...DEMO_ORDERS].forEach((o) => {
+          if (o?.id && !map.has(o.id)) map.set(o.id, o);
+        });
+        setOrders(Array.from(map.values()));
+      })
+      .catch(() => {
+        if (localOrders.length > 0) {
+          const map = new Map<string, any>();
+          [...localOrders, ...DEMO_ORDERS].forEach((o) => {
+            if (o?.id && !map.has(o.id)) map.set(o.id, o);
+          });
+          setOrders(Array.from(map.values()));
+        }
+      });
+  }, []);
+
+  const filtered = orders.filter((order) => {
     if (activeTab === "All") return true;
     if (activeTab === "Active")
       return ["REQUESTED", "ACCEPTED", "PREPARING", "READY"].includes(order.status);
@@ -80,7 +109,7 @@ export default function OrdersPage() {
                       </p>
                       {order.items && (
                         <p className="text-xs text-brand-muted mt-1">
-                          {order.items.map((i) => i.productName).join(", ")}
+                          {order.items.map((i: any) => i.productName).join(", ")}
                         </p>
                       )}
                     </div>

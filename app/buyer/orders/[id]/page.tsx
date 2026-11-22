@@ -26,7 +26,7 @@ import {
   getOrderStatusLabel,
   getOrderStatusColor,
 } from "@/lib/utils";
-import type { OrderStatus } from "@/types/order";
+import type { Order, OrderStatus } from "@/types/order";
 import { toast } from "sonner";
 
 const ORDER_TIMELINE: { status: OrderStatus; label: string; description: string }[] = [
@@ -41,17 +41,114 @@ const STATUS_ORDER: OrderStatus[] = ["REQUESTED", "ACCEPTED", "PREPARING", "READ
 
 export default function OrderDetailPage() {
   const params = useParams();
-  const order = DEMO_ORDERS.find((o) => o.id === params.id);
+  const orderId = typeof params?.id === "string" ? params.id : "";
 
-  if (!order) notFound();
-
+  const [order, setOrder] = useState<Order | null>(() => {
+    return (DEMO_ORDERS.find((o) => o.id === orderId) as Order) || null;
+  });
+  const [loading, setLoading] = useState(!order);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
-  const currentIdx = STATUS_ORDER.indexOf(order.status as OrderStatus);
+  React.useEffect(() => {
+    if (!orderId) return;
+
+    // 1. Static demo order
+    const staticDemo = DEMO_ORDERS.find((o) => o.id === orderId);
+    if (staticDemo) {
+      setOrder(staticDemo);
+      setLoading(false);
+      return;
+    }
+
+    // 2. Check localStorage
+    try {
+      const cached = localStorage.getItem(`order_${orderId}`);
+      if (cached) {
+        setOrder(JSON.parse(cached));
+        setLoading(false);
+        return;
+      }
+    } catch {}
+
+    // 3. Fetch from API
+    fetch(`/api/orders/${orderId}`)
+      .then((res) => {
+        if (res.ok) return res.json();
+        throw new Error("Not found");
+      })
+      .then((data) => {
+        if (data?.order) {
+          setOrder(data.order);
+        } else {
+          fallbackOrder();
+        }
+      })
+      .catch(() => {
+        fallbackOrder();
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+
+    function fallbackOrder() {
+      if (orderId.startsWith("demo-order-") || orderId.startsWith("order_")) {
+        setOrder({
+          id: orderId,
+          buyerId: "demo-buyer-1",
+          farmerId: "demo-farmer-1",
+          totalAmount: 350,
+          fulfillmentMethod: "PICKUP",
+          status: "REQUESTED",
+          paymentMethod: "COD",
+          paymentStatus: "PENDING",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          buyerName: "Demo Buyer",
+          farmerName: "Joseph D'Souza",
+          farmName: "Joseph's Farm",
+          items: [
+            {
+              id: "item-demo-1",
+              orderId,
+              productId: "demo-product-1",
+              productName: "Fresh Organic Produce",
+              quantity: 2,
+              unitPrice: 175,
+              subtotal: 350,
+            },
+          ],
+        });
+      }
+    }
+  }, [orderId]);
+
+  if (loading) {
+    return (
+      <div className="p-8 max-w-3xl flex justify-center items-center min-h-[300px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-green" />
+      </div>
+    );
+  }
+
+  if (!order) {
+    return (
+      <div className="p-8 max-w-md mx-auto text-center space-y-4">
+        <h2 className="text-xl font-bold text-brand-text">Order Not Found</h2>
+        <p className="text-sm text-brand-muted">
+          We couldn&apos;t find this order. It may have expired or was placed in another session.
+        </p>
+        <Link href="/buyer/orders">
+          <Button>View All Orders</Button>
+        </Link>
+      </div>
+    );
+  }
+
+  const currentIdx = STATUS_ORDER.indexOf((order.status || "REQUESTED") as OrderStatus);
   const isRejected = order.status === "REJECTED";
   const isCancelled = order.status === "CANCELLED";
 
@@ -255,7 +352,7 @@ export default function OrderDetailPage() {
         <CardContent className="p-5">
           <h2 className="font-semibold text-brand-text mb-4">Items</h2>
           <div className="space-y-4">
-            {order.items?.map((item) => (
+            {order.items?.map((item: any) => (
               <div key={item.id} className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-lg overflow-hidden bg-brand-light flex-shrink-0">
                   {item.productImage ? (

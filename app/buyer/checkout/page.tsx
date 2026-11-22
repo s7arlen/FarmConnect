@@ -100,29 +100,77 @@ export default function CheckoutPage() {
       const orderIds: string[] = [];
 
       for (const [farmerId, farmerItems] of Object.entries(farmerGroups)) {
-        const response = await fetch("/api/orders", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            farmerId,
-            fulfillmentMethod: data.fulfillmentMethod,
-            paymentMethod: data.paymentMethod,
-            paymentReference: data.paymentReference || undefined,
-            preferredDate: data.preferredDate || undefined,
-            notes: data.notes || undefined,
-            items: farmerItems.map((i) => ({
-              productId: i.product.id,
-              quantity: i.quantity,
-            })),
-          }),
-        });
+        let currentOrderId = "";
+        const farmerTotal = farmerItems.reduce(
+          (sum, i) => sum + i.product.price * i.quantity,
+          0
+        );
 
-        if (response.ok) {
-          const result = await response.json();
-          orderIds.push(result.order.id);
-        } else {
-          // Demo mode: generate a demo order ID
-          orderIds.push(`demo-order-${Date.now()}`);
+        try {
+          const response = await fetch("/api/orders", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              farmerId,
+              fulfillmentMethod: data.fulfillmentMethod,
+              paymentMethod: data.paymentMethod,
+              paymentReference: data.paymentReference || undefined,
+              preferredDate: data.preferredDate || undefined,
+              notes: data.notes || undefined,
+              items: farmerItems.map((i) => ({
+                productId: i.product.id,
+                quantity: i.quantity,
+              })),
+            }),
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            currentOrderId = result.order.id;
+          } else {
+            currentOrderId = `demo-order-${Date.now()}`;
+          }
+        } catch {
+          currentOrderId = `demo-order-${Date.now()}`;
+        }
+
+        orderIds.push(currentOrderId);
+
+        // Cache order in localStorage so tracking works immediately even in demo mode
+        try {
+          const cachedOrder = {
+            id: currentOrderId,
+            buyerId: user?.id || "demo-buyer-1",
+            farmerId,
+            totalAmount: farmerTotal,
+            fulfillmentMethod: data.fulfillmentMethod,
+            preferredDate: data.preferredDate,
+            status: "REQUESTED",
+            paymentMethod: data.paymentMethod,
+            paymentStatus: "PENDING",
+            paymentReference: data.paymentReference || null,
+            notes: data.notes,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            buyerName: user?.name || "Demo Buyer",
+            farmerName: farmerItems[0]?.product?.farmerName || "Local Farmer",
+            farmName: farmerItems[0]?.product?.farmName || "Fresh Farm",
+            items: farmerItems.map((i) => ({
+              id: `item-${i.product.id}`,
+              orderId: currentOrderId,
+              productId: i.product.id,
+              productName: i.product.name,
+              productImage: i.product.image,
+              quantity: i.quantity,
+              unitPrice: i.product.price,
+              subtotal: i.product.price * i.quantity,
+            })),
+          };
+          localStorage.setItem(`order_${currentOrderId}`, JSON.stringify(cachedOrder));
+          const recent = JSON.parse(localStorage.getItem("recent_orders") || "[]");
+          localStorage.setItem("recent_orders", JSON.stringify([cachedOrder, ...recent.filter((o: any) => o.id !== currentOrderId)]));
+        } catch (e) {
+          console.error("Failed to cache order:", e);
         }
       }
 

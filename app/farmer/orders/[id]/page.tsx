@@ -19,7 +19,7 @@ import {
   getNextOrderStatuses,
 } from "@/lib/utils";
 import { toast } from "sonner";
-import type { OrderStatus } from "@/types/order";
+import type { Order, OrderStatus } from "@/types/order";
 
 const ACTION_LABELS: Record<string, string> = {
   ACCEPTED: "Accept Order",
@@ -42,12 +42,64 @@ const ACTION_VARIANTS: Record<string, "default" | "destructive" | "outline" | "w
 export default function FarmerOrderDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const [order, setOrder] = useState(
-    DEMO_ORDERS.find((o) => o.id === params.id)
-  );
+  const orderId = typeof params?.id === "string" ? params.id : "";
+  const [order, setOrder] = useState<Order | null>(() => {
+    return (DEMO_ORDERS.find((o) => o.id === orderId) as Order) || null;
+  });
   const [loading, setLoading] = useState<string | null>(null);
 
-  if (!order) notFound();
+  React.useEffect(() => {
+    if (!orderId) return;
+    const staticDemo = DEMO_ORDERS.find((o) => o.id === orderId);
+    if (staticDemo) {
+      setOrder(staticDemo);
+      return;
+    }
+
+    try {
+      const cached = localStorage.getItem(`order_${orderId}`);
+      if (cached) {
+        setOrder(JSON.parse(cached));
+        return;
+      }
+    } catch {}
+
+    fetch(`/api/orders/${orderId}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.order) setOrder(data.order);
+        else if (orderId.startsWith("demo-order-") || orderId.startsWith("order_")) {
+          setOrder({
+            id: orderId,
+            buyerId: "demo-buyer-1",
+            farmerId: "demo-farmer-1",
+            totalAmount: 350,
+            fulfillmentMethod: "PICKUP",
+            status: "REQUESTED",
+            paymentMethod: "COD",
+            paymentStatus: "PENDING",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            buyerName: "Demo Buyer",
+            items: [],
+          });
+        }
+      });
+  }, [orderId]);
+
+  if (!order) {
+    return (
+      <div className="p-8 max-w-md mx-auto text-center space-y-4">
+        <h2 className="text-xl font-bold text-brand-text">Order Not Found</h2>
+        <p className="text-sm text-brand-muted">
+          We couldn&apos;t find this order in your farmer dashboard.
+        </p>
+        <Link href="/farmer/orders">
+          <Button>Back to Orders</Button>
+        </Link>
+      </div>
+    );
+  }
 
   const nextStatuses = getNextOrderStatuses(order.status);
 
@@ -214,7 +266,7 @@ export default function FarmerOrderDetailPage() {
         <CardContent className="p-5">
           <h2 className="font-semibold text-brand-text text-sm mb-4">Items Ordered</h2>
           <div className="space-y-3">
-            {order.items?.map((item) => (
+            {order.items?.map((item: any) => (
               <div key={item.id} className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg overflow-hidden bg-brand-light flex-shrink-0">
                   {item.productImage ? (
