@@ -36,22 +36,31 @@ export default function Navbar() {
   const isHeroPage = pathname === "/";
 
   return (
-    <header className="sticky top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-brand-border/80 shadow-xs transition-all duration-300">
+    <header
+      className={cn(
+        "fixed top-0 left-0 right-0 z-40 transition-all duration-300",
+        scrolled || !isHeroPage
+          ? "bg-white/95 backdrop-blur-md border-b border-brand-border shadow-sm"
+          : "bg-transparent"
+      )}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 bg-brand-green rounded-xl flex items-center justify-center group-hover:bg-brand-dark transition-all shadow-sm">
-              <Leaf className="w-4 h-4 text-white stroke-[2.2]" />
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="w-8 h-8 bg-brand-green rounded-lg flex items-center justify-center group-hover:bg-brand-dark transition-colors">
+              <Leaf className="w-4 h-4 text-white" />
             </div>
-            <div className="flex flex-col">
-              <span className="font-extrabold text-lg text-brand-dark tracking-tight leading-none">
-                FarmConnect
-              </span>
-              <span className="text-[10px] text-brand-green font-semibold tracking-wide uppercase mt-0.5">
-                Local Farm Market
-              </span>
-            </div>
+            <span
+              className={cn(
+                "font-bold text-lg transition-colors",
+                scrolled || !isHeroPage
+                  ? "text-brand-text"
+                  : "text-white"
+              )}
+            >
+              FarmConnect
+            </span>
           </Link>
 
           {/* Desktop Nav */}
@@ -60,7 +69,12 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="px-3.5 py-2 rounded-xl text-sm font-semibold text-brand-text hover:text-brand-green hover:bg-brand-light/70 transition-colors"
+                className={cn(
+                  "px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                  scrolled || !isHeroPage
+                    ? "text-brand-muted hover:text-brand-green hover:bg-brand-light"
+                    : "text-white/80 hover:text-white hover:bg-white/10"
+                )}
               >
                 {link.label}
               </Link>
@@ -72,14 +86,14 @@ export default function Navbar() {
             {/* Language Switcher */}
             <LanguageSwitcher
               variant="navbar"
-              scrolled={true}
-              isHeroPage={false}
+              scrolled={scrolled}
+              isHeroPage={isHeroPage}
             />
 
             {user ? (
               <>
-                <Link href="/buyer/cart" className="relative p-2 rounded-xl hover:bg-brand-light transition-colors">
-                  <ShoppingCart className="w-5 h-5 text-brand-text" />
+                <Link href="/buyer/cart" className="relative p-2 rounded-lg hover:bg-brand-light transition-colors">
+                  <ShoppingCart className={cn("w-5 h-5", scrolled || !isHeroPage ? "text-brand-text" : "text-white")} />
                   {cartCount > 0 && (
                     <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-brand-green text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
                       {cartCount}
@@ -97,7 +111,7 @@ export default function Navbar() {
                       : "/buyer/dashboard"
                   }
                 >
-                  <Button variant="outline" size="sm" className="gap-2 border-brand-green/30 text-brand-green hover:bg-brand-light">
+                  <Button variant="outline" size="sm" className="gap-2">
                     <User className="w-4 h-4" />
                     {t("dashboard")}
                   </Button>
@@ -109,15 +123,17 @@ export default function Navbar() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-brand-text font-semibold hover:text-brand-green hover:bg-brand-light/60"
+                    className={cn(
+                      scrolled || !isHeroPage
+                        ? ""
+                        : "text-white hover:bg-white/10 hover:text-white"
+                    )}
                   >
                     {t("login")}
                   </Button>
                 </Link>
                 <Link href="/register">
-                  <Button size="sm" className="bg-brand-green hover:bg-brand-dark text-white font-bold px-4 shadow-sm">
-                    {t("register")}
-                  </Button>
+                  <Button size="sm">{t("register")}</Button>
                 </Link>
               </>
             )}

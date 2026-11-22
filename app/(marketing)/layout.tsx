@@ -38,7 +38,7 @@ export default function MarketingLayout({
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#F2F7ED] via-[#F8FAF4] to-[#EFF5EA]">
+    <div className="min-h-screen flex flex-col bg-brand-cream">
       {/* Mobile App Header (< 1024px) */}
       <div className="lg:hidden">
         <HomeMobileHeader />
