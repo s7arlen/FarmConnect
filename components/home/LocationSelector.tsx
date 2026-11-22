@@ -22,20 +22,36 @@ export default function LocationSelector() {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between gap-2 px-3.5 py-2 rounded-xl bg-white border border-brand-border text-left shadow-2xs hover:bg-brand-cream/80 transition-colors"
+        className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-2xl bg-white/95 border border-brand-border/90 text-left shadow-xs hover:border-emerald-300 hover:shadow-sm transition-all"
       >
-        <div className="flex items-center gap-2 min-w-0">
-          <div className="w-7 h-7 rounded-lg bg-brand-light flex items-center justify-center flex-shrink-0 text-brand-green">
-            <MapPin className="w-4 h-4 stroke-[2]" />
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-8 h-8 rounded-xl bg-emerald-100/80 flex items-center justify-center flex-shrink-0 text-emerald-700">
+            <MapPin className="w-4 h-4 stroke-[2.2]" />
           </div>
           <div className="truncate">
-            <p className="text-[10px] uppercase font-bold tracking-wider text-brand-muted">Delivering Near</p>
-            <p className="text-xs font-semibold text-brand-text truncate">
-              {selected.name} <span className="text-brand-muted font-normal">• {selected.distance}</span>
+            <div className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <p className="text-[10px] uppercase font-bold tracking-wider text-emerald-800">
+                Delivering from Local Farms
+              </p>
+            </div>
+            <p className="text-xs sm:text-sm font-bold text-brand-dark truncate">
+              {selected.name}{" "}
+              <span className="text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded-md text-[11px] ml-1">
+                {selected.distance} radius
+              </span>
             </p>
           </div>
         </div>
-        <ChevronDown className={cn("w-4 h-4 text-brand-muted flex-shrink-0 transition-transform duration-200", open && "rotate-180")} />
+        <div className="flex items-center gap-1 text-xs font-semibold text-emerald-700 flex-shrink-0 bg-emerald-50/80 px-2.5 py-1 rounded-lg border border-emerald-100">
+          <span>Change</span>
+          <ChevronDown
+            className={cn(
+              "w-3.5 h-3.5 transition-transform duration-200",
+              open && "rotate-180"
+            )}
+          />
+        </div>
       </button>
 
       {/* Modal / Dropdown */}

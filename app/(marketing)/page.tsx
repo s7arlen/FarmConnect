@@ -20,23 +20,23 @@ export default function HomePage() {
   return (
     <div className="w-full">
       {/* Main Container: Mobile App-Width on small screens, Full Grid on Desktop */}
-      <div className="max-w-lg lg:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-6 lg:py-8 space-y-4 sm:space-y-6 lg:space-y-10">
-        {/* 1. Location Selector Pill */}
-        <div className="w-full">
-          <LocationSelector />
+      <div className="max-w-lg lg:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 space-y-5 sm:space-y-6 lg:space-y-8">
+        {/* 1. Location & Search Header Bar */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-start">
+          <div className="md:col-span-1">
+            <LocationSelector />
+          </div>
+          <div className="md:col-span-2">
+            <HomeSearchBar />
+          </div>
         </div>
 
-        {/* 2. Instant Search Bar */}
-        <div className="w-full">
-          <HomeSearchBar />
-        </div>
-
-        {/* 3. Compact Agricultural Hero Banner */}
+        {/* 2. Vibrant Agricultural Hero Banner */}
         <div className="w-full">
           <CompactHeroBanner />
         </div>
 
-        {/* 4. Trust Statistics Card */}
+        {/* 3. Proof & Trust Pillar Grid */}
         <div className="w-full">
           <TrustStatsCard />
         </div>

@@ -58,12 +58,12 @@ export default function PopularCategories() {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
         {categories.map((cat) => (
           <Link
             key={cat.id}
             href={`/buyer/explore?category=${cat.id}`}
-            className="group relative rounded-2xl overflow-hidden aspect-[4/3] bg-zinc-100 shadow-2xs hover:shadow-xs transition-shadow"
+            className="group relative rounded-2xl overflow-hidden aspect-[4/3] bg-zinc-100 shadow-xs hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-brand-border/60 hover:border-emerald-400"
           >
             {/* Background Image */}
             <Image
@@ -71,15 +71,22 @@ export default function PopularCategories() {
               alt={cat.name}
               fill
               sizes="(max-width: 640px) 50vw, 25vw"
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              className="object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
             />
             {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/5 group-hover:from-emerald-950/90 transition-colors duration-300" />
 
             {/* Label and Count */}
-            <div className="absolute bottom-2.5 left-3 right-3 text-white">
-              <p className="font-bold text-sm tracking-tight leading-tight">{cat.name}</p>
-              <p className="text-[10px] text-white/80 font-medium">{cat.itemCount}</p>
+            <div className="absolute bottom-3 left-3 right-3 text-white">
+              <span className="inline-block px-1.5 py-0.5 rounded-md bg-white/20 backdrop-blur-md text-[9px] font-bold uppercase tracking-wider text-emerald-200 mb-1">
+                Direct Harvest
+              </span>
+              <p className="font-extrabold text-sm sm:text-base tracking-tight leading-tight group-hover:text-emerald-200 transition-colors">
+                {cat.name}
+              </p>
+              <p className="text-[11px] text-white/80 font-medium">
+                {cat.itemCount}
+              </p>
             </div>
           </Link>
         ))}
