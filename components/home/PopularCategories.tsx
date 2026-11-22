@@ -38,7 +38,7 @@ export default function PopularCategories() {
     {
       id: "roots",
       name: "Roots & Tubers",
-      image: "https://images.unsplash.com/photo-1598170845058-32b9d6a5c317?w=500&q=80",
+      image: "https://images.unsplash.com/photo-1447175008436-054170c2e979?w=500&q=80",
       itemCount: "8 items",
     },
     {
