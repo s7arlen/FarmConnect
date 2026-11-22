@@ -114,7 +114,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ order: newOrder }, { status: 201 });
     } catch {
       // Demo mode fallback
+      const { DEMO_PRODUCTS } = await import("@/data/demo");
       const demoOrderId = `order_${Date.now()}`;
+      const calculatedTotal = items.reduce((sum, i) => {
+        const prod = DEMO_PRODUCTS.find((p) => p.id === i.productId);
+        return sum + (prod ? prod.price * i.quantity : 100 * i.quantity);
+      }, 0);
+
       return NextResponse.json({
         order: {
           id: demoOrderId,
@@ -122,7 +128,7 @@ export async function POST(request: NextRequest) {
           paymentMethod: paymentMethod || "COD",
           paymentStatus: "PENDING",
           paymentReference: paymentReference || null,
-          totalAmount: items.reduce((sum, i) => sum + 100 * i.quantity, 0),
+          totalAmount: calculatedTotal,
         },
       }, { status: 201 });
     }

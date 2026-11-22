@@ -58,22 +58,48 @@ export async function PUT(request: NextRequest) {
       const { farmers } = await import("@/db/schema");
       const { eq } = await import("drizzle-orm");
 
-      const [updated] = await db
-        .update(farmers)
-        .set({
-          farmName: result.data.farmName,
-          description: result.data.description,
-          address: result.data.address,
-          farmingPractices: result.data.farmingPractices,
-          establishedYear: result.data.establishedYear,
-          coverImage: result.data.coverImage || undefined,
-          profileImage: result.data.profileImage || undefined,
-          updatedAt: new Date(),
-        })
-        .where(eq(farmers.userId, session!.userId))
-        .returning();
+      const [existingFarmer] = await db
+        .select()
+        .from(farmers)
+        .where(eq(farmers.userId, session!.userId));
 
-      return NextResponse.json({ farmer: updated, message: "Profile updated successfully" });
+      let savedFarmer;
+      if (existingFarmer) {
+        const [updated] = await db
+          .update(farmers)
+          .set({
+            farmName: result.data.farmName,
+            description: result.data.description,
+            address: result.data.address,
+            farmingPractices: result.data.farmingPractices,
+            establishedYear: result.data.establishedYear,
+            coverImage: result.data.coverImage || undefined,
+            profileImage: result.data.profileImage || undefined,
+            updatedAt: new Date(),
+          })
+          .where(eq(farmers.userId, session!.userId))
+          .returning();
+        savedFarmer = updated;
+      } else {
+        const [inserted] = await db
+          .insert(farmers)
+          .values({
+            userId: session!.userId,
+            farmName: result.data.farmName,
+            description: result.data.description,
+            address: result.data.address,
+            farmingPractices: result.data.farmingPractices,
+            establishedYear: result.data.establishedYear,
+            coverImage: result.data.coverImage || undefined,
+            profileImage: result.data.profileImage || undefined,
+            verified: false,
+            verificationStatus: "PENDING",
+          })
+          .returning();
+        savedFarmer = inserted;
+      }
+
+      return NextResponse.json({ farmer: savedFarmer, message: "Profile updated successfully" });
     } catch {
       return NextResponse.json({
         farmer: { ...result.data, updatedAt: new Date() },

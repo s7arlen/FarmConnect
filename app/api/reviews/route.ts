@@ -67,13 +67,27 @@ export async function POST(request: NextRequest) {
       const { reviews, farmers, orders } = await import("@/db/schema");
       const { eq, sql } = await import("drizzle-orm");
 
-      // Verify order is completed
+      // Verify order exists and is completed
       const [order] = await db
         .select()
         .from(orders)
         .where(eq(orders.id, orderId));
 
-      if (order && order.status !== "COMPLETED") {
+      if (!order) {
+        return NextResponse.json(
+          { error: "Order not found" },
+          { status: 404 }
+        );
+      }
+
+      if (order.buyerId !== session!.userId) {
+        return NextResponse.json(
+          { error: "You can only submit reviews for your own orders" },
+          { status: 403 }
+        );
+      }
+
+      if (order.status !== "COMPLETED") {
         return NextResponse.json(
           { error: "Reviews can only be submitted for completed orders" },
           { status: 400 }

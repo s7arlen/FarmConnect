@@ -35,6 +35,13 @@ const PREVIEW_DEMO_ACCOUNTS: Array<{
     password: "Demo@1234",
     role: "BULK_BUYER",
   },
+  {
+    id: "demo-admin-1",
+    name: "Admin User",
+    email: "admin@demo.com",
+    password: "Demo@1234",
+    role: "ADMIN",
+  },
 ];
 
 export async function POST(request: NextRequest) {

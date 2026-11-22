@@ -84,11 +84,28 @@ export async function POST(request: NextRequest) {
         .from(users)
         .where(eq(users.email, normalizedEmail));
 
+      let farmerId: string | undefined;
+      if (role === "FARMER") {
+        const { farmers } = await import("@/db/schema");
+        const [createdFarmer] = await db
+          .insert(farmers)
+          .values({
+            userId: createdUser.id,
+            farmName: `${name}'s Farm`,
+            address: "Location pending update",
+            verified: false,
+            verificationStatus: "PENDING",
+          })
+          .returning();
+        farmerId = createdFarmer?.id;
+      }
+
       const token = await createSessionToken({
         userId: createdUser.id,
         email: createdUser.email,
         role: createdUser.role as import("@/types/user").UserRole,
         name: createdUser.name,
+        farmerId,
       });
 
       const response = NextResponse.json({
@@ -97,6 +114,7 @@ export async function POST(request: NextRequest) {
           name: createdUser.name,
           email: createdUser.email,
           role: createdUser.role,
+          farmerId,
         },
       });
 
@@ -104,6 +122,8 @@ export async function POST(request: NextRequest) {
     } catch {
       // DB not available — fallback to preview mode
     }
+
+    const demoFarmerId = role === "FARMER" ? `farmer_${userId}` : undefined;
 
     DEMO_USERS[userId] = {
       id: userId,
@@ -118,10 +138,11 @@ export async function POST(request: NextRequest) {
       email: normalizedEmail,
       role: role as import("@/types/user").UserRole,
       name,
+      farmerId: demoFarmerId,
     });
 
     const response = NextResponse.json({
-      user: { id: userId, name, email: normalizedEmail, role },
+      user: { id: userId, name, email: normalizedEmail, role, farmerId: demoFarmerId },
     });
 
     return setSessionCookie(response, token);
