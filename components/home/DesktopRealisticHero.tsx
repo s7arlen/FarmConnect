@@ -39,17 +39,30 @@ export default function DesktopRealisticHero() {
 
   return (
     <section aria-label="Fresh Harvest Marketplace Hero" className="w-full">
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-6 xl:p-8">
-        <div className="grid grid-cols-12 gap-8 items-center">
+      <div className="relative rounded-2xl border border-emerald-950/20 shadow-md p-6 xl:p-8 overflow-hidden bg-brand-dark">
+        {/* Authentic Farm Photography Background */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1600&q=80"
+            alt="Lush green organic farm harvest at morning light"
+            fill
+            priority
+            className="object-cover object-center"
+          />
+          {/* Natural Forest-to-Sunlit Farm Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-dark/95 via-brand-dark/85 to-brand-dark/40" />
+        </div>
+
+        <div className="relative z-10 grid grid-cols-12 gap-8 items-center">
           {/* Left Column: Direct Store Value Proposition (7 cols) */}
           <div className="col-span-7 space-y-5 pr-2 xl:pr-6">
             {/* Main Editorial Headline */}
-            <h1 className="text-4xl xl:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.15]">
+            <h1 className="text-4xl xl:text-5xl font-extrabold text-white tracking-tight leading-[1.15]">
               Fresh farm produce, delivered to your doorstep.
             </h1>
 
             {/* Subtitle */}
-            <p className="text-base text-slate-600 leading-relaxed max-w-xl">
+            <p className="text-base text-emerald-50/90 leading-relaxed max-w-xl">
               Order fresh vegetables, fruits, and daily cooking staples harvested
               directly by verified family farms in Bantwal and surrounding coastal Karnataka villages.
             </p>
@@ -57,51 +70,51 @@ export default function DesktopRealisticHero() {
             {/* Call to Actions */}
             <div className="flex items-center gap-3 pt-1">
               <Link href="/buyer/explore">
-                <Button size="lg" className="h-11 px-6 text-sm font-semibold bg-brand-green hover:bg-brand-dark text-white rounded-lg shadow-xs gap-2">
+                <Button size="lg" className="h-11 px-6 text-sm font-semibold bg-brand-green hover:bg-emerald-600 text-white rounded-lg shadow-sm gap-2">
                   <span>Shop Fresh Produce</span>
                   <ArrowRight className="w-4 h-4" />
                 </Button>
               </Link>
               <Link href="/farmers">
-                <Button variant="outline" size="lg" className="h-11 px-5 text-sm font-medium text-slate-700 hover:text-brand-green border-slate-300 rounded-lg hover:bg-slate-50">
+                <Button variant="outline" size="lg" className="h-11 px-5 text-sm font-medium text-white hover:text-white border-white/30 rounded-lg hover:bg-white/10 bg-white/5">
                   View Local Farmers
                 </Button>
               </Link>
             </div>
 
             {/* Realistic Guarantees Strip */}
-            <div className="flex items-center gap-6 pt-4 border-t border-slate-100 text-xs text-slate-600 font-medium">
+            <div className="flex items-center gap-6 pt-4 border-t border-white/15 text-xs text-white/90 font-medium">
               <div className="flex items-center gap-1.5">
-                <Check className="w-4 h-4 text-brand-green flex-shrink-0" />
+                <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                 <span>Harvested fresh daily</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <Check className="w-4 h-4 text-brand-green flex-shrink-0" />
+                <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                 <span>Fair prices for farmers</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <Check className="w-4 h-4 text-brand-green flex-shrink-0" />
+                <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                 <span>Free Cash on Delivery & UPI</span>
               </div>
             </div>
 
             {/* Popular Items Text Links */}
-            <div className="flex items-center gap-2 text-xs text-slate-500 pt-1">
-              <span className="font-semibold text-slate-700">Popular:</span>
-              <div className="flex items-center gap-2 text-slate-600">
-                <Link href="/buyer/explore?search=Tomatoes" className="hover:text-brand-green hover:underline">
+            <div className="flex items-center gap-2 text-xs text-white/70 pt-1">
+              <span className="font-semibold text-white">Popular:</span>
+              <div className="flex items-center gap-2 text-white/80">
+                <Link href="/buyer/explore?search=Tomatoes" className="hover:text-emerald-300 hover:underline">
                   Tomatoes (₹35/kg)
                 </Link>
                 <span>•</span>
-                <Link href="/buyer/explore?search=Palak" className="hover:text-brand-green hover:underline">
+                <Link href="/buyer/explore?search=Palak" className="hover:text-emerald-300 hover:underline">
                   Palak (₹25/bunch)
                 </Link>
                 <span>•</span>
-                <Link href="/buyer/explore?search=Carrots" className="hover:text-brand-green hover:underline">
+                <Link href="/buyer/explore?search=Carrots" className="hover:text-emerald-300 hover:underline">
                   Carrots (₹45/kg)
                 </Link>
                 <span>•</span>
-                <Link href="/buyer/explore?search=Rice" className="hover:text-brand-green hover:underline">
+                <Link href="/buyer/explore?search=Rice" className="hover:text-emerald-300 hover:underline">
                   Sona Masoori
                 </Link>
               </div>
@@ -110,11 +123,11 @@ export default function DesktopRealisticHero() {
 
           {/* Right Column: Real Harvest Spotlight (5 cols) */}
           <div className="col-span-5">
-            <div className="bg-slate-50 rounded-xl border border-slate-200 p-5">
+            <div className="bg-white rounded-xl border border-slate-200/90 shadow-xl p-5">
               {/* Card Header: Real Farm Info */}
               <div className="flex items-center justify-between pb-3.5 border-b border-slate-200">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full overflow-hidden relative border border-slate-200 flex-shrink-0 bg-white">
+                  <div className="w-10 h-10 rounded-full overflow-hidden relative border border-slate-200 flex-shrink-0 bg-slate-50">
                     <Image
                       src={featuredFarmer.profileImage || "https://images.unsplash.com/photo-1595273670150-bd0c3c392e46?w=400&q=80"}
                       alt={featuredFarmer.farmName}
@@ -123,26 +136,31 @@ export default function DesktopRealisticHero() {
                     />
                   </div>
                   <div>
-                    <h2 className="font-bold text-slate-900 text-sm leading-tight">
-                      {featuredFarmer.farmName}
-                    </h2>
+                    <div className="flex items-center gap-1.5">
+                      <h2 className="font-bold text-slate-900 text-sm leading-tight">
+                        {featuredFarmer.farmName}
+                      </h2>
+                      <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-1.5 py-0.2 rounded">
+                        verified
+                      </span>
+                    </div>
                     <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
                       <MapPin className="w-3 h-3 text-slate-400" />
-                      <span>Bantwal • 2.4 km away</span>
+                      <span>Bantwal, Dakshina Kannada • 2.4 km away</span>
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1 text-xs font-semibold text-slate-700 bg-white px-2 py-1 rounded border border-slate-200">
-                  <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                  <span>4.8 (47 reviews)</span>
+                <div className="flex items-center gap-1 text-xs font-semibold text-slate-700 bg-amber-50/80 px-2 py-1 rounded border border-amber-200/60">
+                  <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
+                  <span>4.8</span>
                 </div>
               </div>
 
               {/* Subheading */}
               <div className="flex items-center justify-between py-2 text-xs text-slate-500 border-b border-slate-100 mb-2.5">
-                <span className="font-semibold text-slate-700">Available Today</span>
-                <span>Harvested at 6:30 AM</span>
+                <span className="font-semibold text-emerald-800">Today&apos;s Morning Harvest</span>
+                <span className="font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded text-[11px]">Picked 6:30 AM Today</span>
               </div>
 
               {/* Produce Items Showcase */}
@@ -152,10 +170,10 @@ export default function DesktopRealisticHero() {
                   return (
                     <div
                       key={product.id}
-                      className="flex items-center justify-between p-2.5 rounded-lg bg-white border border-slate-200 hover:border-slate-300 transition-colors"
+                      className="flex items-center justify-between p-2 rounded-lg bg-slate-50/90 border border-slate-200/80 hover:bg-slate-100/80 transition-colors"
                     >
                       <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-10 h-10 rounded-md overflow-hidden relative bg-slate-100 flex-shrink-0">
+                        <div className="w-10 h-10 rounded-md overflow-hidden relative bg-white border border-slate-200/60 flex-shrink-0">
                           {product.image && (
                             <Image
                               src={product.image}
@@ -170,7 +188,7 @@ export default function DesktopRealisticHero() {
                             {product.name}
                           </p>
                           <p className="text-xs text-slate-500">
-                            {formatCurrency(product.price)} / {product.unit}
+                            {formatCurrency(product.price)} / {product.unit} <span className="text-emerald-600 font-medium ml-1">• In Stock</span>
                           </p>
                         </div>
                       </div>
@@ -178,10 +196,10 @@ export default function DesktopRealisticHero() {
                       <button
                         type="button"
                         onClick={() => handleAddToCart(product)}
-                        className={`h-8 px-3 rounded text-xs font-semibold flex items-center gap-1 transition-colors flex-shrink-0 ${
+                        className={`h-7 px-2.5 rounded text-xs font-semibold flex items-center gap-1 transition-colors flex-shrink-0 ${
                           isAdded
                             ? "bg-brand-green text-white"
-                            : "bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200"
+                            : "bg-white hover:bg-emerald-50 text-emerald-800 border border-emerald-300 shadow-2xs"
                         }`}
                       >
                         {isAdded ? (
