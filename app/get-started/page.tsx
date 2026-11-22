@@ -310,7 +310,7 @@ export default function WelcomePage() {
         </section>
 
         {/* Bottom Interactive Container: Soft Cream (#F4F7EE) */}
-        <section className="relative z-20 bg-[#F4F7EE] flex-1 flex flex-col justify-between px-5 sm:px-6 pt-2 pb-6 max-w-lg mx-auto w-full">
+        <section className="relative z-20 bg-[#F4F7EE] flex-1 flex flex-col justify-between px-5 sm:px-6 pt-2 pb-8 max-w-lg mx-auto w-full">
           
           {/* 3 Modern Feature Cards (Pill Tiles) */}
           <div className="grid grid-cols-3 gap-2.5 sm:gap-3 py-2 sm:py-3">
@@ -389,43 +389,6 @@ export default function WelcomePage() {
             </button>
           </div>
 
-          {/* Bottom Decorative Waves & Leaf */}
-          <div className="relative mt-2 h-8 w-full overflow-hidden pointer-events-none">
-            <svg
-              viewBox="0 0 400 40"
-              preserveAspectRatio="none"
-              className="absolute inset-0 w-full h-full opacity-60"
-            >
-              <path
-                d="M-20,30 Q100,10 220,25 T420,15 L420,40 L-20,40 Z"
-                fill="#E2ECDB"
-              />
-              <path
-                d="M-20,35 Q120,18 260,30 T420,22 L420,40 L-20,40 Z"
-                fill="#D5E5CD"
-              />
-            </svg>
-
-            <div className="absolute right-3 bottom-0.5">
-              <svg
-                viewBox="0 0 36 36"
-                className="w-7 h-7 text-[#9FC491]"
-                fill="currentColor"
-              >
-                <path d="M14 26c0-6 4.8-10.5 12-12-.4 7.5-4.8 12-12 12z" />
-                <path d="M19 26c0-4.5 3.5-7.5 9-9-.3 5.5-3.5 9-9 9z" opacity="0.8" />
-                <path
-                  d="M13 27c3.5-.8 8-4.5 11.5-11.5"
-                  stroke="#85B075"
-                  strokeWidth="1.2"
-                  strokeLinecap="round"
-                  fill="none"
-                />
-              </svg>
-            </div>
-
-            <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-28 h-1 bg-black/20 rounded-full" />
-          </div>
 
         </section>
 

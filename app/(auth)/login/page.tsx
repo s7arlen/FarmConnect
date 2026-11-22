@@ -446,10 +446,6 @@ function LoginForm() {
 
         </div>
 
-        {/* Mobile Home Bar Padding */}
-        <div className="lg:hidden pb-3 pt-1 flex justify-center">
-          <div className="w-32 h-1 rounded-full bg-black/20" />
-        </div>
 
       </div>
     </div>

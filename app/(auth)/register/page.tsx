@@ -498,10 +498,6 @@ function RegisterForm() {
 
         </div>
 
-        {/* Mobile Home Bar Padding */}
-        <div className="lg:hidden pb-3 pt-2 flex justify-center">
-          <div className="w-32 h-1 rounded-full bg-black/75" />
-        </div>
 
       </div>
     </div>

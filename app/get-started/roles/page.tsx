@@ -216,10 +216,6 @@ export default function RoleSelectionPage() {
 
         </main>
 
-        {/* Mobile Home Bar Indicator */}
-        <div className="sm:hidden pb-2.5 pt-1 flex justify-center bg-white">
-          <div className="w-28 h-1 rounded-full bg-black/20" />
-        </div>
 
       </div>
     </div>
