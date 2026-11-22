@@ -23,7 +23,7 @@ export const DEMO_FARMERS: Farmer[] = [
     coverImage:
       "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&q=80",
     profileImage:
-      "https://images.unsplash.com/photo-1595273670150-bd0c3c392e46?w=400&q=80",
+      "https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?w=400&q=80",
     farmingPractices:
       "We use organic-friendly techniques, minimal pesticides, and traditional composting. Our water comes from natural springs.",
     establishedYear: 2008,
