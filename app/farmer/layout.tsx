@@ -68,19 +68,19 @@ export default function FarmerLayout({ children }: { children: React.ReactNode }
   return (
     <div className="flex h-screen bg-brand-cream overflow-hidden">
       {/* Desktop Sidebar (>= 1024px) */}
-      <aside className="w-64 bg-white border-r border-brand-border flex-col flex-shrink-0 hidden lg:flex">
+      <aside className="w-72 bg-white border-r border-brand-border flex-col flex-shrink-0 hidden lg:flex">
         {/* Brand Header */}
-        <div className="p-5 border-b border-brand-border flex items-center justify-between">
-          <Link href="/farmer/dashboard" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-brand-green rounded-lg flex items-center justify-center">
+        <div className="p-4 border-b border-brand-border flex items-center justify-between gap-2.5">
+          <Link href="/farmer/dashboard" className="flex items-center gap-2.5 flex-shrink-0 min-w-0">
+            <div className="w-8 h-8 bg-brand-green rounded-lg flex items-center justify-center flex-shrink-0">
               <Leaf className="w-4 h-4 text-white" />
             </div>
-            <div>
+            <div className="min-w-0">
               <span className="font-bold text-base text-brand-text block leading-none">FarmConnect</span>
-              <span className="text-[10px] text-brand-green font-semibold tracking-wide uppercase">Farmer Portal</span>
+              <span className="text-[10px] text-brand-green font-semibold tracking-wide uppercase whitespace-nowrap block mt-0.5">Farmer Portal</span>
             </div>
           </Link>
-          <LanguageSwitcher variant="pill" />
+          <LanguageSwitcher variant="pill" className="flex-shrink-0" />
         </div>
 
         {/* Navigation Links */}

@@ -56,7 +56,7 @@ export default function LanguageSwitcher({
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         className={cn(
-          "inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 border",
+          "inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-full text-xs font-semibold transition-all duration-200 border flex-shrink-0 whitespace-nowrap",
           variant === "navbar" && isLightText
             ? "bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm"
             : "bg-white hover:bg-brand-light text-brand-dark border-brand-border shadow-2xs hover:border-brand-green/30"
@@ -64,9 +64,9 @@ export default function LanguageSwitcher({
         aria-label="Select language"
         aria-expanded={isOpen}
       >
-        <Globe className={cn("w-3.5 h-3.5", variant === "navbar" && isLightText ? "text-white" : "text-brand-green")} />
+        <Globe className={cn("w-3.5 h-3.5 flex-shrink-0", variant === "navbar" && isLightText ? "text-white" : "text-brand-green")} />
         <span className="tracking-tight">{currentLang.nativeLabel}</span>
-        <ChevronDown className="w-3 h-3 opacity-70" />
+        <ChevronDown className="w-3 h-3 opacity-70 flex-shrink-0" />
       </button>
 
       {isOpen && (

@@ -42,16 +42,16 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-4">
           {/* Logo & Location */}
-          <div className="flex items-center gap-3 xl:gap-4 flex-shrink-0">
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-9 h-9 bg-brand-green rounded-xl flex items-center justify-center group-hover:bg-brand-dark transition-colors shadow-xs">
+          <div className="flex items-center gap-3 xl:gap-4 flex-shrink-0 min-w-0">
+            <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 bg-brand-green rounded-xl flex items-center justify-center group-hover:bg-brand-dark transition-colors shadow-xs flex-shrink-0">
                 <Leaf className="w-4 h-4 text-white" />
               </div>
-              <div className="flex flex-col">
-                <span className="font-extrabold text-lg text-brand-text tracking-tight leading-none">
+              <div className="flex flex-col min-w-0">
+                <span className="font-extrabold text-base sm:text-lg text-brand-text tracking-tight leading-none whitespace-nowrap">
                   FarmConnect
                 </span>
-                <span className="text-[10px] text-brand-green font-semibold tracking-wide uppercase mt-0.5">
+                <span className="text-[9px] sm:text-[10px] text-brand-green font-semibold tracking-wide uppercase mt-0.5 whitespace-nowrap">
                   Local Farm Market
                 </span>
               </div>
@@ -146,7 +146,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Menu & Language Switcher Button */}
-          <div className="flex lg:hidden items-center gap-2">
+          <div className="flex lg:hidden items-center gap-1.5 sm:gap-2 flex-shrink-0">
             <LanguageSwitcher
               variant="navbar"
               scrolled={true}
@@ -154,7 +154,7 @@ export default function Navbar() {
             />
 
             <button
-              className="p-2 rounded-lg text-brand-text hover:bg-brand-light"
+              className="p-1.5 sm:p-2 rounded-lg text-brand-text hover:bg-brand-light flex-shrink-0"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
             >
