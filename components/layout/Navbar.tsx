@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ShoppingCart, User, Leaf } from "lucide-react";
+import { Menu, X, ShoppingCart, User, Leaf, Search, MapPin, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/store/cartStore";
 import { useAuthStore } from "@/store/authStore";
@@ -14,8 +14,9 @@ import { cn } from "@/lib/utils";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const cartCount = useCartStore((s) => s.getTotalItems());
   const user = useAuthStore((s) => s.user);
   const { t } = useLanguageStore();
@@ -27,54 +28,65 @@ export default function Navbar() {
     { href: "/about", label: t("about") },
   ];
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const isHeroPage = pathname === "/";
+  function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/buyer/explore?search=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      router.push("/buyer/explore");
+    }
+  }
 
   return (
-    <header
-      className={cn(
-        "fixed top-0 left-0 right-0 z-40 transition-all duration-300",
-        scrolled || !isHeroPage
-          ? "bg-white/95 backdrop-blur-md border-b border-brand-border shadow-sm"
-          : "bg-transparent"
-      )}
-    >
+    <header className="sticky top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-brand-border shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 bg-brand-green rounded-lg flex items-center justify-center group-hover:bg-brand-dark transition-colors">
-              <Leaf className="w-4 h-4 text-white" />
-            </div>
-            <span
-              className={cn(
-                "font-bold text-lg transition-colors",
-                scrolled || !isHeroPage
-                  ? "text-brand-text"
-                  : "text-white"
-              )}
-            >
-              FarmConnect
-            </span>
-          </Link>
+        <div className="flex items-center justify-between h-16 gap-4">
+          {/* Logo & Location */}
+          <div className="flex items-center gap-3 xl:gap-4 flex-shrink-0">
+            <Link href="/" className="flex items-center gap-2 group">
+              <div className="w-9 h-9 bg-brand-green rounded-xl flex items-center justify-center group-hover:bg-brand-dark transition-colors shadow-xs">
+                <Leaf className="w-4 h-4 text-white" />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-extrabold text-lg text-brand-text tracking-tight leading-none">
+                  FarmConnect
+                </span>
+                <span className="text-[10px] text-brand-green font-semibold tracking-wide uppercase mt-0.5">
+                  Local Farm Market
+                </span>
+              </div>
+            </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-1">
+            {/* Desktop Location Badge */}
+            <Link
+              href="/buyer/explore"
+              className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-50 hover:bg-emerald-50/70 border border-slate-200/90 text-slate-700 text-xs font-semibold transition-colors"
+            >
+              <MapPin className="w-3.5 h-3.5 text-brand-green" />
+              <span>Bantwal, DK (2 km)</span>
+              <ChevronDown className="w-3 h-3 text-slate-400" />
+            </Link>
+          </div>
+
+          {/* Center Search Bar (Desktop) */}
+          <form onSubmit={handleSearch} className="hidden lg:flex items-center relative flex-1 max-w-md mx-2">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search farm fresh vegetables, fruits, grains..."
+              className="w-full h-10 pl-10 pr-4 text-xs xl:text-sm bg-slate-50 hover:bg-slate-100/70 focus:bg-white border border-slate-200 rounded-full focus:ring-2 focus:ring-brand-green/25 focus:border-brand-green transition-all outline-hidden text-slate-800 placeholder:text-slate-400"
+            />
+          </form>
+
+          {/* Desktop Nav Links */}
+          <nav className="hidden lg:flex items-center gap-1 flex-shrink-0">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={cn(
-                  "px-4 py-2 rounded-lg text-sm font-medium transition-colors",
-                  scrolled || !isHeroPage
-                    ? "text-brand-muted hover:text-brand-green hover:bg-brand-light"
-                    : "text-white/80 hover:text-white hover:bg-white/10"
-                )}
+                className="px-3 py-2 rounded-lg text-sm font-medium text-brand-muted hover:text-brand-green hover:bg-brand-light transition-colors"
               >
                 {link.label}
               </Link>
@@ -82,18 +94,18 @@ export default function Navbar() {
           </nav>
 
           {/* Right Actions */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
             {/* Language Switcher */}
             <LanguageSwitcher
               variant="navbar"
-              scrolled={scrolled}
-              isHeroPage={isHeroPage}
+              scrolled={true}
+              isHeroPage={false}
             />
 
             {user ? (
               <>
                 <Link href="/buyer/cart" className="relative p-2 rounded-lg hover:bg-brand-light transition-colors">
-                  <ShoppingCart className={cn("w-5 h-5", scrolled || !isHeroPage ? "text-brand-text" : "text-white")} />
+                  <ShoppingCart className="w-5 h-5 text-brand-text" />
                   {cartCount > 0 && (
                     <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-brand-green text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
                       {cartCount}
@@ -120,42 +132,36 @@ export default function Navbar() {
             ) : (
               <>
                 <Link href="/login">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className={cn(
-                      scrolled || !isHeroPage
-                        ? ""
-                        : "text-white hover:bg-white/10 hover:text-white"
-                    )}
-                  >
+                  <Button variant="ghost" size="sm" className="text-brand-text hover:text-brand-green">
                     {t("login")}
                   </Button>
                 </Link>
                 <Link href="/register">
-                  <Button size="sm">{t("register")}</Button>
+                  <Button size="sm" className="bg-brand-green hover:bg-brand-dark text-white font-semibold">
+                    {t("register")}
+                  </Button>
                 </Link>
               </>
             )}
           </div>
 
           {/* Mobile Menu & Language Switcher Button */}
-          <div className="flex md:hidden items-center gap-2">
+          <div className="flex lg:hidden items-center gap-2">
             <LanguageSwitcher
               variant="navbar"
-              scrolled={scrolled}
-              isHeroPage={isHeroPage}
+              scrolled={true}
+              isHeroPage={false}
             />
 
             <button
-              className="p-2 rounded-lg"
+              className="p-2 rounded-lg text-brand-text hover:bg-brand-light"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
             >
               {menuOpen ? (
-                <X className={cn("w-5 h-5", scrolled || !isHeroPage ? "text-brand-text" : "text-white")} />
+                <X className="w-5 h-5 text-brand-text" />
               ) : (
-                <Menu className={cn("w-5 h-5", scrolled || !isHeroPage ? "text-brand-text" : "text-white")} />
+                <Menu className="w-5 h-5 text-brand-text" />
               )}
             </button>
           </div>

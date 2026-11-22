@@ -3,6 +3,7 @@ import LocationSelector from "@/components/home/LocationSelector";
 import HomeSearchBar from "@/components/home/HomeSearchBar";
 import CompactHeroBanner from "@/components/home/CompactHeroBanner";
 import TrustStatsCard from "@/components/home/TrustStatsCard";
+import DesktopRealisticHero from "@/components/home/DesktopRealisticHero";
 import PopularCategories from "@/components/home/PopularCategories";
 import FreshTodayHomeSection from "@/components/home/FreshTodayHomeSection";
 import NearbyFarmersSection from "@/components/home/NearbyFarmersSection";
@@ -21,24 +22,17 @@ export default function HomePage() {
     <div className="w-full">
       {/* Main Container: Mobile App-Width on small screens, Full Grid on Desktop */}
       <div className="max-w-lg lg:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-6 lg:py-8 space-y-4 sm:space-y-6 lg:space-y-10">
-        {/* 1. Location Selector Pill */}
-        <div className="w-full">
+        {/* MOBILE VIEW ONLY (< 1024px) */}
+        <div className="lg:hidden space-y-3.5 sm:space-y-4">
           <LocationSelector />
-        </div>
-
-        {/* 2. Instant Search Bar */}
-        <div className="w-full">
           <HomeSearchBar />
-        </div>
-
-        {/* 3. Compact Agricultural Hero Banner */}
-        <div className="w-full">
           <CompactHeroBanner />
+          <TrustStatsCard />
         </div>
 
-        {/* 4. Trust Statistics Card */}
-        <div className="w-full">
-          <TrustStatsCard />
+        {/* DESKTOP VIEW ONLY (>= 1024px): Realistic, Non-AI Hero & Live Produce Spotlight */}
+        <div className="hidden lg:block">
+          <DesktopRealisticHero />
         </div>
 
         {/* 5. Category Shortcuts (Popular Categories) */}
