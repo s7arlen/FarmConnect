@@ -14,7 +14,7 @@ import {
   Leaf,
   Carrot,
   Milk,
-  Sparkles,
+  Flower2,
   Sprout,
 } from "lucide-react";
 import Link from "next/link";
@@ -43,7 +43,7 @@ const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>
   leafy: Leaf,
   roots: Carrot,
   dairy: Milk,
-  herbs: Sparkles,
+  herbs: Flower2,
   other: Sprout,
 };
 

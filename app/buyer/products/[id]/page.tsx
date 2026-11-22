@@ -15,6 +15,7 @@ import {
   Star,
   Calendar,
   Package,
+  Leaf,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -73,8 +74,8 @@ export default function ProductDetailPage() {
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center text-8xl">
-                🌱
+              <div className="absolute inset-0 flex items-center justify-center bg-emerald-50 text-emerald-600">
+                <Leaf className="w-20 h-20 text-emerald-600/50 stroke-[1.5]" />
               </div>
             )}
           </div>

@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Sparkles, Sprout, Users, ShieldCheck } from "lucide-react";
+import { ArrowRight, Leaf, Sprout, Users, ShieldCheck } from "lucide-react";
 
 export default function WelcomePage() {
   const router = useRouter();
@@ -92,7 +92,7 @@ export default function WelcomePage() {
           {/* Left Column: Bold Headline & Actions */}
           <div className="max-w-2xl text-white">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#53832F]/30 border border-[#7CB85C]/40 text-[#D6F0C7] text-xs font-semibold uppercase tracking-wider mb-6 backdrop-blur-xs">
-              <Sparkles className="w-3.5 h-3.5" />
+              <Leaf className="w-3.5 h-3.5 stroke-[2.2]" />
               <span>Direct Local Agriculture</span>
             </div>
 

@@ -18,7 +18,6 @@ import {
   Leaf,
   Loader2,
   CheckCircle2,
-  Sparkles,
   Tractor,
   Building2,
   ShoppingCart,
@@ -165,8 +164,8 @@ function RegisterForm() {
         {/* Hero Narrative */}
         <div className="relative z-10 max-w-lg mb-8">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#53832F]/30 text-[#D6F0C7] text-xs font-bold uppercase tracking-wider mb-4 border border-[#53832F]/40 backdrop-blur-xs">
-            <Sparkles className="w-3.5 h-3.5 text-[#D6F0C7]" />
-            <span>Join Our Marketplace</span>
+            <Leaf className="w-3.5 h-3.5 text-[#D6F0C7] stroke-[2.2]" />
+            <span>Direct Marketplace</span>
           </div>
 
           <h2 className="text-4xl xl:text-5xl font-black text-white leading-tight tracking-tight mb-4 drop-shadow-md">

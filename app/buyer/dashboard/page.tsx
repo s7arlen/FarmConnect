@@ -11,8 +11,13 @@ import {
   Search,
   Boxes,
   TrendingUp,
-  Sparkles,
+  Sprout,
   ChevronRight,
+  Salad,
+  Apple,
+  Wheat,
+  Milk,
+  Flower2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,14 +26,14 @@ import ProductCard from "@/components/products/ProductCard";
 import FarmerCard from "@/components/farmers/FarmerCard";
 import { useAuthStore } from "@/store/authStore";
 import { DEMO_PRODUCTS, DEMO_FARMERS, DEMO_ORDERS } from "@/data/demo";
-import { formatCurrency, getOrderStatusLabel, getOrderStatusColor, formatRelativeTime } from "@/lib/utils";
+import { cn, formatCurrency, getOrderStatusLabel, getOrderStatusColor, formatRelativeTime } from "@/lib/utils";
 
 const CATEGORY_SHORTCUTS = [
-  { name: "Vegetables", emoji: "🥦", slug: "vegetables", count: 18 },
-  { name: "Fruits", emoji: "🥭", slug: "fruits", count: 12 },
-  { name: "Grains", emoji: "🌾", slug: "grains", count: 8 },
-  { name: "Dairy", emoji: "🥛", slug: "dairy", count: 6 },
-  { name: "Herbs", emoji: "🌿", slug: "herbs", count: 5 },
+  { name: "Vegetables", Icon: Salad, slug: "vegetables", count: 18, color: "text-emerald-700 bg-emerald-50" },
+  { name: "Fruits", Icon: Apple, slug: "fruits", count: 12, color: "text-rose-700 bg-rose-50" },
+  { name: "Grains", Icon: Wheat, slug: "grains", count: 8, color: "text-amber-700 bg-amber-50" },
+  { name: "Dairy", Icon: Milk, slug: "dairy", count: 6, color: "text-sky-700 bg-sky-50" },
+  { name: "Herbs", Icon: Flower2, slug: "herbs", count: 5, color: "text-teal-700 bg-teal-50" },
 ];
 
 export default function BuyerDashboardPage() {
@@ -51,7 +56,7 @@ export default function BuyerDashboardPage() {
         <div>
           <p className="text-xs font-semibold text-brand-muted tracking-tight">{greeting},</p>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight">
-            {name} 👋
+            {name}
           </h1>
         </div>
 
@@ -106,20 +111,23 @@ export default function BuyerDashboardPage() {
         </div>
 
         <div className="grid grid-cols-5 gap-2.5 sm:gap-4">
-          {CATEGORY_SHORTCUTS.map((cat) => (
-            <Link
-              key={cat.slug}
-              href={`/buyer/explore?category=${cat.slug}`}
-              className="flex flex-col items-center justify-center p-3 bg-white rounded-2xl border border-brand-border/80 hover:border-brand-green/50 hover:bg-brand-light/20 transition-all text-center group shadow-2xs select-none"
-            >
-              <span className="text-2xl sm:text-3xl mb-1 group-hover:scale-110 transition-transform">
-                {cat.emoji}
-              </span>
-              <span className="text-xs font-bold text-brand-dark tracking-tight leading-tight truncate w-full">
-                {cat.name}
-              </span>
-            </Link>
-          ))}
+          {CATEGORY_SHORTCUTS.map((cat) => {
+            const Icon = cat.Icon;
+            return (
+              <Link
+                key={cat.slug}
+                href={`/buyer/explore?category=${cat.slug}`}
+                className="flex flex-col items-center justify-center p-3 bg-white rounded-2xl border border-brand-border/80 hover:border-brand-green/50 hover:bg-brand-light/20 transition-all text-center group shadow-2xs select-none"
+              >
+                <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center mb-1.5 transition-transform group-hover:scale-105 shadow-2xs", cat.color)}>
+                  <Icon className="w-5 h-5 stroke-[2.2]" />
+                </div>
+                <span className="text-xs font-bold text-brand-dark tracking-tight leading-tight truncate w-full">
+                  {cat.name}
+                </span>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
@@ -128,7 +136,7 @@ export default function BuyerDashboardPage() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-lg font-extrabold text-brand-dark flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-amber-500 fill-amber-500" />
+              <Sprout className="w-4 h-4 text-emerald-600" />
               Fresh Today
             </h2>
             <p className="text-xs text-brand-muted">Harvested within the last 24 hours</p>

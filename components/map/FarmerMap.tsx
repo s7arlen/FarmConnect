@@ -210,7 +210,8 @@ export default function FarmerMap({
             ${safeFarmName}
           </h4>
           <p style="margin: 0 0 6px 0; font-size: 11px; color: #64748b; display: flex; align-items: center; gap: 4px;">
-            📍 ${safeAddress}
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            ${safeAddress}
           </p>
 
           <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">

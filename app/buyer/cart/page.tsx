@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Minus, Plus, Trash2, ShoppingCart, ArrowRight } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingCart, ArrowRight, Leaf } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -74,8 +74,8 @@ export default function CartPage() {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center text-2xl">
-                                🌱
+                              <div className="w-full h-full flex items-center justify-center bg-emerald-50 text-emerald-600">
+                                <Leaf className="w-6 h-6 stroke-[1.8]" />
                               </div>
                             )}
                           </div>

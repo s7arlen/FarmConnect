@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import Image from "next/image";
-import { Upload, X, Loader2, Sparkles, Image as ImageIcon } from "lucide-react";
+import { Upload, X, Loader2, CheckCircle2, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -134,7 +134,7 @@ export default function ImageUploader({
           {/* Cloudinary CDN Indicator Badge */}
           {value.includes("cloudinary.com") && (
             <div className="absolute top-2 left-2 bg-black/60 backdrop-blur-md text-white text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-emerald-400" />
+              <CheckCircle2 className="w-3 h-3 text-emerald-400" />
               Cloudinary CDN
             </div>
           )}

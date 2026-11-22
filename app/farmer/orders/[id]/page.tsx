@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useParams, notFound, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, CheckCircle, XCircle, Package } from "lucide-react";
+import { ArrowLeft, CheckCircle, XCircle, Package, Leaf } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -278,7 +278,9 @@ export default function FarmerOrderDetailPage() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-lg">🌱</div>
+                    <div className="w-full h-full flex items-center justify-center bg-emerald-50 text-emerald-600">
+                      <Leaf className="w-4 h-4 stroke-[1.8]" />
+                    </div>
                   )}
                 </div>
                 <div className="flex-1">

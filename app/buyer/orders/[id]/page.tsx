@@ -5,7 +5,7 @@ import { useParams, notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowLeft, CheckCircle, Circle, MapPin, Calendar, Package, Star } from "lucide-react";
+import { ArrowLeft, CheckCircle, Circle, MapPin, Calendar, Package, Star, Leaf } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -364,7 +364,9 @@ export default function OrderDetailPage() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-xl">🌱</div>
+                    <div className="w-full h-full flex items-center justify-center bg-emerald-50 text-emerald-600">
+                      <Leaf className="w-5 h-5 stroke-[1.8]" />
+                    </div>
                   )}
                 </div>
                 <div className="flex-1">

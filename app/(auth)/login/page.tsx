@@ -16,7 +16,10 @@ import {
   Leaf,
   Loader2,
   CheckCircle2,
-  Sparkles,
+  ShieldCheck,
+  ShoppingCart,
+  Tractor,
+  Building2,
 } from "lucide-react";
 import { loginSchema, type LoginInput } from "@/lib/validations";
 import { useAuthStore } from "@/store/authStore";
@@ -144,8 +147,8 @@ function LoginForm() {
         {/* Hero Narrative */}
         <div className="relative z-10 max-w-lg mb-8">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#53832F]/30 text-[#D6F0C7] text-xs font-bold uppercase tracking-wider mb-4 border border-[#53832F]/40 backdrop-blur-xs">
-            <Sparkles className="w-3.5 h-3.5 text-[#D6F0C7]" />
-            <span>Local Food Revolution</span>
+            <Leaf className="w-3.5 h-3.5 text-[#D6F0C7] stroke-[2.2]" />
+            <span>Direct Marketplace</span>
           </div>
 
           <h2 className="text-4xl xl:text-5xl font-black text-white leading-tight tracking-tight mb-4 drop-shadow-md">
@@ -252,7 +255,7 @@ function LoginForm() {
               <span>Back to Get Started</span>
             </Link>
             <span className="text-xs text-[#53832F] font-semibold flex items-center gap-1">
-              <Sparkles className="w-3.5 h-3.5" />
+              <ShieldCheck className="w-3.5 h-3.5" />
               Secure Sign In
             </span>
           </div>
@@ -387,10 +390,10 @@ function LoginForm() {
 
           {/* STREAMLINED MINIMAL DEMO ACCOUNTS BAR */}
           <div className="mt-6 pt-4 border-t border-[#DCE5D5]">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-bold text-[#202A20] uppercase tracking-wider flex items-center gap-1">
-                <Sparkles className="w-3.5 h-3.5 text-[#53832F]" />
-                Quick Demo Fill
+            <div className="flex items-center justify-between mb-2.5">
+              <span className="text-[11px] font-bold text-[#202A20] uppercase tracking-wider flex items-center gap-1.5">
+                <Leaf className="w-3.5 h-3.5 text-[#53832F] stroke-[2.2]" />
+                Demo Logins
               </span>
               <span className="text-[10px] text-brand-muted font-medium">Password: Demo@1234</span>
             </div>
@@ -398,20 +401,20 @@ function LoginForm() {
             {/* 4 Sleek Horizontal Role Chips */}
             <div className="grid grid-cols-4 gap-1.5">
               {[
-                { role: "Buyer", email: "buyer@demo.com", icon: "🛒" },
-                { role: "Farmer", email: "farmer@demo.com", icon: "👨‍🌾" },
-                { role: "Bulk", email: "bulk@demo.com", icon: "🏢" },
-                { role: "Admin", email: "admin@demo.com", icon: "🛡️" },
-              ].map((d) => (
+                { role: "Buyer", email: "buyer@demo.com", Icon: ShoppingCart },
+                { role: "Farmer", email: "farmer@demo.com", Icon: Tractor },
+                { role: "Bulk", email: "bulk@demo.com", Icon: Building2 },
+                { role: "Admin", email: "admin@demo.com", Icon: ShieldCheck },
+              ].map(({ role, email, Icon }) => (
                 <button
-                  key={d.role}
+                  key={role}
                   type="button"
-                  onClick={() => fillDemo(d.email)}
-                  className="py-2 px-1 rounded-xl bg-white hover:bg-[#EAF3E4] border border-[#DCE5D5] hover:border-[#53832F]/50 text-center transition-all cursor-pointer shadow-2xs group"
+                  onClick={() => fillDemo(email)}
+                  className="py-2 px-1 rounded-xl bg-white hover:bg-[#EAF3E4] border border-[#DCE5D5] hover:border-[#53832F]/50 text-center transition-all cursor-pointer shadow-2xs group flex flex-col items-center justify-center"
                 >
-                  <span className="text-sm block mb-0.5">{d.icon}</span>
+                  <Icon className="w-4 h-4 text-[#4D8337] group-hover:scale-110 transition-transform mb-1 stroke-[2]" />
                   <span className="text-[11px] font-bold text-[#202A20] group-hover:text-[#53832F] block leading-tight">
-                    {d.role}
+                    {role}
                   </span>
                 </button>
               ))}

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Plus, Search, Edit, Trash2, Package } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Package, Leaf } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -63,8 +63,8 @@ export default function FarmerProductsPage() {
           {filtered.map((product) => (
             <Card key={product.id}>
               <CardContent className="p-4 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-brand-light flex items-center justify-center text-2xl flex-shrink-0">
-                  🌱
+                <div className="w-12 h-12 rounded-lg bg-brand-light flex items-center justify-center flex-shrink-0">
+                  <Leaf className="w-5 h-5 text-brand-green/70 stroke-[2]" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-brand-text truncate">{product.name}</p>

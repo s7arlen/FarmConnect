@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { MapPin, CheckCircle, Plus, Minus, ShoppingCart, Heart } from "lucide-react";
+import { MapPin, CheckCircle, Plus, Minus, ShoppingCart, Heart, Leaf } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/store/cartStore";
@@ -57,7 +57,7 @@ export default function ProductCard({
             />
           ) : (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-emerald-50 text-emerald-700">
-              <span className="text-3xl mb-1">🌿</span>
+              <Leaf className="w-8 h-8 text-emerald-600/70 mb-1 stroke-[1.8]" />
               <span className="text-xs font-semibold text-emerald-800 tracking-wide uppercase">Farm Produce</span>
             </div>
           )}
