@@ -123,96 +123,79 @@ export default function DesktopRealisticHero() {
 
           {/* Right Column: Real Harvest Spotlight (5 cols) */}
           <div className="col-span-5">
-            <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xl p-5 relative overflow-hidden">
-              {/* Card Top Pill Bar: Live Harvest Status */}
-              <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 text-emerald-800 font-semibold text-[11px] bg-emerald-50 border border-emerald-200/70 px-2.5 py-0.5 rounded-full">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    Live Harvest
-                  </span>
-                  <span className="text-xs text-slate-500 font-medium">• Bantwal Cluster</span>
-                </div>
-                <span className="text-[11px] font-medium text-slate-400">Picked 6:30 AM</span>
-              </div>
-
+            <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xl p-5">
               {/* Farmer Profile Header */}
-              <div className="flex items-center justify-between mb-3.5">
+              <div className="flex items-center justify-between pb-3.5 border-b border-slate-100">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-full overflow-hidden relative border-2 border-emerald-100 shadow-xs flex-shrink-0 bg-slate-100">
+                  <div className="w-12 h-12 rounded-full overflow-hidden relative border-2 border-slate-200 shadow-xs flex-shrink-0 bg-slate-100">
                     <Image
-                      src="https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?w=400&q=80"
+                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80"
                       alt={featuredFarmer.farmName}
                       fill
                       className="object-cover"
                     />
                   </div>
                   <div>
-                    <div className="flex items-center gap-1.5">
-                      <h2 className="font-bold text-slate-900 text-sm leading-tight">
-                        {featuredFarmer.farmName}
-                      </h2>
-                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/70 px-1.5 py-0.2 rounded-md">
-                        Verified
-                      </span>
-                    </div>
+                    <h2 className="font-bold text-slate-900 text-base leading-tight">
+                      {featuredFarmer.farmName}
+                    </h2>
                     <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
-                      <MapPin className="w-3 h-3 text-slate-400" />
-                      <span>2.4 km away • Direct from grower</span>
+                      <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                      <span>Bantwal, Dakshina Kannada • 2.4 km away</span>
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1 text-xs font-bold text-slate-800 bg-amber-50/90 px-2 py-1 rounded-lg border border-amber-200/70">
+                <div className="flex items-center gap-1 text-xs font-semibold text-slate-700 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200/80">
                   <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
                   <span>4.8</span>
-                  <span className="text-slate-400 font-normal text-[11px]">(47)</span>
+                  <span className="text-slate-400 text-[11px]">(47 reviews)</span>
                 </div>
               </div>
 
-              {/* Produce Items Showcase */}
-              <div className="space-y-2">
+              {/* Subheading: Fresh Harvest Available Today */}
+              <div className="flex items-center justify-between py-2 text-xs text-slate-500 border-b border-slate-100 mb-1">
+                <span className="font-semibold text-slate-800">Fresh Harvest Available Today</span>
+                <span>Harvested at dawn</span>
+              </div>
+
+              {/* Produce Items Showcase (Clean list layout with dividers) */}
+              <div className="divide-y divide-slate-100">
                 {featuredProducts.map((product) => {
                   const isAdded = !!addedIds[product.id];
                   return (
                     <div
                       key={product.id}
-                      className="flex items-center justify-between p-2 rounded-xl bg-slate-50/80 hover:bg-slate-50 border border-slate-200/70 hover:border-emerald-300 transition-all duration-200"
+                      className="flex items-center justify-between py-2.5 px-0.5 first:pt-1.5 last:pb-1 group"
                     >
                       <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-11 h-11 rounded-lg overflow-hidden relative bg-white border border-slate-200/60 shadow-2xs flex-shrink-0">
+                        <div className="w-12 h-12 rounded-lg overflow-hidden relative bg-slate-50 border border-slate-200/60 shadow-2xs flex-shrink-0">
                           {product.image && (
                             <Image
                               src={product.image}
                               alt={product.name}
                               fill
-                              className="object-cover"
+                              className="object-cover group-hover:scale-105 transition-transform duration-200"
                             />
                           )}
                         </div>
                         <div className="min-w-0">
-                          <p className="text-sm font-bold text-slate-900 truncate">
+                          <p className="text-sm font-semibold text-slate-900 truncate">
                             {product.name}
                           </p>
-                          <div className="flex items-center gap-1.5 mt-0.5">
-                            <span className="text-xs font-extrabold text-emerald-800">
-                              {formatCurrency(product.price)}
-                              <span className="text-[11px] font-normal text-slate-500"> / {product.unit}</span>
-                            </span>
-                            <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-100/60 px-1.5 py-0.2 rounded">
-                              In Stock
-                            </span>
-                          </div>
+                          <p className="text-xs text-slate-600 font-medium mt-0.5">
+                            <span className="font-bold text-slate-900">{formatCurrency(product.price)}</span> / {product.unit}
+                          </p>
                         </div>
                       </div>
 
                       <button
                         type="button"
                         onClick={() => handleAddToCart(product)}
-                        className={`h-8 px-3.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all duration-200 flex-shrink-0 active:scale-95 ${
+                        className={`h-8 px-3 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all flex-shrink-0 ${
                           isAdded
-                            ? "bg-brand-green text-white shadow-xs"
-                            : "bg-white hover:bg-brand-green text-emerald-800 hover:text-white border border-emerald-300 hover:border-brand-green shadow-2xs hover:shadow-xs"
+                            ? "bg-brand-green text-white"
+                            : "bg-emerald-50 hover:bg-brand-green text-emerald-800 hover:text-white border border-emerald-200/80 shadow-2xs"
                         }`}
                       >
                         {isAdded ? (
@@ -233,17 +216,16 @@ export default function DesktopRealisticHero() {
               </div>
 
               {/* Delivery Footer */}
-              <div className="mt-3.5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+              <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
                 <span className="flex items-center gap-1.5 text-slate-600">
-                  <Truck className="w-4 h-4 text-brand-green" />
+                  <Truck className="w-3.5 h-3.5 text-brand-green" />
                   Same-day delivery: Order before 1:00 PM
                 </span>
                 <Link
                   href={`/buyer/farmers/${featuredFarmer.id}`}
-                  className="font-bold text-brand-green hover:text-brand-dark hover:underline flex items-center gap-1 group"
+                  className="font-semibold text-brand-green hover:underline"
                 >
-                  <span>View Farm</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                  View Farm Store →
                 </Link>
               </div>
             </div>
