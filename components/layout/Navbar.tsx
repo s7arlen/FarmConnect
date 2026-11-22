@@ -57,13 +57,13 @@ export default function Navbar() {
               </div>
             </Link>
 
-            {/* Desktop Location Badge */}
+            {/* Desktop Location Selector */}
             <Link
               href="/buyer/explore"
-              className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-50 hover:bg-emerald-50/70 border border-slate-200/90 text-slate-700 text-xs font-semibold transition-colors"
+              className="hidden xl:flex items-center gap-1.5 px-2 py-1 text-slate-600 hover:text-brand-green text-xs font-medium transition-colors"
             >
               <MapPin className="w-3.5 h-3.5 text-brand-green" />
-              <span>Bantwal, DK (2 km)</span>
+              <span>Deliver to: <strong className="text-slate-900 font-semibold">Bantwal</strong></span>
               <ChevronDown className="w-3 h-3 text-slate-400" />
             </Link>
           </div>

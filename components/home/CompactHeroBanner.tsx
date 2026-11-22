@@ -86,7 +86,7 @@ export default function CompactHeroBanner() {
 
             <Link
               href="/register?role=FARMER"
-              className="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/25 text-white font-semibold text-xs sm:text-sm backdrop-blur-xs transition-colors"
+              className="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-white/15 hover:bg-white/25 border border-white/30 text-white font-semibold text-xs sm:text-sm transition-colors"
             >
               {currentText.sellBtn}
             </Link>
