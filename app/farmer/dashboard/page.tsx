@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   Package,
@@ -150,7 +151,7 @@ export default function FarmerDashboardPage() {
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="w-10 h-10 rounded-lg bg-brand-cream border border-brand-border overflow-hidden flex-shrink-0 flex items-center justify-center">
                         {product.image ? (
-                          <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                          <Image src={product.image} alt={product.name} width={40} height={40} className="w-full h-full object-cover" />
                         ) : (
                           <Package className="w-5 h-5 text-brand-muted" />
                         )}

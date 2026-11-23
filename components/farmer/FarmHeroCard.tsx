@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   MapPin,
   CheckCircle2,
@@ -46,10 +47,12 @@ export default function FarmHeroCard({
       {/* Visual Header Banner - Minimal App-Style */}
       <div className="relative w-full bg-[#1B351B] overflow-hidden p-4 sm:p-5">
         {/* Subtle Farmland Background Texture */}
-        <img
+        <Image
           src={coverImageUrl}
           alt={farmName}
-          className="absolute inset-0 w-full h-full object-cover opacity-35 mix-blend-overlay pointer-events-none"
+          fill
+          priority
+          className="object-cover opacity-35 mix-blend-overlay pointer-events-none"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#172E17]/95 via-[#1E3B1E]/80 to-[#172E17]/90 pointer-events-none" />
 
@@ -58,9 +61,11 @@ export default function FarmHeroCard({
           {/* Avatar with fixed dimensions */}
           <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl ring-2 ring-white/20 shadow-md overflow-hidden bg-white/10 flex-shrink-0 flex items-center justify-center">
             {avatarUrl && !imgError ? (
-              <img
+              <Image
                 src={avatarUrl}
                 alt={farmerName}
+                width={64}
+                height={64}
                 className="w-full h-full object-cover"
                 onError={() => setImgError(true)}
               />

@@ -148,12 +148,17 @@ export async function GET(request: NextRequest) {
     try {
       const { db } = await import("@/db");
       const { orders, farmers } = await import("@/db/schema");
-      const { eq } = await import("drizzle-orm");
+      const { eq, desc } = await import("drizzle-orm");
 
       const isBuyer = ["BUYER", "BULK_BUYER"].includes(session.role);
-      const condition = isBuyer
-        ? eq(orders.buyerId, session.userId)
-        : eq(orders.farmerId, session.farmerId!);
+      const condition =
+        session.role === "ADMIN"
+          ? undefined
+          : isBuyer
+          ? eq(orders.buyerId, session.userId)
+          : session.farmerId
+          ? eq(orders.farmerId, session.farmerId)
+          : undefined;
 
       const result = await db
         .select({
@@ -169,7 +174,7 @@ export async function GET(request: NextRequest) {
         .from(orders)
         .leftJoin(farmers, eq(orders.farmerId, farmers.id))
         .where(condition)
-        .orderBy(orders.createdAt);
+        .orderBy(desc(orders.createdAt));
 
       return NextResponse.json({ orders: result });
     } catch {

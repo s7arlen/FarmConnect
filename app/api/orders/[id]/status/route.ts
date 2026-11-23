@@ -61,6 +61,26 @@ export async function PATCH(
         }
       }
 
+      // If order is cancelled, restore reserved product stock
+      if (targetStatus === "CANCELLED" && order.status !== "CANCELLED") {
+        const { orderItems, products } = await import("@/db/schema");
+        const { sql } = await import("drizzle-orm");
+        const items = await db
+          .select()
+          .from(orderItems)
+          .where(eq(orderItems.orderId, params.id));
+
+        for (const item of items) {
+          await db
+            .update(products)
+            .set({
+              quantity: sql`quantity + ${item.quantity}`,
+              updatedAt: new Date(),
+            })
+            .where(eq(products.id, item.productId));
+        }
+      }
+
       // Determine payment status
       const nextPaymentStatus =
         paymentStatus || (targetStatus === "COMPLETED" ? "PAID" : order.paymentStatus);

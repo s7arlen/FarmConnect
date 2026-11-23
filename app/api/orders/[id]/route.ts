@@ -17,6 +17,10 @@ export async function GET(
       const { db } = await import("@/db");
       const { orders, orderItems, products, farmers, users } = await import("@/db/schema");
       const { eq } = await import("drizzle-orm");
+      const { alias } = await import("drizzle-orm/pg-core");
+
+      const buyerUsers = alias(users, "buyer_users");
+      const farmerUsers = alias(users, "farmer_users");
 
       const [order] = await db
         .select({
@@ -36,13 +40,16 @@ export async function GET(
           updatedAt: orders.updatedAt,
           farmName: farmers.farmName,
           farmerAddress: farmers.address,
-          farmerPhone: users.phone,
-          buyerName: users.name,
-          buyerEmail: users.email,
+          farmerPhone: farmerUsers.phone,
+          farmerEmail: farmerUsers.email,
+          buyerName: buyerUsers.name,
+          buyerEmail: buyerUsers.email,
+          buyerPhone: buyerUsers.phone,
         })
         .from(orders)
         .leftJoin(farmers, eq(orders.farmerId, farmers.id))
-        .leftJoin(users, eq(orders.buyerId, users.id))
+        .leftJoin(buyerUsers, eq(orders.buyerId, buyerUsers.id))
+        .leftJoin(farmerUsers, eq(farmers.userId, farmerUsers.id))
         .where(eq(orders.id, id));
 
       if (!order) {

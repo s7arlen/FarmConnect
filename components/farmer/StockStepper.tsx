@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { Layers, AlertTriangle, CheckCircle, Ban, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils";
@@ -73,7 +74,7 @@ export default function StockStepper({ product, onUpdate }: StockStepperProps) {
       <div className="flex items-center gap-3.5 min-w-0">
         <div className="relative w-16 h-16 rounded-xl bg-brand-cream border border-brand-border overflow-hidden flex-shrink-0 flex items-center justify-center">
           {product.image ? (
-            <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+            <Image src={product.image} alt={product.name} width={64} height={64} className="w-full h-full object-cover" />
           ) : (
             <Layers className="w-6 h-6 text-brand-muted" />
           )}
