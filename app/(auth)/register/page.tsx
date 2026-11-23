@@ -26,6 +26,7 @@ import { registerSchema, type RegisterInput } from "@/lib/validations";
 import { useAuthStore } from "@/store/authStore";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
 
 const ROLE_OPTIONS = [
   {
@@ -60,6 +61,19 @@ function RegisterForm() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    const errorParam = searchParams.get("error");
+    if (errorParam) {
+      if (errorParam === "oauth_cancelled") {
+        setErrorMessage("Google Sign-up was cancelled.");
+      } else if (errorParam.includes("Google OAuth is not configured")) {
+        setErrorMessage(errorParam);
+      } else {
+        setErrorMessage("Google Sign-up could not be completed. Please try again or register with email.");
+      }
+    }
+  }, [searchParams]);
 
   const defaultRole =
     (searchParams.get("role") as RegisterInput["role"]) || "BUYER";
@@ -472,6 +486,20 @@ function RegisterForm() {
               </button>
             </div>
           </form>
+
+          {/* Social Divider & Google Sign-Up */}
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-[#DCE5D5]" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-[#F2F6EC] px-3 font-semibold text-brand-muted text-[11px]">
+                Or sign up with
+              </span>
+            </div>
+          </div>
+
+          <GoogleSignInButton role={selectedRole} />
 
           {/* FOOTER NAVIGATION */}
           <div className="mt-8 pt-6 border-t border-[#DCE5D5] text-center space-y-3">

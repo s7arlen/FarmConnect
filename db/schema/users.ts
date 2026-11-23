@@ -30,9 +30,11 @@ export const users = pgTable(
     name: varchar("name", { length: 255 }).notNull(),
     email: varchar("email", { length: 255 }).notNull().unique(),
     phone: varchar("phone", { length: 20 }),
-    passwordHash: text("password_hash").notNull(),
+    passwordHash: text("password_hash"),
     role: userRoleEnum("role").notNull().default("BUYER"),
     avatar: text("avatar"),
+    googleId: varchar("google_id", { length: 255 }).unique(),
+    authProvider: varchar("auth_provider", { length: 50 }).default("local"),
     status: userStatusEnum("status").notNull().default("ACTIVE"),
     emailVerified: timestamp("email_verified"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -41,6 +43,7 @@ export const users = pgTable(
   (table) => ({
     emailIdx: index("users_email_idx").on(table.email),
     roleIdx: index("users_role_idx").on(table.role),
+    googleIdIdx: index("users_google_id_idx").on(table.googleId),
   })
 );
 

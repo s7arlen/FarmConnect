@@ -89,6 +89,16 @@ export async function POST(request: NextRequest) {
         .where(or(eq(users.email, email.toLowerCase()), eq(users.phone, email)));
 
       if (user) {
+        if (!user.passwordHash) {
+          return NextResponse.json(
+            {
+              error:
+                "This account was created with Google Sign-in. Please log in using Google.",
+            },
+            { status: 400 }
+          );
+        }
+
         const valid = await bcrypt.default.compare(password, user.passwordHash);
         if (!valid) {
           return NextResponse.json(

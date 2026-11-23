@@ -43,6 +43,8 @@ const PUBLIC_PATHS = [
   "/api/auth/login",
   "/api/auth/register",
   "/api/auth/logout",
+  "/api/auth/google",
+  "/api/auth/google/callback",
   "/api/products",
   "/api/farmers",
 ];

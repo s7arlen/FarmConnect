@@ -25,6 +25,7 @@ import { loginSchema, type LoginInput } from "@/lib/validations";
 import { useAuthStore } from "@/store/authStore";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
 
 function LoginForm() {
   const router = useRouter();
@@ -36,6 +37,19 @@ function LoginForm() {
   const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    const errorParam = searchParams.get("error");
+    if (errorParam) {
+      if (errorParam === "oauth_cancelled") {
+        setErrorMessage("Google Sign-in was cancelled.");
+      } else if (errorParam.includes("Google OAuth is not configured")) {
+        setErrorMessage(errorParam);
+      } else {
+        setErrorMessage("Google Sign-in could not be completed. Please try again or use your email/password.");
+      }
+    }
+  }, [searchParams]);
 
   const {
     register,
@@ -387,6 +401,20 @@ function LoginForm() {
               </button>
             </div>
           </form>
+
+          {/* Social Divider & Google Sign-In */}
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-[#DCE5D5]" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-[#F2F6EC] px-3 font-semibold text-brand-muted text-[11px]">
+                Or continue with
+              </span>
+            </div>
+          </div>
+
+          <GoogleSignInButton returnTo={from || undefined} />
 
           {/* STREAMLINED MINIMAL DEMO ACCOUNTS BAR */}
           <div className="mt-6 pt-4 border-t border-[#DCE5D5]">
