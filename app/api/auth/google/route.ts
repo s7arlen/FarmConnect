@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   getGoogleAuthUrl,
+  getBaseUrl,
   OAUTH_STATE_COOKIE,
   isGoogleOAuthConfigured,
 } from "@/lib/oauth";
@@ -9,8 +10,10 @@ import type { UserRole } from "@/types/user";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
+  const baseUrl = getBaseUrl(request);
+
   try {
-    const { searchParams, origin } = request.nextUrl;
+    const { searchParams } = request.nextUrl;
     const roleParam = searchParams.get("role")?.toUpperCase();
     const returnTo = searchParams.get("returnTo") || undefined;
 
@@ -24,20 +27,20 @@ export async function GET(request: NextRequest) {
         new URL(
           "/login?error=" +
             encodeURIComponent("Google OAuth is not configured. Please add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET to environment variables."),
-          request.url
+          baseUrl
         )
       );
     }
 
-    const { url, stateString, nonce } = getGoogleAuthUrl({
+    const { url, stateString, nonce } = await getGoogleAuthUrl({
       role,
       returnTo,
-      origin,
+      baseUrl,
     });
 
     const response = NextResponse.redirect(url);
 
-    // Save the nonce in a short-lived HTTP-only cookie for CSRF protection
+    // Set short-lived state cookie for CSRF protection
     response.cookies.set(OAUTH_STATE_COOKIE, `${stateString}:${nonce}`, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -50,7 +53,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("Error initiating Google OAuth:", error);
     return NextResponse.redirect(
-      new URL("/login?error=oauth_init_failed", request.url)
+      new URL("/login?error=oauth_init_failed", baseUrl)
     );
   }
 }

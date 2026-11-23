@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toast";
+import { AuthHydrator } from "@/components/auth/AuthHydrator";
 
 export const metadata: Metadata = {
   title: {
@@ -57,6 +58,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen bg-white text-brand-text">
+        <AuthHydrator />
         {children}
         <Toaster
           position="top-right"

@@ -3,6 +3,7 @@ import {
   exchangeGoogleCode,
   getGoogleUserInfo,
   decodeOAuthState,
+  getBaseUrl,
   OAUTH_STATE_COOKIE,
 } from "@/lib/oauth";
 import { createSessionToken, setSessionCookie } from "@/lib/auth";
@@ -18,60 +19,62 @@ const DASHBOARD_ROUTES: Record<string, string> = {
 };
 
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = request.nextUrl;
+  const baseUrl = getBaseUrl(request);
+  const { searchParams } = request.nextUrl;
   const code = searchParams.get("code");
   const state = searchParams.get("state");
   const oauthError = searchParams.get("error");
 
   if (oauthError) {
-    console.warn("OAuth authorization failed or was cancelled:", oauthError);
+    console.warn("OAuth authorization failed or was cancelled by user:", oauthError);
     return NextResponse.redirect(
-      new URL("/login?error=oauth_cancelled", request.url)
+      new URL("/login?error=oauth_cancelled", baseUrl)
     );
   }
 
   if (!code || !state) {
     return NextResponse.redirect(
-      new URL("/login?error=invalid_oauth_response", request.url)
+      new URL("/login?error=invalid_oauth_response", baseUrl)
     );
   }
 
-  // Verify CSRF state cookie
+  // 1. Verify CSRF state: cryptographically verify HMAC signature
+  const decodedState = await decodeOAuthState(state);
+  if (!decodedState) {
+    console.error("OAuth state HMAC signature verification failed or state expired.");
+    return NextResponse.redirect(
+      new URL("/login?error=oauth_state_invalid", baseUrl)
+    );
+  }
+
+  // 2. Also check state cookie if present (resilient against mobile cross-site cookie stripping)
   const stateCookie = request.cookies.get(OAUTH_STATE_COOKIE)?.value;
-  if (!stateCookie) {
-    return NextResponse.redirect(
-      new URL("/login?error=oauth_session_expired", request.url)
-    );
-  }
-
-  const [cookieState, cookieNonce] = stateCookie.split(":");
-  if (cookieState !== state) {
-    return NextResponse.redirect(
-      new URL("/login?error=oauth_state_mismatch", request.url)
-    );
-  }
-
-  const decodedState = decodeOAuthState(state);
-  if (!decodedState || decodedState.nonce !== cookieNonce) {
-    return NextResponse.redirect(
-      new URL("/login?error=oauth_state_invalid", request.url)
-    );
+  if (stateCookie) {
+    const [cookieState, cookieNonce] = stateCookie.split(":");
+    if (cookieState === state && cookieNonce !== decodedState.nonce) {
+      console.error("OAuth cookie nonce mismatch");
+      return NextResponse.redirect(
+        new URL("/login?error=oauth_state_mismatch", baseUrl)
+      );
+    }
   }
 
   try {
-    // 1. Exchange authorization code for tokens
-    const tokens = await exchangeGoogleCode(code, origin);
+    // 3. Exchange authorization code for tokens
+    const tokens = await exchangeGoogleCode(code, baseUrl);
     if (!tokens?.access_token) {
+      console.error("Google returned no access_token during code exchange.");
       return NextResponse.redirect(
-        new URL("/login?error=token_exchange_failed", request.url)
+        new URL("/login?error=token_exchange_failed", baseUrl)
       );
     }
 
-    // 2. Fetch Google profile
+    // 4. Fetch Google profile
     const googleUser = await getGoogleUserInfo(tokens.access_token);
     if (!googleUser || !googleUser.email) {
+      console.error("Failed to retrieve Google user profile info.");
       return NextResponse.redirect(
-        new URL("/login?error=failed_to_fetch_profile", request.url)
+        new URL("/login?error=failed_to_fetch_profile", baseUrl)
       );
     }
 
@@ -85,7 +88,7 @@ export async function GET(request: NextRequest) {
       farmerId?: string;
     };
 
-    // 3. Database operations
+    // 5. Database operations (Neon PostgreSQL via Drizzle)
     try {
       const { db } = await import("@/db");
       const { users, farmers } = await import("@/db/schema");
@@ -105,7 +108,7 @@ export async function GET(request: NextRequest) {
       if (existingUser) {
         if (existingUser.status === "SUSPENDED") {
           return NextResponse.redirect(
-            new URL("/login?error=account_suspended", request.url)
+            new URL("/login?error=account_suspended", baseUrl)
           );
         }
 
@@ -131,7 +134,7 @@ export async function GET(request: NextRequest) {
             .where(eq(users.id, existingUser.id));
         }
 
-        // Check if farmer profile exists
+        // Retrieve linked farmer record if role is FARMER
         let farmerId: string | undefined;
         if (existingUser.role === "FARMER") {
           const [farmerProfile] = await db
@@ -188,8 +191,7 @@ export async function GET(request: NextRequest) {
         };
       }
     } catch (dbError) {
-      console.warn("DB operation failed, using preview session fallback:", dbError);
-      // Fallback preview session
+      console.warn("DB operation fallback in OAuth callback:", dbError);
       finalUser = {
         id: `google_${googleUser.sub}`,
         email: normalizedEmail,
@@ -199,7 +201,7 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    // 4. Create cryptographically signed HMAC session token
+    // 6. Create cryptographically signed HMAC session token
     const token = await createSessionToken({
       userId: finalUser.id,
       email: finalUser.email,
@@ -208,18 +210,18 @@ export async function GET(request: NextRequest) {
       farmerId: finalUser.farmerId,
     });
 
-    // 5. Destination URL
+    // 7. Destination URL
     const destinationPath =
       decodedState.returnTo && decodedState.returnTo.startsWith("/")
         ? decodedState.returnTo
         : DASHBOARD_ROUTES[finalUser.role] || "/buyer/dashboard";
 
-    const response = NextResponse.redirect(new URL(destinationPath, request.url));
+    const response = NextResponse.redirect(new URL(destinationPath, baseUrl));
 
-    // 6. Set HTTP-only session cookie
+    // 8. Set HTTP-only session cookie
     setSessionCookie(response, token);
 
-    // 7. Clear OAuth state cookie
+    // 9. Clear OAuth state cookie
     response.cookies.set(OAUTH_STATE_COOKIE, "", {
       httpOnly: true,
       maxAge: 0,
@@ -228,9 +230,9 @@ export async function GET(request: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error("OAuth callback error:", error);
+    console.error("OAuth callback unhandled error:", error);
     return NextResponse.redirect(
-      new URL("/login?error=oauth_processing_failed", request.url)
+      new URL("/login?error=oauth_processing_failed", baseUrl)
     );
   }
 }

@@ -67,10 +67,14 @@ function RegisterForm() {
     if (errorParam) {
       if (errorParam === "oauth_cancelled") {
         setErrorMessage("Google Sign-up was cancelled.");
+      } else if (errorParam === "token_exchange_failed") {
+        setErrorMessage("Google token verification failed. Please verify your Google Client ID and Secret.");
+      } else if (errorParam === "oauth_state_invalid" || errorParam === "oauth_state_mismatch" || errorParam === "oauth_session_expired") {
+        setErrorMessage("Sign-up session timed out. Please click Continue with Google again.");
       } else if (errorParam.includes("Google OAuth is not configured")) {
         setErrorMessage(errorParam);
       } else {
-        setErrorMessage("Google Sign-up could not be completed. Please try again or register with email.");
+        setErrorMessage(`Sign-up error (${errorParam}). Please try again or register with email.`);
       }
     }
   }, [searchParams]);

@@ -43,10 +43,16 @@ function LoginForm() {
     if (errorParam) {
       if (errorParam === "oauth_cancelled") {
         setErrorMessage("Google Sign-in was cancelled.");
+      } else if (errorParam === "token_exchange_failed") {
+        setErrorMessage("Google token verification failed. Please verify your Google Client ID and Secret.");
+      } else if (errorParam === "oauth_state_invalid" || errorParam === "oauth_state_mismatch" || errorParam === "oauth_session_expired") {
+        setErrorMessage("Sign-in session timed out. Please click Continue with Google again.");
+      } else if (errorParam === "account_suspended") {
+        setErrorMessage("Your account has been suspended. Please contact support.");
       } else if (errorParam.includes("Google OAuth is not configured")) {
         setErrorMessage(errorParam);
       } else {
-        setErrorMessage("Google Sign-in could not be completed. Please try again or use your email/password.");
+        setErrorMessage(`Sign-in error (${errorParam}). Please try again or use your password.`);
       }
     }
   }, [searchParams]);
