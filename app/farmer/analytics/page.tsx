@@ -89,7 +89,7 @@ export default function FarmerAnalyticsPage() {
   ];
 
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto pb-28 pb-safe">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto">
       <div className="flex items-start justify-between mb-8 flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold text-brand-text mb-1">Analytics</h1>

@@ -61,8 +61,12 @@ export async function PATCH(
         }
       }
 
-      // If order is cancelled, restore reserved product stock
-      if (targetStatus === "CANCELLED" && order.status !== "CANCELLED") {
+      // If order is cancelled or rejected, restore reserved product stock
+      const isCancellationOrRejection =
+        (targetStatus === "CANCELLED" && order.status !== "CANCELLED") ||
+        (targetStatus === "REJECTED" && order.status !== "REJECTED");
+
+      if (isCancellationOrRejection) {
         const { orderItems, products } = await import("@/db/schema");
         const { sql } = await import("drizzle-orm");
         const items = await db

@@ -22,7 +22,7 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="p-4 md:p-8 max-w-5xl mx-auto pb-safe">
+      <div className="p-4 md:p-8 max-w-5xl mx-auto">
         <h1 className="text-2xl font-bold text-brand-text mb-8">Your Cart</h1>
         <EmptyState
           icon={<ShoppingCart className="w-8 h-8" />}
@@ -35,7 +35,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="p-4 md:p-8 max-w-6xl mx-auto pb-safe">
+    <div className="p-4 md:p-8 max-w-6xl mx-auto">
       <h1 className="text-2xl font-bold text-brand-text mb-6">
         Your Cart ({items.length} item{items.length !== 1 ? "s" : ""})
       </h1>

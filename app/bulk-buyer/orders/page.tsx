@@ -41,7 +41,7 @@ export default function BulkOrdersPage() {
   const [orders] = useState(DEMO_BULK_ORDERS);
 
   return (
-    <div className="p-4 md:p-8 max-w-5xl">
+    <div className="p-4 md:p-8 max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold text-brand-text mb-1">Bulk Orders</h1>

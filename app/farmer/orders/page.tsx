@@ -19,7 +19,22 @@ const TABS = ["All", "Pending", "Active", "Completed"];
 
 export default function FarmerOrdersPage() {
   const [activeTab, setActiveTab] = useState("All");
-  const orders = DEMO_ORDERS.filter((o) => o.farmerId === "demo-farmer-1");
+  const [orders, setOrders] = useState<any[]>(() =>
+    DEMO_ORDERS.filter((o) => o.farmerId === "demo-farmer-1")
+  );
+
+  React.useEffect(() => {
+    fetch("/api/orders")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.orders && Array.isArray(data.orders) && data.orders.length > 0) {
+          setOrders(data.orders);
+        }
+      })
+      .catch(() => {
+        // Fallback remains demo orders
+      });
+  }, []);
 
   const filtered = orders.filter((order) => {
     if (activeTab === "All") return true;
@@ -30,10 +45,10 @@ export default function FarmerOrdersPage() {
   });
 
   return (
-    <div className="p-4 md:p-8 max-w-5xl mx-auto pb-28 pb-safe">
+    <div className="p-4 md:p-8 max-w-5xl mx-auto">
       <h1 className="text-2xl font-bold text-brand-text mb-6">Orders</h1>
 
-      <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
+      <div className="flex gap-2 mb-6 overflow-x-auto no-scrollbar pb-1">
         {TABS.map((tab) => (
           <button
             key={tab}
@@ -81,7 +96,7 @@ export default function FarmerOrdersPage() {
                     </p>
                     {order.items && (
                       <p className="text-xs text-brand-muted mt-0.5">
-                        {order.items.map((i) => i.productName).join(", ")}
+                        {order.items.map((i: any) => i.productName).join(", ")}
                       </p>
                     )}
                   </div>

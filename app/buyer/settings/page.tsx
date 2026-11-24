@@ -28,7 +28,7 @@ export default function BuyerSettingsPage() {
   }
 
   return (
-    <div className="p-4 md:p-8 max-w-3xl">
+    <div className="p-4 md:p-8 max-w-3xl mx-auto">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-brand-text mb-1">Account Settings</h1>
         <p className="text-brand-muted text-sm">

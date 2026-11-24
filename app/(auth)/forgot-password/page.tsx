@@ -52,7 +52,7 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F2F6EC] text-[#202A20] flex flex-col lg:flex-row">
+    <div className="min-h-screen min-h-[100dvh] bg-[#F2F6EC] text-[#202A20] flex flex-col lg:flex-row lg:h-screen lg:overflow-hidden selection:bg-[#53832F] selection:text-white">
       
       {/* =========================================================================
           DESKTOP LEFT SIDEBAR: Agricultural Landscape Hero (Visible on lg+)
@@ -114,7 +114,7 @@ export default function ForgotPasswordPage() {
       {/* =========================================================================
           RIGHT FORM CONTAINER
       ========================================================================= */}
-      <div className="flex-1 flex flex-col justify-between min-h-screen lg:min-h-auto overflow-y-auto">
+      <div className="flex-1 flex flex-col justify-between lg:h-screen lg:overflow-y-auto">
         
         {/* Mobile Upper Hero */}
         <div className="lg:hidden relative h-[30vh] min-h-[220px] max-h-[280px] w-full flex flex-col justify-between p-5 overflow-hidden">

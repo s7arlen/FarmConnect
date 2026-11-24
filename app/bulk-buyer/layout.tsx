@@ -61,9 +61,9 @@ export default function BulkBuyerLayout({ children }: { children: React.ReactNod
   const headerTitle = activeLink?.label || "Bulk Procurement";
 
   return (
-    <div className="min-h-screen flex bg-brand-cream">
+    <div className="flex h-screen h-[100dvh] bg-brand-cream overflow-hidden">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col w-64 bg-white border-r border-brand-border flex-shrink-0">
+      <aside className="hidden lg:flex flex-col w-64 bg-white border-r border-brand-border flex-shrink-0 h-full">
         <div className="p-5 border-b border-brand-border">
           <Link href="/" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-brand-green rounded-lg flex items-center justify-center shadow-sm">
@@ -172,7 +172,7 @@ export default function BulkBuyerLayout({ children }: { children: React.ReactNod
       )}
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
+      <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden relative">
         <MobileHeader
           title={headerTitle}
           onMenuClick={() => setSidebarOpen(true)}
@@ -187,7 +187,7 @@ export default function BulkBuyerLayout({ children }: { children: React.ReactNod
           }
         />
 
-        <main className="flex-1 overflow-auto bg-brand-cream">{children}</main>
+        <main className="flex-1 overflow-y-auto bg-brand-cream pb-24 lg:pb-8">{children}</main>
       </div>
 
       {/* App-Like Mobile Bottom Navigation Bar */}

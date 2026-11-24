@@ -11,7 +11,7 @@ import { getInitials } from "@/lib/utils";
 
 export default function AdminFarmersPage() {
   return (
-    <div className="p-4 md:p-8 max-w-6xl">
+    <div className="p-4 md:p-8 max-w-6xl mx-auto">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-brand-text mb-1">Farmers</h1>
         <p className="text-brand-muted text-sm">{DEMO_FARMERS.length} registered farms</p>

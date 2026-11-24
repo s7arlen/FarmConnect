@@ -112,13 +112,15 @@ export default function FarmerOrderDetailPage() {
         body: JSON.stringify({ paymentStatus: "PAID" }),
       });
 
-      if (response.ok || true) {
+      if (response.ok) {
         setOrder((prev) => (prev ? { ...prev, paymentStatus: "PAID" } : prev));
         toast.success("Payment marked as received!");
+      } else {
+        const err = await response.json().catch(() => ({}));
+        toast.error(err.error || "Failed to mark payment");
       }
     } catch {
-      setOrder((prev) => (prev ? { ...prev, paymentStatus: "PAID" } : prev));
-      toast.success("Payment marked as received! (Demo mode)");
+      toast.error("Network error while updating payment");
     } finally {
       setLoading(null);
     }
@@ -133,25 +135,26 @@ export default function FarmerOrderDetailPage() {
         body: JSON.stringify({ status: newStatus }),
       });
 
-      if (response.ok || true) {
-        // Demo: update local state
+      if (response.ok) {
         setOrder((prev) => prev ? { ...prev, status: newStatus as OrderStatus } : prev);
         toast.success(`Order ${getOrderStatusLabel(newStatus).toLowerCase()}`);
 
         if (newStatus === "COMPLETED") {
           setTimeout(() => router.push("/farmer/orders"), 1200);
         }
+      } else {
+        const err = await response.json().catch(() => ({}));
+        toast.error(err.error || "Failed to update order status");
       }
     } catch {
-      setOrder((prev) => prev ? { ...prev, status: newStatus as OrderStatus } : prev);
-      toast.success(`Order ${getOrderStatusLabel(newStatus).toLowerCase()}`);
+      toast.error("Network error while updating status");
     } finally {
       setLoading(null);
     }
   }
 
   return (
-    <div className="p-4 md:p-8 max-w-2xl">
+    <div className="p-4 md:p-8 max-w-2xl mx-auto">
       <Link
         href="/farmer/orders"
         className="inline-flex items-center gap-1.5 text-sm text-brand-muted hover:text-brand-green mb-6"

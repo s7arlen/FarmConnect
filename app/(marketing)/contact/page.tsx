@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="pt-24">
-      <section className="section bg-brand-cream">
+    <div className="w-full">
+      <section className="section bg-brand-cream pt-8 sm:pt-12">
         <div className="container-page max-w-5xl">
           <div className="text-center mb-12">
             <h1 className="text-5xl font-bold text-brand-text mb-4">Get in Touch</h1>

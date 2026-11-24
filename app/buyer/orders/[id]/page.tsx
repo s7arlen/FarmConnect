@@ -52,6 +52,45 @@ export default function OrderDetailPage() {
   const [comment, setComment] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
+  const [confirmCancelOpen, setConfirmCancelOpen] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
+
+  async function handleCancelOrder() {
+    if (!order) return;
+    setCancelling(true);
+    try {
+      const res = await fetch(`/api/orders/${order.id}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "CANCELLED" }),
+      });
+      if (res.ok) {
+        setOrder((prev) => (prev ? { ...prev, status: "CANCELLED" } : prev));
+        try {
+          const cached = localStorage.getItem(`order_${order.id}`);
+          if (cached) {
+            const parsed = JSON.parse(cached);
+            parsed.status = "CANCELLED";
+            localStorage.setItem(`order_${order.id}`, JSON.stringify(parsed));
+          }
+          const recent = JSON.parse(localStorage.getItem("recent_orders") || "[]");
+          const updatedRecent = recent.map((o: any) =>
+            o.id === order.id ? { ...o, status: "CANCELLED" } : o
+          );
+          localStorage.setItem("recent_orders", JSON.stringify(updatedRecent));
+        } catch {}
+        toast.success("Order cancelled successfully");
+        setConfirmCancelOpen(false);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        toast.error(err.error || "Failed to cancel order");
+      }
+    } catch {
+      toast.error("Network error while cancelling order");
+    } finally {
+      setCancelling(false);
+    }
+  }
 
   React.useEffect(() => {
     if (!orderId) return;
@@ -185,7 +224,7 @@ export default function OrderDetailPage() {
   }
 
   return (
-    <div className="p-4 md:p-8 max-w-3xl">
+    <div className="p-4 md:p-8 max-w-3xl mx-auto">
       <Link
         href="/buyer/orders"
         className="inline-flex items-center gap-1.5 text-sm text-brand-muted hover:text-brand-green mb-6"
@@ -200,9 +239,21 @@ export default function OrderDetailPage() {
           <h1 className="text-xl font-bold text-brand-text">Order Details</h1>
           <p className="text-sm text-brand-muted">#{order.id.slice(0, 12).toUpperCase()}</p>
         </div>
-        <Badge className={getOrderStatusColor(order.status)} variant="secondary">
-          {getOrderStatusLabel(order.status)}
-        </Badge>
+        <div className="flex items-center gap-2.5">
+          <Badge className={getOrderStatusColor(order.status)} variant="secondary">
+            {getOrderStatusLabel(order.status)}
+          </Badge>
+          {order.status === "REQUESTED" && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 hover:border-red-300"
+              onClick={() => setConfirmCancelOpen(true)}
+            >
+              Cancel Order
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Timeline */}
@@ -467,6 +518,39 @@ export default function OrderDetailPage() {
               </Button>
             </div>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Cancel Order Confirmation Dialog */}
+      <Dialog open={confirmCancelOpen} onOpenChange={setConfirmCancelOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Cancel Order</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to cancel this order? Any reserved inventory will be returned to the farmer.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex justify-end gap-2 pt-4">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={cancelling}
+              onClick={() => setConfirmCancelOpen(false)}
+            >
+              Keep Order
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              disabled={cancelling}
+              onClick={handleCancelOrder}
+            >
+              {cancelling ? "Cancelling..." : "Yes, Cancel Order"}
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

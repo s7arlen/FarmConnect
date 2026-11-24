@@ -44,7 +44,7 @@ export default function FarmerDashboardPage() {
   const totalStockUnits = products.reduce((sum, p) => sum + p.quantity, 0);
 
   return (
-    <div className="p-4 md:p-8 max-w-6xl mx-auto pb-28 pb-safe">
+    <div className="p-4 md:p-8 max-w-6xl mx-auto">
       {/* GoParm-Inspired Farm Hero Card */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}

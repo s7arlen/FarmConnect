@@ -66,7 +66,7 @@ export default function FarmerLayout({ children }: { children: React.ReactNode }
   const headerTitle = currentLink ? currentLink.label : "Farmer Portal";
 
   return (
-    <div className="flex h-screen bg-brand-cream overflow-hidden">
+    <div className="flex h-screen h-[100dvh] bg-brand-cream overflow-hidden">
       {/* Desktop Sidebar (>= 1024px) */}
       <aside className="w-72 bg-white border-r border-brand-border flex-col flex-shrink-0 hidden lg:flex">
         {/* Brand Header */}
@@ -198,7 +198,7 @@ export default function FarmerLayout({ children }: { children: React.ReactNode }
           }
         />
 
-        <main className="flex-1 overflow-y-auto bg-brand-cream">{children}</main>
+        <main className="flex-1 overflow-y-auto bg-brand-cream pb-24 lg:pb-8">{children}</main>
       </div>
 
       {/* Persistent App Bottom Nav for Mobile Screens */}

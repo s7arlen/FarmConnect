@@ -33,7 +33,7 @@ export default function RequirementDetailPage() {
   }).sort((a, b) => b.result.matchScore - a.result.matchScore);
 
   return (
-    <div className="p-4 md:p-8 max-w-3xl">
+    <div className="p-4 md:p-8 max-w-3xl mx-auto">
       <Link href="/bulk-buyer/requirements" className="inline-flex items-center gap-1.5 text-sm text-brand-muted hover:text-brand-green mb-6">
         <ArrowLeft className="w-4 h-4" />Back
       </Link>

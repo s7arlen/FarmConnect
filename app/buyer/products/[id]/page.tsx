@@ -46,7 +46,7 @@ export default function ProductDetailPage() {
   const isAvailable = product.status !== "UNAVAILABLE";
 
   return (
-    <div className="p-4 md:p-8 max-w-6xl mx-auto pb-safe pb-28">
+    <div className="p-4 md:p-8 max-w-6xl mx-auto pb-36 lg:pb-8">
       {/* Back */}
       <Link
         href="/buyer/explore"
@@ -303,7 +303,7 @@ export default function ProductDetailPage() {
       )}
 
       {/* Mobile Sticky Bottom Action Bar */}
-      <div className="lg:hidden fixed bottom-16 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-brand-border p-3 px-4 shadow-lg flex items-center justify-between gap-4">
+      <div className="lg:hidden fixed bottom-nav-safe left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-brand-border p-3 px-4 shadow-lg flex items-center justify-between gap-4">
         <div>
           <p className="text-[10px] uppercase font-bold text-brand-muted tracking-wider">Total</p>
           <p className="text-base font-extrabold text-brand-dark">

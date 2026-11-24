@@ -67,7 +67,7 @@ export default function AdminBuyersPage() {
   });
 
   return (
-    <div className="p-4 md:p-8 max-w-6xl">
+    <div className="p-4 md:p-8 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-bold text-brand-text mb-1">Buyer Management</h1>

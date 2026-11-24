@@ -11,6 +11,7 @@ const PROTECTED_ROUTES: Record<string, string[]> = {
   "/buyer/profile": ["BUYER", "BULK_BUYER"],
   "/buyer/settings": ["BUYER", "BULK_BUYER"],
   "/buyer/wishlist": ["BUYER", "BULK_BUYER"],
+  "/buyer/bulk": ["BUYER", "BULK_BUYER"],
   "/farmer": ["FARMER"],
   "/bulk-buyer": ["BULK_BUYER"],
   "/admin": ["ADMIN"],

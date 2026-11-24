@@ -7,7 +7,7 @@ import { getInitials } from "@/lib/utils";
 export default function BuyerProfilePage() {
   const user = useAuthStore((s) => s.user);
   return (
-    <div className="p-4 md:p-8 max-w-lg">
+    <div className="p-4 md:p-8 max-w-lg mx-auto">
       <h1 className="text-2xl font-bold text-brand-text mb-6">Profile</h1>
       <Card>
         <CardContent className="p-6">

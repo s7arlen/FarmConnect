@@ -54,7 +54,7 @@ export default function FarmerVerificationPage() {
   const rejected = farmers.filter((f) => f.verificationStatus === "REJECTED");
 
   return (
-    <div className="p-4 md:p-8 max-w-5xl">
+    <div className="p-4 md:p-8 max-w-5xl mx-auto">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-brand-text mb-1">Farmer Verification</h1>
         <p className="text-brand-muted text-sm">Review and approve farmer applications</p>

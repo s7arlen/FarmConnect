@@ -113,7 +113,10 @@ export async function POST(request: NextRequest) {
         .where(eq(reviews.farmerId, farmerId));
 
       const totalRating = allFarmerReviews.reduce((sum, r) => sum + r.rating, 0);
-      const avgRating = (totalRating / allFarmerReviews.length).toFixed(2);
+      const avgRating =
+        allFarmerReviews.length > 0
+          ? (totalRating / allFarmerReviews.length).toFixed(2)
+          : Number(rating || 5).toFixed(2);
 
       await db
         .update(farmers)

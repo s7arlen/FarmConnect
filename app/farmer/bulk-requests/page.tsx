@@ -92,7 +92,7 @@ export default function BulkRequestsPage() {
   }
 
   return (
-    <div className="p-4 md:p-8 max-w-4xl mx-auto pb-28 pb-safe">
+    <div className="p-4 md:p-8 max-w-4xl mx-auto">
       <div className="mb-6">
         <h1 className="text-2xl font-extrabold text-brand-dark mb-1">Bulk Procurement Demands</h1>
         <p className="text-brand-muted text-xs">

@@ -8,8 +8,8 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="pt-24">
-      <section className="section bg-brand-cream">
+    <div className="w-full">
+      <section className="section bg-brand-cream pt-8 sm:pt-12">
         <div className="container-page max-w-4xl">
           <div className="text-center mb-14">
             <p className="text-brand-green text-sm font-semibold uppercase tracking-wide mb-2">Our Story</p>

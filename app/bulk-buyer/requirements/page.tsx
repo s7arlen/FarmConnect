@@ -14,7 +14,7 @@ const DEMO_REQUIREMENTS = [
 
 export default function RequirementsPage() {
   return (
-    <div className="p-4 md:p-8 max-w-4xl">
+    <div className="p-4 md:p-8 max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <h1 className="text-2xl font-bold text-brand-text">My Requirements</h1>
         <Link href="/bulk-buyer/requirements/create">

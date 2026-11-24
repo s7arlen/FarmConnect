@@ -128,7 +128,7 @@ export default function EditProductPage() {
   }
 
   return (
-    <div className="p-4 md:p-8 max-w-2xl mx-auto pb-28 pb-safe">
+    <div className="p-4 md:p-8 max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <Link
           href="/farmer/products"

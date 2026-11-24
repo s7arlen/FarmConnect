@@ -23,7 +23,7 @@ export default function FarmerProfilePage() {
   const reviews = DEMO_REVIEWS.filter((r) => r.farmerId === farmer.id);
 
   return (
-    <div className="max-w-5xl">
+    <div className="max-w-5xl mx-auto">
       {/* Cover */}
       <div className="relative h-52 md:h-72 bg-brand-light overflow-hidden">
         {farmer.coverImage ? (

@@ -82,7 +82,7 @@ export default function AddProductPage() {
   }
 
   return (
-    <div className="p-4 md:p-8 max-w-2xl mx-auto pb-28 pb-safe">
+    <div className="p-4 md:p-8 max-w-2xl mx-auto">
       <Link
         href="/farmer/products"
         className="inline-flex items-center gap-1.5 text-sm text-brand-muted hover:text-brand-green mb-6"

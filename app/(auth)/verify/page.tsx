@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 
 export default function VerifyPage() {
   return (
-    <div className="w-full max-w-sm">
+    <div className="min-h-screen min-h-[100dvh] flex items-center justify-center p-4">
+      <div className="w-full max-w-sm">
       <div className="bg-white rounded-2xl border border-brand-border shadow-sm p-8 text-center">
         <div className="w-16 h-16 rounded-full bg-brand-light flex items-center justify-center mx-auto mb-5">
           <CheckCircle className="w-8 h-8 text-brand-green" />
@@ -21,6 +22,7 @@ export default function VerifyPage() {
             Back to Login
           </Button>
         </Link>
+      </div>
       </div>
     </div>
   );

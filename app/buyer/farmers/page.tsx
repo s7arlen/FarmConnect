@@ -38,7 +38,7 @@ function FarmersContent() {
   }
 
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto pb-safe">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto">
       {/* Top Header with Language Switcher & View Switcher */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
@@ -137,7 +137,7 @@ function FarmersContent() {
           </div>
 
           {/* Interactive Farm Cards Sidebar */}
-          <div className="lg:col-span-4 order-2 space-y-3 max-h-[620px] overflow-y-auto pr-1">
+          <div className="lg:col-span-4 order-2 space-y-3 lg:max-h-[620px] lg:overflow-y-auto pr-1">
             <div className="flex items-center justify-between px-1">
               <span className="text-xs font-bold uppercase tracking-wider text-brand-muted">
                 {filtered.length} {t("farmsFound")}

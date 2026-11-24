@@ -46,7 +46,7 @@ export default function BuyerDashboardPage() {
   const activeOrders = DEMO_ORDERS.filter((o) => o.status !== "COMPLETED" && o.status !== "CANCELLED");
 
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto pb-safe">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto">
       {/* App Header Greeting & Location */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -110,19 +110,19 @@ export default function BuyerDashboardPage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-5 gap-2.5 sm:gap-4">
+        <div className="flex gap-2.5 overflow-x-auto no-scrollbar sm:grid sm:grid-cols-5 sm:gap-4 pb-1">
           {CATEGORY_SHORTCUTS.map((cat) => {
             const Icon = cat.Icon;
             return (
               <Link
                 key={cat.slug}
                 href={`/buyer/explore?category=${cat.slug}`}
-                className="flex flex-col items-center justify-center p-3 bg-white rounded-2xl border border-brand-border/80 hover:border-brand-green/50 hover:bg-brand-light/20 transition-all text-center group shadow-2xs select-none"
+                className="flex flex-col items-center justify-center p-2.5 sm:p-3 bg-white rounded-2xl border border-brand-border/80 hover:border-brand-green/50 hover:bg-brand-light/20 transition-all text-center group shadow-2xs select-none flex-1 min-w-[70px] sm:min-w-0"
               >
-                <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center mb-1.5 transition-transform group-hover:scale-105 shadow-2xs", cat.color)}>
-                  <Icon className="w-5 h-5 stroke-[2.2]" />
+                <div className={cn("w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center mb-1.5 transition-transform group-hover:scale-105 shadow-2xs", cat.color)}>
+                  <Icon className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]" />
                 </div>
-                <span className="text-xs font-bold text-brand-dark tracking-tight leading-tight truncate w-full">
+                <span className="text-[11px] sm:text-xs font-bold text-brand-dark tracking-tight leading-tight truncate w-full">
                   {cat.name}
                 </span>
               </Link>

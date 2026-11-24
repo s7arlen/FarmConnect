@@ -65,10 +65,10 @@ export default function RoleSelectionPage() {
   const currentRole = ROLES.find((r) => r.id === selectedRole);
 
   return (
-    <div className="min-h-screen bg-[#F2F6EC] flex items-center justify-center p-0 sm:p-4 lg:p-6 overflow-hidden selection:bg-[#53832F] selection:text-white">
+    <div className="min-h-screen min-h-[100dvh] bg-[#F2F6EC] flex items-center justify-center p-0 sm:p-4 lg:p-6 py-0 sm:py-6 selection:bg-[#53832F] selection:text-white">
       
       {/* Mobile-App Device Frame (Full Bleed on Mobile, Centered Card on Desktop) */}
-      <div className="w-full sm:max-w-[430px] bg-white sm:rounded-[36px] shadow-xl sm:border sm:border-[#DCE5D5] flex flex-col h-screen sm:h-auto sm:min-h-[780px] sm:max-h-[860px] justify-between overflow-hidden">
+      <div className="w-full sm:max-w-[430px] bg-white sm:rounded-[36px] shadow-xl sm:border sm:border-[#DCE5D5] flex flex-col min-h-[100dvh] sm:min-h-0 sm:max-h-[92vh] justify-between overflow-hidden">
         
         {/* =====================================================================
             TOP APP HEADER

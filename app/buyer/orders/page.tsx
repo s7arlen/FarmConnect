@@ -59,7 +59,7 @@ export default function OrdersPage() {
   });
 
   return (
-    <div className="p-4 md:p-8 max-w-5xl mx-auto pb-safe">
+    <div className="p-4 md:p-8 max-w-5xl mx-auto">
       <h1 className="text-2xl font-bold text-brand-text mb-6">My Orders</h1>
 
       {/* Tabs */}

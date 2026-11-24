@@ -123,8 +123,8 @@ export function validateImageFile(file: File): { valid: boolean; error?: string 
 
 export function getNextOrderStatuses(current: string): string[] {
   const transitions: Record<string, string[]> = {
-    REQUESTED: ["ACCEPTED", "REJECTED"],
-    ACCEPTED: ["PREPARING"],
+    REQUESTED: ["ACCEPTED", "REJECTED", "CANCELLED"],
+    ACCEPTED: ["PREPARING", "CANCELLED"],
     PREPARING: ["READY"],
     READY: ["COMPLETED"],
     COMPLETED: [],

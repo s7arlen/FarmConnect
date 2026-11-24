@@ -62,7 +62,7 @@ export default function FarmProfilePage() {
   }
 
   return (
-    <div className="p-4 md:p-8 max-w-3xl mx-auto pb-28 pb-safe">
+    <div className="p-4 md:p-8 max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-extrabold text-brand-dark tracking-tight">Farm Profile</h1>

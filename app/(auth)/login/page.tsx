@@ -126,7 +126,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F2F6EC] text-[#202A20] flex flex-col lg:flex-row selection:bg-[#53832F] selection:text-white">
+    <div className="min-h-screen min-h-[100dvh] bg-[#F2F6EC] text-[#202A20] flex flex-col lg:flex-row lg:h-screen lg:overflow-hidden selection:bg-[#53832F] selection:text-white">
       
       {/* =========================================================================
           DESKTOP LEFT SIDEBAR: Vibrant Emerald Farmland Hero (Visible on lg+)
@@ -203,7 +203,7 @@ function LoginForm() {
       {/* =========================================================================
           RIGHT FORM CONTAINER (App-Type Layout on Mobile, Split on Desktop)
       ========================================================================= */}
-      <div className="flex-1 flex flex-col justify-between min-h-screen lg:min-h-auto overflow-y-auto">
+      <div className="flex-1 flex flex-col justify-between lg:h-screen lg:overflow-y-auto">
         
         {/* MOBILE UPPER HERO (Lush Green Crops at Sunrise) */}
         <div className="lg:hidden relative h-[32vh] min-h-[230px] max-h-[290px] w-full flex flex-col justify-between p-5 overflow-hidden">

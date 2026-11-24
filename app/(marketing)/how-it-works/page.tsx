@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function HowItWorksPage() {
   return (
-    <div className="pt-16">
+    <div className="w-full">
       <HowItWorksSection />
       <section className="section bg-white">
         <div className="container-page max-w-4xl text-center">
